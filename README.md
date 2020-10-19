@@ -39,8 +39,8 @@ PRO versions include **Premium UI Kits**, Lifetime updates and **24/7 LIVE Suppo
 
 ```bash
 $ # Get the code
-$ git clone https://github.com/app-generator/django-dashboard-gradientable.git
-$ cd django-dashboard-gradientable
+$ git clone https://github.com/abhijeetjagdev/Infectious_Spread_Simulation_Tool.git
+$ cd Infectious_Spread_Simulation_Tool
 $
 $ # Virtualenv modules installation (Unix based systems)
 $ virtualenv env
