@@ -74,7 +74,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': os.path.join(BASE_DIR, 'postgresDB'),
         'NAME': 'CapstoneDB',
         'USER': 'standard',
         'PASSWORD': 'CapstoneGroup3',
