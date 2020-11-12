@@ -26,13 +26,17 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'  # Enable the inner app
+
+    # personal apps
+    'app',  # Enable the inner app
+    'authentication',  # custom user
 ]
 
 MIDDLEWARE = [
@@ -69,6 +73,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+
+AUTH_USER_MODEL = 'authentication.CustomUser'  # new
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
