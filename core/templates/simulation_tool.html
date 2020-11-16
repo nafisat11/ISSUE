@@ -1,0 +1,371 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    div#container {
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      position:absolute;
+    }
+
+    svg {
+      cursor:pointer;
+    }
+
+    rect.checked {
+      fill:#48EA8B;
+    }
+
+    div.parent {
+        width: 100%;
+        /*height: 300px;*/
+        /*background-color: #C0C0C0;*/
+        position: relative;
+    }
+
+    div.panzoom {
+        width: 400px;
+        height: 300px;
+        position: relative;
+        /*display: grid;*/
+    }
+
+    div.grid, img {
+        width: 100%;
+        height: 100%;
+        /*grid-area: 1 / 1;*/
+        position: absolute;
+    }
+
+    div.grid {
+        z-index: 1;
+        top: 37.25%; 
+        left: 27.5%;
+    }
+
+    div.buttons {
+      display: flex;
+      justify-content: center;
+    }
+
+</style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-content">
+            <!-- [ Main Content ] start -->
+
+                <div class="col-xl-12">
+                    <h5 class="mt-4">Visualizations</h5>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header" >
+                                    <h5>Seat Selection</h5>
+                                    <div class="card-header-right">
+                                        <div class="btn-group card-option">
+                                            <div id='visibility_toggle_button'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.604 92.604" height="40" width="40" id='radio-btn'>
+                                                    <g transform="translate(0 -204.396)">
+                                                        <rect id='visibility_toggle_button_container' ry="15.875" y="234.823" x="12.662" height="31.75" width="67.28" fill="#ff4651" paint-order="markers fill stroke"/>
+                                                        <ellipse id='visibility_toggle_button_disk' rx="9.028" ry="9.028" cy="250.865" cx="28.911" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke"/>
+                                                    </g>
+                                                </svg>
+                                            </div>
+
+                                        <!-- <button id='reset_button'>
+                                            reset
+                                        </button> -->
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <img class="img-fluid card-img-bottom" src="/static/assets/images/room_maps/ENC_170.PNG" alt="Card image cap"> -->
+                                <div class="card-body">
+
+                                    <div class="parent" id="seat_selector_container">
+                                        <div class="panzoom" id="panzoom_container">
+                                            <div class="grid" id="grid"></div>
+                                            <img src="/static/assets/images/room_maps/ENC_170.PNG">
+                                        </div>
+                                    </div> 
+
+                                    <!-- <div class="row">
+                                        <div id='visibility_toggle_button'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.604 92.604" height="40" width="40" id='radio-btn'>
+                                                <g transform="translate(0 -204.396)">
+                                                    <rect id='visibility_toggle_button_container' ry="15.875" y="234.823" x="12.662" height="31.75" width="67.28" fill="#ff4651" paint-order="markers fill stroke"/>
+                                                    <ellipse id='visibility_toggle_button_disk' rx="9.028" ry="9.028" cy="250.865" cx="28.911" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke"/>
+                                                </g>
+                                            </svg>
+                                        </div>
+
+                                        <button id='reset_button'>
+                                            reset
+                                        </button>
+                                    </div> -->
+                                    <br>
+
+                                    <button type="button" class="btn  btn-icon btn-primary" id='reset_button'>
+                                        <i class="feather icon-refresh-ccw"></i>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-secondary">
+                                        <i class="feather icon-grid"></i>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-success">
+                                        <i class="feather icon-square"></i>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-danger">
+                                        <i class="feather icon-hash"></i>
+                                    </button>
+
+                                    <br><br>
+
+                                    <h5 class="card-title">Room X</h5>
+                                    <p class="card-text">Room Metadata.</p>
+                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card text-white bg-secondary ">
+                                <div class="card-header">Heatmap</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-white">Spatial Auto-Correlation</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                       <div class="card text-white bg-success ">
+                                <div class="card-header">Temporal Graph 1</div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-white">Attack Rate as a Function of Time</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </div>
+                            </div>
+                       <div class="card bg-info">
+                                <div class="card-header">Temporal Graph 2</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Attack Rate as a Function of Time</h5>
+                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4">Configurations & Miscellaneous</h5>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="card-group">
+                                <!-- <div class="col-sm-4"> -->
+                                    <div class="card text-white bg-danger ">
+                                        <div class="card-header">Infection Parameters</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white">Parameters</h5>
+                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        </div>
+                                    </div>
+                                <!-- </div> -->
+                                <!-- <div class="col-sm-4"> -->
+                                    <div class="card text-white bg-warning ">
+                                        <div class="card-header">Heatmap Settings</div>
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white">Display Settings</h5>
+                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                        </div>
+                                    </div>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                       <div class="col-sm-4">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">COVID-19 News Feed</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-white">AHS Updates</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+    <!-- Apex Chart -->
+    <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
+    <!-- custom-chart js -->
+    <script src="/static/assets/js/pages/dashboard-main.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script>
+
+    function grid (config) {
+    // defaults
+        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline} = config;
+
+        // validate init: this is horrible...
+        if (init !== undefined) {
+            if (init.some(d => d.length !== init[0].length) ||
+                    init.some(d => d.some(v => v<0 || v >= numStates || v != Math.round(v))))
+                throw new Error(`init should be undefined or a rectangular matrix with integer entries between 0 and ${numStates-1}`);
+            if (nx === undefined && ny !== undefined) {
+                if (ny === init.length)
+                    nx = init[0].length;
+                else throw new Error(`init length:${init.length} not equal to ny:${ny}`);
+            } else if (ny === undefined && nx !== undefined) {
+                if (nx === init[0].length)
+                    ny = init.length;
+                else throw new Error(`init inner length:${init[0].length} not equal to nx:${nx}`);
+            }
+            else if (nx === undefined && ny === undefined) {
+                ny = init.length;
+                nx = init[0].length;
+            }
+        } else {
+            if (nx === undefined && ny !== undefined)
+                nx = ny;
+            else if (ny === undefined && nx !== undefined)
+                ny = nx;
+            else if (nx === undefined && ny === undefined)
+                ny = nx = 5;
+        }
+        
+        if (colorArray === undefined)
+            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+
+        // Array of values, start out all 0 if init not defined
+        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#grid").append("svg");
+        //const grid_area = d3.select("#grid");
+
+        svg
+            .attr("width", nx*(size+2*x_margin))
+            .attr("height", ny*(size+2*y_margin));
+
+        //const svg = d3.select(DOM.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
+        //const svg = d3.select(grid_area.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
+        
+
+        const el = svg.node();
+
+        const rectData = [];
+        for (let y=0; y<ny; y++)
+            for (let x=0; x<nx; x++)
+                rectData.push({x,y});
+
+        const grid = svg.append("g")
+                .attr("cursor", "pointer")
+            .selectAll("rect")
+            .data(rectData)
+            .join("rect")
+                .on("click", gridClick)
+                .attr("x", d => d.x*(size + 2*x_margin) + x_margin)
+                .attr("y", d => d.y*(size + 2*y_margin) + y_margin)
+                .attr("fill", d => colorArray[state[d.y][d.x]])
+                .attr("stroke", outline)
+                .attr("width", size)
+                .attr("height", size);
+
+        function gridClick({x,y}) {
+            state[y][x] = (state[y][x] + 1) % numStates;
+            this.style.fill = colorArray[state[y][x]];
+            el.dispatchEvent(new CustomEvent('input'));
+        }
+
+        el.addEventListener('inputArray', ({detail}) => {
+            if (detail !== null && detail !== undefined) {
+                if (detail.length === ny &&
+                        detail.every(d => d.length === nx && d.every(v => v < numStates && v >= 0 && v === Math.round(v)))) {
+                    state = detail;
+                } else
+                    return console.log(`failed inputArray event: ${detail}`);
+            } else {
+                state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+            }
+            el.value = state;
+            grid.attr("fill", d => colorArray[state[d.y][d.x]]);
+            el.dispatchEvent(new CustomEvent('input'));
+            console.log(el)
+        });
+
+        el.value = state;
+        return el;
+    }
+
+    grid_middle = grid({
+        numStates:2, 
+        nx:12,
+        ny:13,
+        size:8,
+        x_margin:4.5,
+        y_margin:0.6
+    });
+
+
+    // grid visibility toggle
+    $(function(){
+        
+        var visibility_toggle_button = $("#visibility_toggle_button")
+        var rect = visibility_toggle_button.find("#visibility_toggle_button_container")
+        var ellipse = visibility_toggle_button.find("#visibility_toggle_button_disk");
+
+        $("#radio-btn").on('click', ()=>{
+            $("#grid").fadeToggle(250);
+            rect.toggleClass("checked");
+            if(rect.hasClass("checked")){
+                TweenLite.to(ellipse, 0.25, {attr: {"cx": 60.911, "rx":1.108, "ry":8.17}})
+            } else {
+                TweenLite.to(ellipse, 0.25, {attr: {"cx": 28.911, "rx":9.028, "ry": 9.028}})
+            }
+        })
+    })
+
+
+    // pan-zoom container
+    const elem = document.getElementById('panzoom_container')
+    const panzoom = Panzoom(elem)
+    const parent = elem.parentElement
+    const reset_button = document.getElementById('reset_button')
+    // No function bind needed
+    parent.addEventListener('wheel', panzoom.zoomWithWheel)
+
+    // This demo binds to shift + wheel
+    parent.addEventListener('wheel', function(event) {
+      if (!event.shiftKey) return
+      panzoom.zoomWithWheel(event)
+    })
+    reset_button.addEventListener('click', panzoom.reset)
+
+
+    </script>
+
+{% endblock javascripts %}
