@@ -259,10 +259,14 @@
             else if (nx === undefined && ny === undefined)
                 ny = nx = 5;
         }
+
+        // if (colorArray === undefined)
+        //     colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+        //                                                     (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
         
         if (colorArray === undefined)
             colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
-                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+                                                            (i === 1 ? '#4169E1' : '#FF0000'));
 
         // Array of values, start out all 0 if init not defined
         const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
@@ -326,7 +330,7 @@
     }
 
     grid_middle = grid({
-        numStates:2, 
+        numStates:3, 
         nx:12,
         ny:13,
         size:8,
