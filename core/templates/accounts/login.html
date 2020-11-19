@@ -14,13 +14,11 @@
 
 							<img src="/static/assets/images/logo-dark.png" alt="" class="img-fluid mb-4">
 							<h4 class="mb-3 f-w-400">
-								<a href="https://appseed.us/admin-dashboards/django-dashboard-gradientable">Infection Spread Simulation Tool</a> - SignIN
+								<a href="https://appseed.us/admin-dashboards/django-dashboard-gradientable">Infection Spread Simulation Tool</a> - Sign In
 							</h4>
 							<span class="mb-0 text-muted">
 								{% if msg %}
 									{{ msg | safe }}
-								{% else %}
-									Default Credentials: test / ApS12_ZZs8
 								{% endif %} 
 							</span>
 							<!-- dummy spacer -->
@@ -31,7 +29,7 @@
 								
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
-										<span class="input-group-text"><i class="feather icon-user"></i></span>
+										<span class="input-group-text"><i class="feather icon-mail"></i></span>
 									</div>
 									{{ form.email }}
 								</div>
@@ -47,12 +45,12 @@
 										<label for="checkbox-fill-a1" class="cr"> Save credentials</label>
 									</div>
 								</div>
-								<button type="submit" name="login" class="btn btn-block btn-primary mb-4">Signin</button>
+								<button type="submit" name="login" class="btn btn-block btn-primary mb-4">Sign in</button>
 							
 							</form>
 
-							<p class="mb-0 text-muted">Don’t have an account? <a href={% url 'register' %} class="f-w-400">Signup</a></p>
-							<p class="mb-2 text-muted">
+							<p class="mb-0 text-muted">Don’t have an account? <a href={% url 'register' %} class="f-w-400">Sign up</a></p>
+							<p class="mb-2 text-muted">Forgot password? <a href={% url 'password_change' %} class="f-w-400">Reset</a></p>
 								<br />
 								&copy; <a target="_blank" rel="noopener" href="https://codedthemes.com/?ref=appseed" class="f-w-400">CodedThemes</a>
 								- coded by <a target="_blank" rel="noopener" href="https://appseed.us" class="f-w-400">AppSeed</a>
