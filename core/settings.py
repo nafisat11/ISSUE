@@ -23,6 +23,10 @@ DEBUG = config('DEBUG', default=False)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',
                  config('SERVER', default='127.0.0.1')]
 
+if DEBUG:
+    # During development only
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -82,11 +86,7 @@ AUTH_USER_MODEL = 'authentication.CustomUser'  # new
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-<<<<<<< HEAD
-        'NAME': 'CapstoneDB',
-=======
         'NAME': 'capstonedb',
->>>>>>> changed db name for postgres to work on my end
         'USER': 'standard',
         'PASSWORD': 'CapstoneGroup3',
         'HOST': 'localhost',
