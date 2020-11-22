@@ -21443,12 +21443,12 @@ pre[class*=language-]:before {
 }
 
 .pcoded-navbar .pcoded-inner-navbar li.pcoded-menu-caption {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
     padding: 18px 15px 5px;
     position: relative;
-    text-transform: lowercase;
+    text-transform: capitalize;
     letter-spacing: 1px;
     border-top: 1px solid #496178;
     margin-top: 10px;
@@ -21484,14 +21484,14 @@ pre[class*=language-]:before {
 }
 
 .pcoded-navbar.navbar-collapsed {
-    width: 70px;
+    width: 0px;
     height: 100%;
     -webkit-transition: all 0.15s ease-in-out;
     transition: all 0.15s ease-in-out;
 }
 
 .pcoded-navbar.navbar-collapsed .header-logo {
-    width: 70px;
+    width: 0px;
     padding: 10px 20px;
 }
 
@@ -21595,7 +21595,7 @@ pre[class*=language-]:before {
 }
 
 .pcoded-navbar.navbar-collapsed ~ .pcoded-main-container {
-    margin-left: 70px;
+    margin-left: 0px;
 }
 
 .pcoded-navbar.navbar-collapsed .pcoded-badge {
