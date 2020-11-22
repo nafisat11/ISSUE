@@ -1,0 +1,58 @@
+[
+    {
+        "model": "app.floors",
+        "pk": 1,
+        "fields": {
+            "number": 1,
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 2,
+        "fields": {
+            "number": 2,
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 3,
+        "fields": {
+            "number": 3,
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 4,
+        "fields": {
+            "number": 1,
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 5,
+        "fields": {
+            "number": 2,
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 6,
+        "fields": {
+            "number": 3,
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 7,
+        "fields": {
+            "number": 4,
+            "building": 2
+        }
+    }
+]
