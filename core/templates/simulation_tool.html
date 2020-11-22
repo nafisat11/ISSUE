@@ -52,6 +52,12 @@
       justify-content: center;
     }
 
+    div.heatmapimage {
+        background-image: url("/static/assets/images/room_maps/ENC_170.PNG");
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-size: contain;
+  }
+
 </style>
 
 {% endblock stylesheets %}
@@ -141,20 +147,20 @@
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="card text-white bg-secondary ">
+                            <div class="card text-white bg-light">
                                 <div class="card-header">Heatmap</div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-white">Spatial Auto-Correlation</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <div class="parent" id="heatmap_container">
+                                        <div class="heatmapimage" id="heatmap"></div>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
-                       <div class="card text-white bg-success ">
+                       <div class="card text-white bg-secondary">
                                 <div class="card-header">Temporal Graph 1</div>
                                 <div class="card-body">
-                                    <h5 class="card-title text-white">Attack Rate as a Function of Time</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <div id="temporal1"></div>
                                 </div>
                             </div>
                        <div class="card bg-info">
@@ -218,6 +224,7 @@
 
     <!-- Apex Chart -->
     <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- custom-chart js -->
     <script src="/static/assets/js/pages/dashboard-main.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -226,6 +233,8 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
     <script>
 
     function grid (config) {
@@ -357,7 +366,6 @@
         })
     })
 
-
     // pan-zoom container
     const elem = document.getElementById('panzoom_container')
     const panzoom = Panzoom(elem)
@@ -373,6 +381,183 @@
     })
     reset_button.addEventListener('click', panzoom.reset)
 
+    // Heatmap
+    // Fake Probabilities data
+    var heatmapData = [];
+    for (var i = 0; i < 21; i++){
+        var temp = [];
+        for (var j = 0; j < 21; j++){
+            temp.push(Math.floor(Math.random() * 101));
+        }
+        heatmapData.push(temp);
+    }
+
+    // Convert 2D array to series
+    var seriesData = [];
+    for (var i = 0; i < heatmapData.length; i++){
+        var tempArr = [];
+        for (var j = 0; j < heatmapData.length; j++){
+            var temp = {
+                'x' : j,
+                'y' : heatmapData[i][j]
+            }
+            tempArr.push(temp);
+        }
+            var obj = {
+            'name' : i,
+            'data' : tempArr
+        };
+        seriesData.push(obj);
+    }
+
+    // Chart customization
+    var options = {
+        series: seriesData,
+        chart: {
+            height: 350,
+            type: 'heatmap',
+        },
+        plotOptions: {
+          heatmap: {
+            colorScale: {
+              ranges: [{
+                  from: 0,
+                  to: 30,
+                  name: 'low',
+                  color: '#00A100'
+                },
+                {
+                  from: 31,
+                  to: 70,
+                  name: 'medium',
+                  color: '#FFB200'
+                },
+                {
+                  from: 71,
+                  to: 100,
+                  name: 'high',
+                  color: '#FF0000'
+                }
+              ]
+            }
+          }
+        },
+        fill: {
+            opacity: 0.5
+        },
+        dataLabels: {
+            enabled: false
+        },
+        xaxis: {
+            labels: {
+            show: false
+          }
+        },
+        yaxis: {
+            labels: {
+            show: false
+          }
+        },
+        legend: {
+            show: false
+        },
+        tooltip: {
+            enabled: true
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#heatmap"), options);
+    chart.render();
+
+    // Temporal Graph
+    // Fake Attack Rate Data:
+    var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
+
+    // Chart customization
+    var options = {
+          series: [{
+            name: "Attack Rate",
+            data: temporalData
+        }],
+          chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
+          toolbar: {
+            autoSelected: 'zoom'
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        title: {
+          text: 'Attack Rate as a Function of Time',
+          align: 'left'
+        },
+        xaxis: {
+          categories: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+          title: {
+              text: "Time (hrs)"
+          }
+        },
+        yaxis: {
+            title: {
+                text: "Attack Rate (%)"
+            }
+        },
+        tooltip: {
+            enabled: true,
+            enabledOnSeries: undefined,
+            shared: true,
+            followCursor: false,
+            intersect: false,
+            inverseOrder: false,
+            custom: undefined,
+            fillSeriesColor: false,
+            theme: false,
+            style: {
+                fontSize: '12px',
+                fontFamily: undefined
+            },
+            onDatasetHover: {
+                highlightDataSeries: false,
+            },
+            x: {
+                show: true,
+                format: 'dd MMM',
+                formatter: undefined,
+            },
+            y: {
+                formatter: undefined,
+                title: {
+                    formatter: (seriesName) => seriesName,
+                },
+            },
+            z: {
+                formatter: undefined,
+                title: 'Size: '
+            },
+            marker: {
+                show: true,
+            },
+            fixed: {
+                enabled: false,
+                position: 'topRight',
+                offsetX: 0,
+                offsetY: 0,
+            },
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+    chart.render();
 
     </script>
 
