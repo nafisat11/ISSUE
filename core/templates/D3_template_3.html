@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+
+
+<!-- Style Sheet -->
+<style>
+    div#container {
+      top:50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      position:absolute;
+    }
+
+    svg {
+      cursor:pointer;
+    }
+
+    rect.checked {
+      fill:#48EA8B;
+    }
+
+    div.parent {
+        width: 500px;
+        height: 400px;
+        background-color: #C0C0C0;
+        position: absolute;
+    }
+
+    div.panzoom {
+        width: 500px;
+        height: 400px;
+        position: relative;
+        /*display: grid;*/
+    }
+
+    div.grid, img {
+        width: 100%;
+        height: 100%;
+        /*grid-area: 1 / 1;*/
+        position: absolute;
+    }
+
+    div.grid {
+        z-index: 1;
+        top: 148px;
+        left: 137px;
+    }
+
+    .link {
+      stroke: #000;
+      stroke-width: 0.5px;
+    }
+
+    .node {
+      cursor: move;
+      fill: #ccc;
+      stroke: #000;
+      stroke-width: 0.5px;
+    }
+
+    .node.fixed {
+      fill: #f00;
+    }
+
+</style>
+
+<!-- Create a div where the graph will take place -->
+
+<body>
+
+    <div class="grid" id="grid"></div>
+
+</body>
+
+
+<script>
+
+    function grid (config) {
+        
+        // defaults
+        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        
+        if (colorArray === undefined)
+            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+
+        // Array of values, start out all 0 if init not defined
+        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+        const state_array = [0, 0, 0, 0, 0];
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#grid").append("svg");
+        const grid_area = d3.select("#grid");
+
+        svg
+            .attr("width", width)
+            .attr("height", height)
+            .attr("style", 'background-color:gray');        
+
+        const el = svg.node();
+
+        const grid = svg.append("g")
+                .attr("cursor", "pointer")
+            .selectAll("rect")
+            .data(node_positions)
+            .join("circle")
+                .on("click", gridClick)
+                .on("mouseover", hoverOver)
+                .on("mouseout", hoverOff)
+                .attr("cx", d => d.x * width)
+                .attr("cy", d => d.y * height)
+                .attr("fill", "#FFF")
+                .attr("stroke", outline)
+                .attr("r", size)
+
+        function hoverOver({x, y, id}) {
+            d3.select(this).style('stroke-width', '5');
+        }
+
+        function hoverOff({x, y, id}) {
+            d3.select(this).style('stroke-width', '1');
+        }
+
+        function gridClick({x, y, id}) {
+            console.log(id);
+            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
+            this.style.fill = colorArray[state_array[id - 1]];
+            el.dispatchEvent(new CustomEvent('input'));
+            //console.log(state_array)
+            //console.log(node_positions)
+
+            selected_nodes = []
+            for (let i = 0; i < node_positions.length; i++)
+                if (state_array[i])
+                    selected_nodes.push({
+                        x: node_positions[i].x,
+                        y: node_positions[i].y,
+                        id: node_positions[i].id,
+                        state: state_array[i]
+                    });
+
+            console.log(selected_nodes);
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            //console.log(selected_nodes_JSON);
+
+            $.ajax({
+                url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+
+        }
+
+        el.value = state;
+        return el;
+    }
+
+    nodes = [];
+    let counter = 1;
+
+    for (var i = 0; i < 10; i++)
+        for (var j = 0; j < 10; j++)
+            //width = 1.0 / 10
+            console.log("here")
+            //height = 1.0 / 10
+            //x = width * j
+            //y = height * i
+
+            nodes.push({
+                x: 10,
+                y: 10,
+                id: counter
+            })
+
+            // counter++
+
+    console.log(nodes);
+
+
+    grid_middle = grid({
+        width: 600,
+        height: 500,
+        numStates: 5, 
+        size: 20,
+        node_positions:     [
+            {x: 0.2, y: 0.2, id: 1},
+            {x: 0.4, y: 0.4, id: 2},
+            {x: 0.6, y: 0.6, id: 3},
+            {x: 0.8, y: 0.8, id: 4},
+            {x: 0.9, y: 0.9, id: 5}
+        ]
+
+    });
+
+
+</script>

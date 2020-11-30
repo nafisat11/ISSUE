@@ -86,9 +86,9 @@ AUTH_USER_MODEL = 'authentication.CustomUser'  # new
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'capstonedb',
-        'USER': 'standard',
-        'PASSWORD': 'CapstoneGroup3',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '',
     }

@@ -8,8 +8,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
+<<<<<<< HEAD
 from .models import Buildings, Floors, Rooms, Heatmaps
 from .agent_based_infection_probability import AttackRates
+=======
+from .models import Buildings, Floors, Rooms
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+>>>>>>> Added simple node-based seat selection method including POST request hook to send seat selection data to backend.
 
 import json
 
@@ -89,6 +94,7 @@ def get_rooms(request):
         return redirect('/')
 
 
+<<<<<<< HEAD
 def get_attack_rates(request):
     if request.method == "GET" and request.is_ajax():
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
@@ -312,4 +318,11 @@ def selection_submitted(request):
                             content_type="application/json")
 
     else:
+=======
+@csrf_exempt
+def post_seat_selections(request):
+    if request.method == "POST" and request.is_ajax():
+        seat_selections = json.loads(request.POST.get('data'))
+        print(seat_selections)
+>>>>>>> Added simple node-based seat selection method including POST request hook to send seat selection data to backend.
         return redirect('/')
