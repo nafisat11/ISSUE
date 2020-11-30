@@ -57,6 +57,16 @@
         background-repeat: no-repeat; /* Do not repeat the image */
         background-size: contain;
   }
+    .wrapper {
+        position: relative;
+        width: 400px;
+        height: 300px;
+    }
+    .wrapper canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
 
 </style>
 
@@ -151,7 +161,11 @@
                                 <div class="card-header">Heatmap</div>
                                 <div class="card-body">
                                     <div class="parent" id="heatmap_container">
-                                        <div class="heatmapimage" id="heatmap"></div>
+                                        <div id="probabilitiesSelect"></div>
+                                        <div class="wrapper">
+                                            <div><canvas id="backgroundCanvas" width="400" height="300"></canvas></div>
+                                            <div><canvas id="heatmapCanvas" width="400" height="300" style="opacity:0.5"></canvas></div>
+                                        </div>
                                     </div> 
                                 </div>
                             </div>
@@ -234,7 +248,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
+    <script src="./static/assets/js/simpleheat.js"></script>
     <script>
 
     function grid (config) {
@@ -381,94 +395,6 @@
     })
     reset_button.addEventListener('click', panzoom.reset)
 
-    // Heatmap
-    // Fake Probabilities data
-    var heatmapData = [];
-    for (var i = 0; i < 21; i++){
-        var temp = [];
-        for (var j = 0; j < 21; j++){
-            temp.push(Math.floor(Math.random() * 101));
-        }
-        heatmapData.push(temp);
-    }
-
-    // Convert 2D array to series
-    var seriesData = [];
-    for (var i = 0; i < heatmapData.length; i++){
-        var tempArr = [];
-        for (var j = 0; j < heatmapData.length; j++){
-            var temp = {
-                'x' : j,
-                'y' : heatmapData[i][j]
-            }
-            tempArr.push(temp);
-        }
-            var obj = {
-            'name' : i,
-            'data' : tempArr
-        };
-        seriesData.push(obj);
-    }
-
-    // Chart customization
-    var options = {
-        series: seriesData,
-        chart: {
-            height: 350,
-            type: 'heatmap',
-        },
-        plotOptions: {
-          heatmap: {
-            colorScale: {
-              ranges: [{
-                  from: 0,
-                  to: 30,
-                  name: 'low',
-                  color: '#00A100'
-                },
-                {
-                  from: 31,
-                  to: 70,
-                  name: 'medium',
-                  color: '#FFB200'
-                },
-                {
-                  from: 71,
-                  to: 100,
-                  name: 'high',
-                  color: '#FF0000'
-                }
-              ]
-            }
-          }
-        },
-        fill: {
-            opacity: 0.5
-        },
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            labels: {
-            show: false
-          }
-        },
-        yaxis: {
-            labels: {
-            show: false
-          }
-        },
-        legend: {
-            show: false
-        },
-        tooltip: {
-            enabled: true
-        }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#heatmap"), options);
-    chart.render();
-
     // Temporal Graph
     // Fake Attack Rate Data:
     var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
@@ -558,6 +484,70 @@
 
     var chart = new ApexCharts(document.querySelector("#temporal1"), options);
     chart.render();
+
+    //Heatmap
+    //Heatmap Data
+    //Get request to the database
+    $(document).ready(function() {
+        var $probabilitiesvar = $("#probabilitiesSelect");
+        $probabilitiesvar.change(function() {
+            data = {'user_id': "1", 'room_id': "1"};
+            $.ajax({
+                type: "GET",
+                url: '/get_probabilities/',
+                data: data,
+                success: function(result) {
+
+                },
+            });
+        });
+    });
+
+    //Fake Probabilities data
+    var heatmapData = [];
+    for (var i = 0; i < 300; i++){
+        var temp = [];
+        for (var j = 0; j < 400; j++){
+            temp.push(Math.floor(Math.random() * 101));
+        }
+        heatmapData.push(temp);
+    }
+
+    //Heatmap Background Image
+    var canvas = document.getElementById("backgroundCanvas");
+    ctx = canvas.getContext("2d");
+
+    var background = new Image();
+    background.src = "/static/assets/images/room_maps/ENC_170.PNG";
+
+    // Make sure the image is loaded first otherwise nothing will draw.
+    background.onload = function(){
+        ctx.drawImage(background,0,0, 400, 300);   
+    }
+
+    // Heatmap figure
+    sampleData = [];
+    for (var i = 0; i < 400; i+=20){
+        for (var j = 0; j < 300; j+=20){
+            temp = [i, j, heatmapData[j][i]/100];
+            sampleData.push(temp);
+        }
+    }
+    function get(id) {
+        return document.getElementById(id);
+    }
+
+    var heat = simpleheat('heatmapCanvas').data(sampleData).max(1),
+        frame;
+
+    function draw() {
+        console.time('draw');
+        heat.draw();
+        console.timeEnd('draw');
+        frame = null;
+    }
+
+    draw();
 
     </script>
 

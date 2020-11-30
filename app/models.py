@@ -13,12 +13,6 @@ class Users(models.Model):
     
     pass
 
-
-class Users(models.Model):
-
-    pass
-
-
 class Buildings(models.Model):
     name = models.CharField(max_length=200)
 
@@ -78,9 +72,13 @@ class Heatmaps(models.Model):
     probabilities = ArrayField(
         ArrayField(models.DecimalField(max_digits=11, decimal_places=10))
     )
+    room = models.ForeignKey(Rooms, on_delete=models.PROTECT)
 
     def get_user(self):
         return self.user
 
     def get_probabilities(self):
         return self.probabilities
+
+    def get_room(self):
+        return self.room

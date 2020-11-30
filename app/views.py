@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
-from .models import Buildings, Floors, Rooms
+from .models import Buildings, Floors, Rooms, Heatmaps
 
 import json
 
@@ -83,6 +83,19 @@ def get_rooms(request):
             result_set.append({'room_number': rooms.room_number})
 
         return HttpResponse(json.dumps(result_set), content_type="application/json")
+
+    else:
+        return redirect('/')
+
+def get_probabilities(request):
+    if request.method == "GET" and request.is_ajax():
+        # get name of user selected building
+        user_id = request.GET.get("user_id", None)
+        room_id = request.GET.get("room_id", None)
+        selected_heatmap = Heatmaps.objects.filter(
+            user_id=user_id, room_id=room_id)  # get field object that matches the selected building
+
+        return HttpResponse(json.dumps(selected_heatmap.probabilities), content_type="application/json")
 
     else:
         return redirect('/')
