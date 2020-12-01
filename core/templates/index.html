@@ -4,8 +4,8 @@
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
-<!-- <style>
-    div#container {
+<style>
+/*    div#container {
       top:50%;
       left:50%;
       transform: translate(-50%,-50%);
@@ -23,7 +23,7 @@
     div.parent {
         width: 100%;
         /*height: 300px;*/
-        /*background-color: #C0C0C0;*/
+        /*background-color: #C0C0C0;
         position: relative;
     }
 
@@ -31,13 +31,13 @@
         width: 400px;
         height: 300px;
         position: relative;
-        /*display: grid;*/
+        /*display: grid;
     }
 
     div.grid, img {
         width: 100%;
         height: 100%;
-        /*grid-area: 1 / 1;*/
+        /*grid-area: 1 / 1;
         position: absolute;
     }
 
@@ -51,8 +51,19 @@
       display: flex;
       justify-content: center;
     }
+*/
+    .wrapper {
+        position: relative;
+        width: 700px;
+        height: 550px;
+    }
+    .wrapper canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
 
-</style> -->
+</style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -168,7 +179,13 @@
                     <div class="card">
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
-                            <div id="heatmap-chart-1"></div>
+                            <div class="parent" id="heatmap_container">
+                                <div id="probabilitiesSelect"></div>
+                                <div class="wrapper">
+                                    <div><canvas id="backgroundCanvas" width="700" height="550"></canvas></div>
+                                    <div><canvas id="heatmapCanvas" width="700" height="550" style="opacity:0.5"></canvas></div>
+                                </div>
+                            </div> 
                         </div>
                     </div>
                 </div>
@@ -209,160 +226,340 @@
         });
     </script>
     <!-- seat-selection js-->
-    <!-- <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script src="./static/assets/js/simpleheat.js"></script>
     <script>
 
-    function grid (config) {
-    // defaults
-        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
-        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline} = config;
+    // function grid (config) {
+    // // defaults
+    //     config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+    //     let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline} = config;
 
-        // validate init: this is horrible...
-        if (init !== undefined) {
-            if (init.some(d => d.length !== init[0].length) ||
-                    init.some(d => d.some(v => v<0 || v >= numStates || v != Math.round(v))))
-                throw new Error(`init should be undefined or a rectangular matrix with integer entries between 0 and ${numStates-1}`);
-            if (nx === undefined && ny !== undefined) {
-                if (ny === init.length)
-                    nx = init[0].length;
-                else throw new Error(`init length:${init.length} not equal to ny:${ny}`);
-            } else if (ny === undefined && nx !== undefined) {
-                if (nx === init[0].length)
-                    ny = init.length;
-                else throw new Error(`init inner length:${init[0].length} not equal to nx:${nx}`);
-            }
-            else if (nx === undefined && ny === undefined) {
-                ny = init.length;
-                nx = init[0].length;
-            }
-        } else {
-            if (nx === undefined && ny !== undefined)
-                nx = ny;
-            else if (ny === undefined && nx !== undefined)
-                ny = nx;
-            else if (nx === undefined && ny === undefined)
-                ny = nx = 5;
-        }
+    //     // validate init: this is horrible...
+    //     if (init !== undefined) {
+    //         if (init.some(d => d.length !== init[0].length) ||
+    //                 init.some(d => d.some(v => v<0 || v >= numStates || v != Math.round(v))))
+    //             throw new Error(`init should be undefined or a rectangular matrix with integer entries between 0 and ${numStates-1}`);
+    //         if (nx === undefined && ny !== undefined) {
+    //             if (ny === init.length)
+    //                 nx = init[0].length;
+    //             else throw new Error(`init length:${init.length} not equal to ny:${ny}`);
+    //         } else if (ny === undefined && nx !== undefined) {
+    //             if (nx === init[0].length)
+    //                 ny = init.length;
+    //             else throw new Error(`init inner length:${init[0].length} not equal to nx:${nx}`);
+    //         }
+    //         else if (nx === undefined && ny === undefined) {
+    //             ny = init.length;
+    //             nx = init[0].length;
+    //         }
+    //     } else {
+    //         if (nx === undefined && ny !== undefined)
+    //             nx = ny;
+    //         else if (ny === undefined && nx !== undefined)
+    //             ny = nx;
+    //         else if (nx === undefined && ny === undefined)
+    //             ny = nx = 5;
+    //     }
 
-        // if (colorArray === undefined)
-        //     colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
-        //                                                     (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+    //     // if (colorArray === undefined)
+    //     //     colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+    //     //                                                     (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
         
-        if (colorArray === undefined)
-            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
-                                                            (i === 1 ? '#4169E1' : '#FF0000'));
+    //     if (colorArray === undefined)
+    //         colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+    //                                                         (i === 1 ? '#4169E1' : '#FF0000'));
 
-        // Array of values, start out all 0 if init not defined
-        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+    //     // Array of values, start out all 0 if init not defined
+    //     const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
 
-        // append the svg object to the body of the page
-        const svg = d3.select("#grid").append("svg");
-        //const grid_area = d3.select("#grid");
+    //     // append the svg object to the body of the page
+    //     const svg = d3.select("#grid").append("svg");
+    //     //const grid_area = d3.select("#grid");
 
-        svg
-            .attr("width", nx*(size+2*x_margin))
-            .attr("height", ny*(size+2*y_margin));
+    //     svg
+    //         .attr("width", nx*(size+2*x_margin))
+    //         .attr("height", ny*(size+2*y_margin));
 
-        //const svg = d3.select(DOM.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
-        //const svg = d3.select(grid_area.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
+    //     //const svg = d3.select(DOM.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
+    //     //const svg = d3.select(grid_area.svg(nx*(size+2*x_margin), ny*(size+2*y_margin)));
         
 
-        const el = svg.node();
+    //     const el = svg.node();
 
-        const rectData = [];
-        for (let y=0; y<ny; y++)
-            for (let x=0; x<nx; x++)
-                rectData.push({x,y});
+    //     const rectData = [];
+    //     for (let y=0; y<ny; y++)
+    //         for (let x=0; x<nx; x++)
+    //             rectData.push({x,y});
 
-        const grid = svg.append("g")
-                .attr("cursor", "pointer")
-            .selectAll("rect")
-            .data(rectData)
-            .join("rect")
-                .on("click", gridClick)
-                .attr("x", d => d.x*(size + 2*x_margin) + x_margin)
-                .attr("y", d => d.y*(size + 2*y_margin) + y_margin)
-                .attr("fill", d => colorArray[state[d.y][d.x]])
-                .attr("stroke", outline)
-                .attr("width", size)
-                .attr("height", size);
+    //     const grid = svg.append("g")
+    //             .attr("cursor", "pointer")
+    //         .selectAll("rect")
+    //         .data(rectData)
+    //         .join("rect")
+    //             .on("click", gridClick)
+    //             .attr("x", d => d.x*(size + 2*x_margin) + x_margin)
+    //             .attr("y", d => d.y*(size + 2*y_margin) + y_margin)
+    //             .attr("fill", d => colorArray[state[d.y][d.x]])
+    //             .attr("stroke", outline)
+    //             .attr("width", size)
+    //             .attr("height", size);
 
-        function gridClick({x,y}) {
-            state[y][x] = (state[y][x] + 1) % numStates;
-            this.style.fill = colorArray[state[y][x]];
-            el.dispatchEvent(new CustomEvent('input'));
-        }
+    //     function gridClick({x,y}) {
+    //         state[y][x] = (state[y][x] + 1) % numStates;
+    //         this.style.fill = colorArray[state[y][x]];
+    //         el.dispatchEvent(new CustomEvent('input'));
+    //     }
 
-        el.addEventListener('inputArray', ({detail}) => {
-            if (detail !== null && detail !== undefined) {
-                if (detail.length === ny &&
-                        detail.every(d => d.length === nx && d.every(v => v < numStates && v >= 0 && v === Math.round(v)))) {
-                    state = detail;
-                } else
-                    return console.log(`failed inputArray event: ${detail}`);
-            } else {
-                state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
-            }
-            el.value = state;
-            grid.attr("fill", d => colorArray[state[d.y][d.x]]);
-            el.dispatchEvent(new CustomEvent('input'));
-            console.log(el)
+    //     el.addEventListener('inputArray', ({detail}) => {
+    //         if (detail !== null && detail !== undefined) {
+    //             if (detail.length === ny &&
+    //                     detail.every(d => d.length === nx && d.every(v => v < numStates && v >= 0 && v === Math.round(v)))) {
+    //                 state = detail;
+    //             } else
+    //                 return console.log(`failed inputArray event: ${detail}`);
+    //         } else {
+    //             state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+    //         }
+    //         el.value = state;
+    //         grid.attr("fill", d => colorArray[state[d.y][d.x]]);
+    //         el.dispatchEvent(new CustomEvent('input'));
+    //         console.log(el)
+    //     });
+
+    //     el.value = state;
+    //     return el;
+    // }
+
+    // grid_middle = grid({
+    //     numStates:3, 
+    //     nx:12,
+    //     ny:13,
+    //     size:8,
+    //     x_margin:4.5,
+    //     y_margin:0.6
+    // });
+
+
+    // // grid visibility toggle
+    // $(function(){
+        
+    //     var visibility_toggle_button = $("#visibility_toggle_button")
+    //     var rect = visibility_toggle_button.find("#visibility_toggle_button_container")
+    //     var ellipse = visibility_toggle_button.find("#visibility_toggle_button_disk");
+
+    //     $("#radio-btn").on('click', ()=>{
+    //         $("#grid").fadeToggle(250);
+    //         rect.toggleClass("checked");
+    //         if(rect.hasClass("checked")){
+    //             TweenLite.to(ellipse, 0.25, {attr: {"cx": 60.911, "rx":1.108, "ry":8.17}})
+    //         } else {
+    //             TweenLite.to(ellipse, 0.25, {attr: {"cx": 28.911, "rx":9.028, "ry": 9.028}})
+    //         }
+    //     })
+    // })
+
+
+    // // pan-zoom container
+    // const elem = document.getElementById('panzoom_container')
+    // const panzoom = Panzoom(elem)
+    // const parent = elem.parentElement
+    // const reset_button = document.getElementById('reset_button')
+    // // No function bind needed
+    // parent.addEventListener('wheel', panzoom.zoomWithWheel)
+
+    // // This demo binds to shift + wheel
+    // parent.addEventListener('wheel', function(event) {
+    //   if (!event.shiftKey) return
+    //   panzoom.zoomWithWheel(event)
+    // })
+    // reset_button.addEventListener('click', panzoom.reset)
+
+    //Heatmap
+    //Heatmap Data
+    //Get request to the database
+    $(document).ready(function() {
+        var $probabilitiesvar = $("#probabilitiesSelect");
+        $probabilitiesvar.change(function() {
+            data = {'user_id': "1", 'room_id': "1"};
+            $.ajax({
+                type: "GET",
+                url: '/get_probabilities/',
+                data: data,
+                success: function(result) {
+
+                },
+            });
         });
-
-        el.value = state;
-        return el;
-    }
-
-    grid_middle = grid({
-        numStates:3, 
-        nx:12,
-        ny:13,
-        size:8,
-        x_margin:4.5,
-        y_margin:0.6
     });
 
+    //Fake Probabilities data
+    var heatmapData = [];
+    for (var i = 0; i < 550; i++){
+        var temp = [];
+        for (var j = 0; j < 700; j++){
+            temp.push(Math.floor(Math.random() * 101));
+        }
+        heatmapData.push(temp);
+    }
 
-    // grid visibility toggle
-    $(function(){
-        
-        var visibility_toggle_button = $("#visibility_toggle_button")
-        var rect = visibility_toggle_button.find("#visibility_toggle_button_container")
-        var ellipse = visibility_toggle_button.find("#visibility_toggle_button_disk");
+    //Heatmap Background Image
+    var canvas = document.getElementById("backgroundCanvas");
+    var ctx = canvas.getContext("2d");
+    var background = new Image();
+    background.src = "/static/assets/images/room_maps/ENC_170.PNG";
+    // Make sure the image is loaded first otherwise nothing will draw.
+    background.onload = function(){
+        ctx.drawImage(background, 0, 0, 700, 550);
+    }
 
-        $("#radio-btn").on('click', ()=>{
-            $("#grid").fadeToggle(250);
-            rect.toggleClass("checked");
-            if(rect.hasClass("checked")){
-                TweenLite.to(ellipse, 0.25, {attr: {"cx": 60.911, "rx":1.108, "ry":8.17}})
-            } else {
-                TweenLite.to(ellipse, 0.25, {attr: {"cx": 28.911, "rx":9.028, "ry": 9.028}})
-            }
-        })
-    })
+    // background.onload = function(){
+    //     var ctx = canvas.getContext("2d");
+	// 	trackTransforms(ctx);
+	// 	function redraw(){
+	// 		// Clear the entire canvas
+	// 		var p1 = ctx.transformedPoint(0,0);
+	// 		var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+	// 		ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
+	// 		// Alternatively:
+	// 		// ctx.save();
+	// 		// ctx.setTransform(1,0,0,1,0,0);
+	// 		// ctx.clearRect(0,0,canvas.width,canvas.height);
+	// 		// ctx.restore();
+			
+	// 		ctx.drawImage(background,0,0,400,300);
+	// 	}
+	// 	redraw();
+		
+	// 	var lastX=canvas.width/2, lastY=canvas.height/2;
+	// 	var dragStart,dragged;
+	// 	canvas.addEventListener('mousedown',function(evt){
+	// 		document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+	// 		lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+	// 		lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+	// 		dragStart = ctx.transformedPoint(lastX,lastY);
+	// 		dragged = false;
+	// 	},false);
+	// 	canvas.addEventListener('mousemove',function(evt){
+	// 		lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+	// 		lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+	// 		dragged = true;
+	// 		if (dragStart){
+	// 			var pt = ctx.transformedPoint(lastX,lastY);
+	// 			ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+	// 			redraw();
+	// 		}
+	// 	},false);
+	// 	canvas.addEventListener('mouseup',function(evt){
+	// 		dragStart = null;
+	// 		if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+	// 	},false);
 
-    // pan-zoom container
-    const elem = document.getElementById('panzoom_container')
-    const panzoom = Panzoom(elem)
-    const parent = elem.parentElement
-    const reset_button = document.getElementById('reset_button')
-    // No function bind needed
-    parent.addEventListener('wheel', panzoom.zoomWithWheel)
+	// 	var scaleFactor = 1.1;
+	// 	var zoom = function(clicks){
+	// 		var pt = ctx.transformedPoint(lastX,lastY);
+	// 		ctx.translate(pt.x,pt.y);
+	// 		var factor = Math.pow(scaleFactor,clicks);
+	// 		ctx.scale(factor,factor);
+	// 		ctx.translate(-pt.x,-pt.y);
+	// 		redraw();
+	// 	}
 
-    // This demo binds to shift + wheel
-    parent.addEventListener('wheel', function(event) {
-      if (!event.shiftKey) return
-      panzoom.zoomWithWheel(event)
-    })
-    reset_button.addEventListener('click', panzoom.reset)
+	// 	var handleScroll = function(evt){
+    //         console.log("Hello");
+	// 		var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+	// 		if (delta) zoom(delta);
+	// 		return evt.preventDefault() && false;
+	// 	};
+	// 	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+	// 	canvas.addEventListener('mousewheel',handleScroll,false);
+	// };
+	// background.src = "/static/assets/images/room_maps/ENC_170.PNG";
+	
+	// // Adds ctx.getTransform() - returns an SVGMatrix
+	// // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+	// function trackTransforms(ctx){
+	// 	var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+	// 	var xform = svg.createSVGMatrix();
+	// 	ctx.getTransform = function(){ return xform; };
+		
+	// 	var savedTransforms = [];
+	// 	var save = ctx.save;
+	// 	ctx.save = function(){
+	// 		savedTransforms.push(xform.translate(0,0));
+	// 		return save.call(ctx);
+	// 	};
+	// 	var restore = ctx.restore;
+	// 	ctx.restore = function(){
+	// 		xform = savedTransforms.pop();
+	// 		return restore.call(ctx);
+	// 	};
 
+	// 	var scale = ctx.scale;
+	// 	ctx.scale = function(sx,sy){
+	// 		xform = xform.scaleNonUniform(sx,sy);
+	// 		return scale.call(ctx,sx,sy);
+	// 	};
+	// 	var rotate = ctx.rotate;
+	// 	ctx.rotate = function(radians){
+	// 		xform = xform.rotate(radians*180/Math.PI);
+	// 		return rotate.call(ctx,radians);
+	// 	};
+	// 	var translate = ctx.translate;
+	// 	ctx.translate = function(dx,dy){
+	// 		xform = xform.translate(dx,dy);
+	// 		return translate.call(ctx,dx,dy);
+	// 	};
+	// 	var transform = ctx.transform;
+	// 	ctx.transform = function(a,b,c,d,e,f){
+	// 		var m2 = svg.createSVGMatrix();
+	// 		m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+	// 		xform = xform.multiply(m2);
+	// 		return transform.call(ctx,a,b,c,d,e,f);
+	// 	};
+	// 	var setTransform = ctx.setTransform;
+	// 	ctx.setTransform = function(a,b,c,d,e,f){
+	// 		xform.a = a;
+	// 		xform.b = b;
+	// 		xform.c = c;
+	// 		xform.d = d;
+	// 		xform.e = e;
+	// 		xform.f = f;
+	// 		return setTransform.call(ctx,a,b,c,d,e,f);
+	// 	};
+	// 	var pt  = svg.createSVGPoint();
+	// 	ctx.transformedPoint = function(x,y){
+	// 		pt.x=x; pt.y=y;
+	// 		return pt.matrixTransform(xform.inverse());
+	// 	}
+	// }
+    // Heatmap figure
+    sampleData = [];
+    for (var i = 0; i < 700; i+=20){
+        for (var j = 0; j < 550; j+=20){
+            temp = [i, j, heatmapData[j][i]/100];
+            sampleData.push(temp);
+        }
+    }
+    function get(id) {
+        return document.getElementById(id);
+    }
 
-    </script> -->
+    var heat = simpleheat('heatmapCanvas').data(sampleData).max(1),
+        frame;
+
+    function draw() {
+        heat.draw();
+        frame = null;
+    }
+    draw();
+
+    </script>
 
 {% endblock javascripts %}
