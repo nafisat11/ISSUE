@@ -227,7 +227,7 @@ $(document).ready(function() {
         }, 1500);
     });
     // reload card
-    $(".card-option .reload-card").on('click', function() {
+    $("button .card-option .reload-card").on('click', function() {
         var $this = $(this);
         $this.parents('.card').addClass("card-load");
         $this.parents('.card').append('<div class="card-loader"><i class="pct-loader1 anim-rotate"></div>');

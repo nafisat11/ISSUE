@@ -16,5 +16,7 @@ urlpatterns = [
     # The home page
     path('', views.index, name='home'),
     path('get_floors/', views.get_floors, name='get-floors'),
-    path('get_rooms/', views.get_rooms, name='get-rooms')
+    path('get_rooms/', views.get_rooms, name='get-rooms'),
+    path('selection_submitted/', views.selection_submitted,
+         name='selection-submitted'),
 ]

@@ -97,5 +97,17 @@ def get_probabilities(request):
 
         return HttpResponse(json.dumps(selected_heatmap.probabilities), content_type="application/json")
 
+def selection_submitted(request):
+    if request.method == "GET" and request.is_ajax():
+        room_number = request.GET.get("room", None)
+        floor_id = request.GET.get("floor_id", None)
+
+        selected_room = Rooms.objects.get(
+            room_number=room_number, floor_id=floor_id)
+
+        return HttpResponse(json.dumps({'max_occupancy': selected_room.max_occupancy,
+                                        'max_pandemic_occupancy': selected_room.max_pandemic_occupancy}),
+                            content_type="application/json")
+
     else:
         return redirect('/')

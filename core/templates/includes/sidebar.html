@@ -48,6 +48,30 @@
 					},
 				});
 			});
+
+			$roomvar.change(function() {
+				var optionSelected = $(this).find("option:selected");
+				var room_number = optionSelected.text();
+				var floor_id = $("#FloorSelect").val()
+
+
+				data = {'room': room_number, "floor_id": floor_id};
+
+				$.ajax({
+					type: "GET",
+					url: "/selection_submitted/",
+					data: data,
+					success: function(result) {
+						$("button").click(function(event) {
+							$(".maxOccup").text(result.max_occupancy);
+							$(".maxPanOccup").text(result.max_pandemic_occupancy);
+				
+						});	
+					},					
+				});
+
+			});
+			
 		});
 	</script>
 	<nav class="pcoded-navbar menupos-fixed menu-light ">
@@ -88,15 +112,18 @@
 									<option selected>Room Name</option>
 								</select>
 							</li>
-							<li class="nav-item pcoded-menu-caption">
+							<div class="text-center">
+								<button type="button" id="SubmitSelection" class="btn btn-success">Submit</button>
+							</div>
+							<!-- <li class="nav-item pcoded-menu-caption">
 								<label>Simulations</label>
-							</li>
-							<li class="nav-item {% if 'chart-D3' in segment %} active {% endif %}">
+							</li> -->
+							<!-- <li class="nav-item {% if 'chart-D3' in segment %} active {% endif %}">
 								<a href="/D3_template.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">D3 Charts</span></a>
 							</li>
 							<li class="nav-item {% if 'simulation-tool' in segment %} active {% endif %}">
 								<a href="/simulation_tool.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">Simulation Tool</span></a>
-							</li>
+							</li> -->
 						</form>
 					</li>
 				</ul>
