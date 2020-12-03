@@ -133,7 +133,7 @@
                                         <button type="button" class="btn  btn-icon btn-outline-danger border-0">
                                             <i class="feather icon-hash"></i>
                                         </button>
-                                        <button type="button" id="SubmitSelection" class="btn btn-success" onclick="generateHeatmap()">Generate</button>
+                                        <button type="button" id="generatebutton" class="btn btn-success" onclick="generateHeatmap()" disabled="disabled">Generate</button>
                                     </div>
                                     <br>
                                     <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -327,23 +327,6 @@
     chart.render();
 
     //Heatmap
-    //Heatmap Data
-    //Get request to the database
-    $(document).ready(function() {
-        var $probabilitiesvar = $("#probabilitiesSelect");
-        $probabilitiesvar.change(function() {
-            data = {'user_id': "1", 'room_id': "1"};
-            $.ajax({
-                type: "GET",
-                url: '/get_probabilities/',
-                data: data,
-                success: function(result) {
-
-                },
-            });
-        });
-    });
-
     //Update Background Image
     function setBackground(buildingName, roomName){
         roomName = roomName;
@@ -362,6 +345,17 @@
                   ctx.drawImage(background, 0, 0, 700, 550);
         };
         background.src = imageLocation.concat(buildingInitials, "_", roomName, fileType);
+        if (typeof heat !== 'undefined'){
+            heat.clear();
+            heat.draw();
+        }
+        else {
+            showGenerateButton();
+        }
+    }
+
+    function showGenerateButton(){
+    document.getElementById('generatebutton').removeAttribute('disabled');
     }
 
     //Heatmap Background Image
@@ -369,7 +363,7 @@
     var ctx = canvas.getContext("2d");
     var background = new Image();
     background.src = "/static/assets/images/room_maps/Room_Select.PNG";
-    
+
     // Make sure the image is loaded first otherwise nothing will draw.
     background.onload = function(){
         ctx.drawImage(background, 0, 0, 700, 550);
@@ -415,12 +409,10 @@
             return document.getElementById(id);
         }
 
-        var heat = simpleheat('heatmapCanvas').data(sampleData).max(100),
-            frame;
+        heat = simpleheat('heatmapCanvas').data(sampleData).max(100);
 
         function draw() {
             heat.draw();
-            frame = null;
         }
         draw();
     }
