@@ -10,7 +10,7 @@
 			$buildingvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
 				var valueSelected = optionSelected.val();
-				var building_name = optionSelected.text();
+				building_name = optionSelected.text();
 
 				data = {'building': building_name};
 
@@ -51,9 +51,8 @@
 
 			$roomvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
-				var room_number = optionSelected.text();
+				room_number = optionSelected.text();
 				var floor_id = $("#FloorSelect").val()
-
 
 				data = {'room': room_number, "floor_id": floor_id};
 
@@ -112,8 +111,8 @@
 									<option selected>Room Name</option>
 								</select>
 							</li>
-							<div class="text-center">
-								<button type="button" id="SubmitSelection" class="btn btn-success">Submit</button>
+							<div class="text-center" src="/layouts/index.html">
+								<button type="button" id="SubmitSelection" class="btn btn-success" onclick="setBackground(building_name, room_number)">Submit</button>
 							</div>
 							<!-- <li class="nav-item pcoded-menu-caption">
 								<label>Simulations</label>
