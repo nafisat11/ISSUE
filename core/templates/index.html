@@ -331,20 +331,16 @@
     function setBackground(buildingName, roomName){
         roomName = roomName;
         imageLocation = "/static/assets/images/room_maps/";
-        fileType = ".PNG"
-
-        //RegExp for getting the building name initials
-        var buildingInitials = buildingName.match(/\b\w/g) || [];
-        buildingInitials = ((buildingInitials.shift() || '') + (buildingInitials.pop() || '')).toUpperCase();
+        fileType = ".PNG";
         
         //Updating background with "new" room map
         var c = document.getElementById("backgroundCanvas");
         var ctx = c.getContext("2d");
         var background = new Image();
+        background.src = imageLocation.concat(buildingName, "_", roomName, fileType);
         background.onload = function(){
                   ctx.drawImage(background, 0, 0, 700, 550);
         };
-        background.src = imageLocation.concat(buildingInitials, "_", roomName, fileType);
         if (typeof heat !== 'undefined'){
             heat.clear();
             heat.draw();

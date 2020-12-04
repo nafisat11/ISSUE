@@ -14,7 +14,7 @@
         "model": "app.rooms",
         "pk": 2,
         "fields": {
-            "room_number": 106,
+            "room_number": 170,
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
             "blueprint": "",
