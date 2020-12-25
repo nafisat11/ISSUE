@@ -83,7 +83,8 @@
 
         // Array of values, start out all 0 if init not defined
         const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
-        const state_array = [0, 0, 0, 0, 0];
+        //const state_array = [0, 0, 0, 0, 0];
+        const state_array = new Array(node_positions.length).fill(0);
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
