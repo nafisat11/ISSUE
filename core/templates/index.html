@@ -118,7 +118,7 @@
                                 </div>
                             </div> -->
                         </div>
-                            <img class="card-img-top" src="/static/assets/images/room_maps/ENC_170.PNG" width="700" height="550">
+                            <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG" width="700" height="550">
                                 <div class="card-body">
                                     <div class="row justify-content-center card-option">
                                         <button type="button" class="btn btn-icon btn-outline-primary border-0 reload-card" id='reset_button'>
@@ -133,7 +133,7 @@
                                         <button type="button" class="btn  btn-icon btn-outline-danger border-0">
                                             <i class="feather icon-hash"></i>
                                         </button>
-                                        <button type="button" id="generatebutton" class="btn btn-success" onclick="generateHeatmap()" disabled="disabled">Generate</button>
+                                        <button type="button" id="generatebutton" class="btn btn-success" onclick="getHeatMapData()" disabled="disabled">Generate</button>
                                     </div>
                                     <br>
                                     <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -166,7 +166,7 @@
                             <!-- <div class="parent" id="seat_selector_container">
                                 <div class="panzoom" id="panzoom_container">
                                     <div class="grid" id="grid"></div>
-                                    <img src="/static/assets/images/room_maps/ENC_170.PNG">
+                                    <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
                                 </div>
                             </div> -->
                             
@@ -351,7 +351,7 @@
     }
 
     function showGenerateButton(){
-    document.getElementById('generatebutton').removeAttribute('disabled');
+        document.getElementById('generatebutton').removeAttribute('disabled');
     }
 
     //Heatmap Background Image
@@ -365,54 +365,36 @@
         ctx.drawImage(background, 0, 0, 700, 550);
     }
 
-    function generateHeatmap(){
-        //Heatmap Data
+    function getHeatMapData(){
         //Get request to the database
-        // $(document).ready(function() {
-        //     var $probabilitiesvar = $("#probabilitiesSelect");
-        //     $probabilitiesvar.change(function() {
-        //         data = {'user_id': userId, 'room_id': roomName};
-        //         $.ajax({
-        //             type: "GET",
-        //             url: '/get_probabilities/',
-        //             data: data,
-        //             success: function(result) {
-        //                 sampleData = result;
-        //             },
-        //         });
-        //     });
-        // });
+        heatmapWidth = 700;
+        heatmapHeight = 550
+        $.ajax({
+            type: "GET",
+            url: '/get_attack_rates/',
+            success: function(result) {
+                resultArray = Object.values(result);
+                finalResult = [];
+                for(var i = 0; i < resultArray.length; i++)
+                {
+                    finalResult = finalResult.concat(resultArray[i]);
+                }
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                }
+                drawHeatMap(finalResult);
+            },
+        });
+    }
 
-        //Fake Probabilities data
-        var heatmapData = [];
-        for (var i = 0; i < 550; i++){
-            var temp = [];
-            for (var j = 0; j < 700; j++){
-                temp.push(Math.floor(Math.random() * 101));
-            }
-            heatmapData.push(temp);
-        }
-
-        // Heatmap figure
-        sampleData = [];
-        for (var i = 0; i < 700; i+=20){
-            for (var j = 0; j < 550; j+=20){
-                temp = [i, j, heatmapData[j][i]];
-                sampleData.push(temp);
-            }
-        }
-        function get(id) {
-            return document.getElementById(id);
-        }
-
-        heat = simpleheat('heatmapCanvas').data(sampleData).max(100);
-
+    function drawHeatMap(sampleData){
+        heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
         function draw() {
             heat.draw();
         }
         draw();
     }
-
     </script>
 
 {% endblock javascripts %}
