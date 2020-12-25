@@ -15,6 +15,29 @@
         top: 0;
         left: 0;
     }
+    .seat_selection_container {
+        position: relative;
+        max-width: 100%;
+    }
+
+    .image_container {
+        max-width: 100%;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    svg {
+        width: 100%;
+    }
+
+    #grid {
+        position: absolute;
+        top: 0;
+        right : 0;
+        width: 100%;
+    }
 
 </style>
 {% endblock stylesheets %}
@@ -71,8 +94,18 @@
                                 </div>
                             </div> -->
                         </div>
-                            <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+                            <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
                             <div class="card-body">
+
+                               <!--  <div class="image_container">
+                                    <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+                                </div> -->
+                                <div class="seat_selection_container" id="seat_selection_container">
+                                    <div class="image_container">
+                                        <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+                                    </div>
+                                    <div class="grid" id="grid"></div>
+                                </div>
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0 reload-card" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
@@ -188,6 +221,19 @@
     <script src="./static/assets/js/simpleheat.js"></script>
     <script>
 
+
+    var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.PNG";
+
+
+    var ROOM_NAME = ROOM_MAP_PATH.split("/");
+    ROOM_NAME = ROOM_NAME[ROOM_NAME.length - 1];
+    ROOM_NAME = ROOM_NAME.split(".")[0].concat(".json");
+    console.log(ROOM_NAME);
+    var POSITIONS_PATH = "/static/assets/json/seat_positions/";
+
+    var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
+    console.log(SEAT_POSITIONS_PATH);
+
     //Heatmap
     //Heatmap Data
     //Get request to the database
@@ -220,7 +266,7 @@
     var canvas = document.getElementById("backgroundCanvas");
     var ctx = canvas.getContext("2d");
     var background = new Image();
-    background.src = "/static/assets/images/room_maps/ENC_170.PNG";
+    background.src = ROOM_MAP_PATH;
     // Make sure the image is loaded first otherwise nothing will draw.
     background.onload = function(){
         ctx.drawImage(background, 0, 0, 700, 550);
@@ -246,6 +292,122 @@
         frame = null;
     }
     draw();
+
+    // seat selection 
+    function grid (config) {
+        
+        // defaults
+        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        
+        if (colorArray === undefined)
+            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+
+        // Array of values, start out all 0 if init not defined
+        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+        //const state_array = [0, 0, 0, 0, 0];
+        const state_array = new Array(node_positions.length).fill(0);
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#grid").append("svg");
+        const grid_area = d3.select("#grid");
+
+        svg
+            .attr("width", width)
+            .attr("height", height);
+            //.attr("style", 'background-color:gray');        
+
+        const el = svg.node();
+
+        const grid = svg.append("g")
+                .attr("cursor", "pointer")
+            .selectAll("rect")
+            .data(node_positions)
+            .join("circle")
+                .on("click", gridClick)
+                .on("mouseover", hoverOver)
+                .on("mouseout", hoverOff)
+                .attr("cx", d => d.x * width)
+                .attr("cy", d => d.y * height)
+                .attr("fill", "#FFF")
+                .attr("stroke", outline)
+                .attr("r", size)
+
+        function hoverOver({x, y, id}) {
+            d3.select(this).style('stroke-width', '5');
+        }
+
+        function hoverOff({x, y, id}) {
+            d3.select(this).style('stroke-width', '1');
+        }
+
+        function gridClick({x, y, id}) {
+            console.log(id);
+            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
+            this.style.fill = colorArray[state_array[id - 1]];
+            el.dispatchEvent(new CustomEvent('input'));
+            //console.log(state_array)
+            //console.log(node_positions)
+
+            selected_nodes = []
+            for (let i = 0; i < node_positions.length; i++)
+                if (state_array[i])
+                    selected_nodes.push({
+                        x: node_positions[i].x,
+                        y: node_positions[i].y,
+                        id: node_positions[i].id,
+                        state: state_array[i]
+                    });
+
+            console.log(selected_nodes);
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            //console.log(selected_nodes_JSON);
+
+            $.ajax({
+                url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+
+        }
+
+        el.value = state;
+        return el;
+    }
+
+    var image = new Image();
+    image.src = ROOM_MAP_PATH;
+    //var image_width = image.width;
+    //var image_height = image.height;
+    var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+    var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+    
+    function readTextFile(file, callback) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+                callback(rawFile.responseText);
+            }
+        }
+        rawFile.send(null);
+    }
+
+    readTextFile(SEAT_POSITIONS_PATH, function(text){
+        positions = JSON.parse(text);
+        console.log(positions);
+        grid = grid({
+            width: image_width,
+            height: image_height,
+            numStates: 5, 
+            size: 20,
+            node_positions: positions
+
+        });
+    });
 
     </script>
 
