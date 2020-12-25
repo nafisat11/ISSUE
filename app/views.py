@@ -9,6 +9,7 @@ from django.template import loader
 from django.http import HttpResponse
 from django import template
 from .models import Buildings, Floors, Rooms, Heatmaps
+from .agent_based_infection_probability import AttackRates
 
 import json
 
@@ -87,15 +88,216 @@ def get_rooms(request):
     else:
         return redirect('/')
 
-def get_probabilities(request):
-    if request.method == "GET" and request.is_ajax():
-        # get name of user selected building
-        user_id = request.GET.get("user_id", None)
-        room_id = request.GET.get("room_id", None)
-        selected_heatmap = Heatmaps.objects.filter(
-            user_id=user_id, room_id=room_id)  # get field object that matches the selected building
 
-        return HttpResponse(json.dumps(selected_heatmap.probabilities), content_type="application/json")
+def get_attack_rates(request):
+    if request.method == "GET" and request.is_ajax():
+        # TODO: retrieve the seat selections from the ajax request, hardcoded for now
+        # seat_selections = request.GET.get("seat_selections", None)
+        agents = [
+            {
+                'id': 1,
+                'x': 0.0,
+                'y': 0.0,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 2,
+                'x': 0.5,
+                'y': 0.0,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 3,
+                'x': 1.0,
+                'y': 0.0,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 4,
+                'x': 1.5,
+                'y': 0.0,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 5,
+                'x': 2.0,
+                'y': 0.0,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 6,
+                'x': 0.0,
+                'y': 0.4,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 7,
+                'x': 0.5,
+                'y': 0.4,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 8,
+                'x': 1.0,
+                'y': 0.4,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 9,
+                'x': 1.5,
+                'y': 0.4,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 10,
+                'x': 2.0,
+                'y': 0.4,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 11,
+                'x': 0.0,
+                'y': 0.8,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 12,
+                'x': 0.5,
+                'y': 0.8,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 13,
+                'x': 1.0,
+                'y': 0.8,
+                'z': None,
+                'state': 2,
+                'attRate': 0.05
+            },
+            {
+                'id': 14,
+                'x': 1.5,
+                'y': 0.8,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 15,
+                'x': 2.0,
+                'y': 0.8,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 16,
+                'x': 0.0,
+                'y': 1.2,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 17,
+                'x': 0.5,
+                'y': 1.2,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 18,
+                'x': 1.0,
+                'y': 1.2,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 19,
+                'x': 1.5,
+                'y': 1.2,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 20,
+                'x': 2.0,
+                'y': 1.2,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 21,
+                'x': 0.0,
+                'y': 1.6,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 22,
+                'x': 0.5,
+                'y': 1.6,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 23,
+                'x': 1.0,
+                'y': 1.6,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 24,
+                'x': 1.5,
+                'y': 1.6,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+            {
+                'id': 25,
+                'x': 2.0,
+                'y': 1.6,
+                'z': None,
+                'state': 1,
+                'attRate': 0.05
+            },
+        ]
+        attack_rates = AttackRates(agents).probabilities()
+        return HttpResponse(json.dumps({'attack_rates': attack_rates}), content_type="application/json")
+
 
 def selection_submitted(request):
     if request.method == "GET" and request.is_ajax():
