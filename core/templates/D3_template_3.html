@@ -8,15 +8,25 @@
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+<script type="text/javascript" src="/static/assets/json/seat_positions/Engineering Block C_170.json"></script>
 
 
 <!-- Style Sheet -->
 <style>
-    div#container {
-      top:50%;
-      left:50%;
-      transform: translate(-50%,-50%);
-      position:absolute;
+
+    .container {
+        position: relative;
+    }
+
+    #grid {
+        position: absolute;
+        top: 0;
+        right : 0;
+        width: 100%;
+    }
+
+    #image_container {
+        pointer-events: none;
     }
 
     svg {
@@ -25,33 +35,6 @@
 
     rect.checked {
       fill:#48EA8B;
-    }
-
-    div.parent {
-        width: 500px;
-        height: 400px;
-        background-color: #C0C0C0;
-        position: absolute;
-    }
-
-    div.panzoom {
-        width: 500px;
-        height: 400px;
-        position: relative;
-        /*display: grid;*/
-    }
-
-    div.grid, img {
-        width: 100%;
-        height: 100%;
-        /*grid-area: 1 / 1;*/
-        position: absolute;
-    }
-
-    div.grid {
-        z-index: 1;
-        top: 148px;
-        left: 137px;
     }
 
     .link {
@@ -76,7 +59,12 @@
 
 <body>
 
-    <div class="grid" id="grid"></div>
+    <div class="container" id="seat_selection_container">
+        <div class="image_container">
+            <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
 
 </body>
 
@@ -103,8 +91,8 @@
 
         svg
             .attr("width", width)
-            .attr("height", height)
-            .attr("style", 'background-color:gray');        
+            .attr("height", height);
+            //.attr("style", 'background-color:gray');        
 
         const el = svg.node();
 
@@ -186,21 +174,41 @@
 
     console.log(nodes);
 
+    var image = new Image();
+    image.src = "/static/assets/images/room_maps/Engineering Block C_170.PNG";
+    var image_width = image.width;
+    var image_height = image.height;
 
-    grid_middle = grid({
-        width: 600,
-        height: 500,
-        numStates: 5, 
-        size: 20,
-        node_positions:     [
-            {x: 0.2, y: 0.2, id: 1},
-            {x: 0.4, y: 0.4, id: 2},
-            {x: 0.6, y: 0.6, id: 3},
-            {x: 0.8, y: 0.8, id: 4},
-            {x: 0.9, y: 0.9, id: 5}
-        ]
+    //var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+    //var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
 
+    
+    function readTextFile(file, callback) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+                callback(rawFile.responseText);
+            }
+        }
+        rawFile.send(null);
+    }
+
+    //usage:
+    readTextFile("/static/assets/json/seat_positions/Engineering Block C_170.json", function(text){
+        positions = JSON.parse(text);
+        console.log(positions);
+        grid = grid({
+            width: image_width,
+            height: image_height,
+            numStates: 5, 
+            size: 20,
+            node_positions: positions
+
+        });
     });
+
 
 
 </script>
