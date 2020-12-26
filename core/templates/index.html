@@ -357,7 +357,8 @@
                         x: node_positions[i].x,
                         y: node_positions[i].y,
                         id: node_positions[i].id,
-                        state: state_array[i]
+                        state: state_array[i],
+                        attRate: 0.05,
                     });
 
             console.log(selected_nodes);
@@ -402,8 +403,8 @@
         grid = grid({
             width: image_width,
             height: image_height,
-            numStates: 5, 
-            size: 20,
+            numStates: 3, 
+            size: 8,
             node_positions: positions
 
         });
