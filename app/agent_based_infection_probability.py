@@ -25,38 +25,38 @@ class AttackRates:
 
     def find_front(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (agent['x'] ==
-                                                   (infected['x'] - 0.4))):
+            if ((agent['y'] == infected['y']) and ((agent['x'] < infected['x']) and (agent['x'] >=
+                                                   (infected['x'] - 0.4)))):
                 return agent
 
     def find_behind(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (int(agent['x']) ==
-                                                   (int(infected['x'] + 0.4)))):
+            if ((agent['y'] == infected['y']) and ((agent['x']) > infected['x']) and (agent['x] <=
+                                                   (infected['x'] + 0.4)))):
                 return agent
 
     def find_front2ndRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (agent['x'] ==
-                                                   (infected['x'] - 0.8))):
+            if ((agent['y'] == infected['y']) and ((agent['x'] < infected['x']) and (agent['x']>=
+                                                   (infected['x'] - 0.8)))):
                 return agent
 
     def find_behind2ndRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (agent['x'] ==
-                                                   (infected['x'] + 0.8))):
+            if ((agent['y'] == infected['y']) and ((agent['x'] > infected['x']) and (agent['x'] <=
+                                                   (infected['x'] + 0.8)))):
                 return agent
 
     def find_front3rdRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (agent['x'] ==
-                                                   (infected['x'] - 1.2))):
+            if ((agent['y'] == infected['y']) and (agent['x'] < infected['x']) and (agent['x'] >=
+                                                   (infected['x'] - 1.2)))):
                 return agent
 
     def find_behind3rdRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['y'] == infected['y']) and (agent['x'] ==
-                                                   (infected['x'] + 1.2))):
+            if ((agent['y'] == infected['y']) and ((agent['x'] > infected['x']) and (agent['x'] <=     
+                                                   (infected['x'] + 1.2)))):
                 return agent
 
     def find_infected(self, all_agents):
@@ -85,7 +85,7 @@ class AttackRates:
                         (5.0621*dist) + 5.6922
 
                 # attack rate for one row above (y-coord. - 0.4)
-                if (agent['x'] == (seat['x'] - 0.4)):
+                if (agent['x'] <= (seat['x'] - 0.4)):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front):
@@ -100,7 +100,7 @@ class AttackRates:
                             (0.1658*dist) + 0.3043
 
                 # attack rate for one row below (y-coord. + 0.4)
-                if (agent['x'] == (round(seat['y'] + 0.4, 2))):
+                if (agent['x'] <= (seat['y'] + 0.4)):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind):
@@ -115,7 +115,7 @@ class AttackRates:
                             (0.1658*dist) + 0.3043
 
                 # attack rate for two rows above (y-coord. - 0.8)
-                if (agent['x'] == (seat['x'] - 0.8)):
+                if ((agent['x'] <= abs(seat['x'] - 0.8) and (agent['x'] > abs(seat['x'] - 0.4))):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front2):
@@ -130,7 +130,7 @@ class AttackRates:
                             (0.2083*dist) + 0.0919
 
                 # attack rate for two rows below (y-coord. + 0.8)
-                if (agent['x'] == (seat['x'] + 0.8)):
+                if ((agent['x'] <= (seat['x'] + 0.8) and (agent['x'] > (seat['x'] + 0.4))):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind2):
@@ -145,7 +145,7 @@ class AttackRates:
                             (0.2083*dist) + 0.0919
 
                 # attack rate for three rows above (y-coord. - 1.2)
-                if (agent['x'] == (seat['x'] - 1.2)):
+                if ((agent['x'] > abs(seat['x'] - 0.8) and agent['x'] <= (abs(seat['x'] - 1.2))):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front3):
@@ -160,7 +160,7 @@ class AttackRates:
                             (0.1678*dist) + 0.0099
 
                 # attack rate for three row below (y-coord. + 1.2)
-                if (agent['x'] == (seat['x'] + 1.2)):
+                if ((agent['x'] > (seat['x'] + 0.8) and agent['x'] <= (seat['x'] + 1.2)):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind3):
