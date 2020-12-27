@@ -10,8 +10,12 @@ from django.http import HttpResponse
 from django import template
 from .models import Buildings, Floors, Rooms, Heatmaps
 from .agent_based_infection_probability import AttackRates
+from .models import Buildings, Floors, Rooms
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 import json
+
+agents = None
 
 
 @login_required(login_url="/login/")
@@ -92,211 +96,12 @@ def get_rooms(request):
 def get_attack_rates(request):
     if request.method == "GET" and request.is_ajax():
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
-        # seat_selections = request.GET.get("seat_selections", None)
-        agents = [
-            {
-                'id': 1,
-                'x': 0.0,
-                'y': 0.0,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 2,
-                'x': 0.5,
-                'y': 0.0,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 3,
-                'x': 1.0,
-                'y': 0.0,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 4,
-                'x': 1.5,
-                'y': 0.0,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 5,
-                'x': 2.0,
-                'y': 0.0,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 6,
-                'x': 0.0,
-                'y': 0.4,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 7,
-                'x': 0.5,
-                'y': 0.4,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 8,
-                'x': 1.0,
-                'y': 0.4,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 9,
-                'x': 1.5,
-                'y': 0.4,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 10,
-                'x': 2.0,
-                'y': 0.4,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 11,
-                'x': 0.0,
-                'y': 0.8,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 12,
-                'x': 0.5,
-                'y': 0.8,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 13,
-                'x': 1.0,
-                'y': 0.8,
-                'z': None,
-                'state': 2,
-                'attRate': 0.05
-            },
-            {
-                'id': 14,
-                'x': 1.5,
-                'y': 0.8,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 15,
-                'x': 2.0,
-                'y': 0.8,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 16,
-                'x': 0.0,
-                'y': 1.2,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 17,
-                'x': 0.5,
-                'y': 1.2,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 18,
-                'x': 1.0,
-                'y': 1.2,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 19,
-                'x': 1.5,
-                'y': 1.2,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 20,
-                'x': 2.0,
-                'y': 1.2,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 21,
-                'x': 0.0,
-                'y': 1.6,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 22,
-                'x': 0.5,
-                'y': 1.6,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 23,
-                'x': 1.0,
-                'y': 1.6,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 24,
-                'x': 1.5,
-                'y': 1.6,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-            {
-                'id': 25,
-                'x': 2.0,
-                'y': 1.6,
-                'z': None,
-                'state': 1,
-                'attRate': 0.05
-            },
-        ]
-        attack_rates = AttackRates(agents).probabilities()
-        return HttpResponse(json.dumps({'attack_rates': attack_rates}), content_type="application/json")
+        agents = request.GET.get("seat_selections", None)
+        if agents is not None:
+            attack_rates = AttackRates(agents).probabilities()
+            return HttpResponse(json.dumps({'attack_rates': attack_rates}), content_type="application/json")
+        else:
+            return redirect('/')
 
 
 def selection_submitted(request):
@@ -310,6 +115,12 @@ def selection_submitted(request):
         return HttpResponse(json.dumps({'max_occupancy': selected_room.max_occupancy,
                                         'max_pandemic_occupancy': selected_room.max_pandemic_occupancy}),
                             content_type="application/json")
-
     else:
+        return redirect('/')
+
+
+@csrf_exempt
+def post_seat_selections(request):
+    if request.method == "POST" and request.is_ajax():
+        seat_selections = json.loads(request.POST.get('data'))
         return redirect('/')

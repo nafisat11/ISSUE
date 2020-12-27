@@ -28,6 +28,7 @@ simpleheat.prototype = {
     },
 
     data: function (data) {
+        console.log(data);
         this._data = data;
         return this;
     },

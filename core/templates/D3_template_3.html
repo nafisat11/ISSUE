@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+<script type="text/javascript" src="/static/assets/json/seat_positions/Engineering Block C_170.json"></script>
+
+
+<!-- Style Sheet -->
+<style>
+
+    .container {
+        position: relative;
+    }
+
+    #grid {
+        position: absolute;
+        top: 0;
+        right : 0;
+        width: 100%;
+    }
+
+    #image_container {
+        pointer-events: none;
+    }
+
+    svg {
+      cursor:pointer;
+    }
+
+    rect.checked {
+      fill:#48EA8B;
+    }
+
+    .link {
+      stroke: #000;
+      stroke-width: 0.5px;
+    }
+
+    .node {
+      cursor: move;
+      fill: #ccc;
+      stroke: #000;
+      stroke-width: 0.5px;
+    }
+
+    .node.fixed {
+      fill: #f00;
+    }
+
+</style>
+
+<!-- Create a div where the graph will take place -->
+
+<body>
+
+    <div class="container" id="seat_selection_container">
+        <div class="image_container">
+            <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+</body>
+
+
+<script>
+
+    function grid (config) {
+        
+        // defaults
+        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        
+        if (colorArray === undefined)
+            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+
+        // Array of values, start out all 0 if init not defined
+        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+        //const state_array = [0, 0, 0, 0, 0];
+        const state_array = new Array(node_positions.length).fill(0);
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#grid").append("svg");
+        const grid_area = d3.select("#grid");
+
+        svg
+            .attr("width", width)
+            .attr("height", height);
+            //.attr("style", 'background-color:gray');        
+
+        const el = svg.node();
+
+        const grid = svg.append("g")
+                .attr("cursor", "pointer")
+            .selectAll("rect")
+            .data(node_positions)
+            .join("circle")
+                .on("click", gridClick)
+                .on("mouseover", hoverOver)
+                .on("mouseout", hoverOff)
+                .attr("cx", d => d.x * width)
+                .attr("cy", d => d.y * height)
+                .attr("fill", "#FFF")
+                .attr("stroke", outline)
+                .attr("r", size)
+
+        function hoverOver({x, y, id}) {
+            d3.select(this).style('stroke-width', '5');
+        }
+
+        function hoverOff({x, y, id}) {
+            d3.select(this).style('stroke-width', '1');
+        }
+
+        function gridClick({x, y, id}) {
+            console.log(id);
+            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
+            this.style.fill = colorArray[state_array[id - 1]];
+            el.dispatchEvent(new CustomEvent('input'));
+            //console.log(state_array)
+            //console.log(node_positions)
+
+            selected_nodes = []
+            for (let i = 0; i < node_positions.length; i++)
+                if (state_array[i])
+                    selected_nodes.push({
+                        x: node_positions[i].x,
+                        y: node_positions[i].y,
+                        id: node_positions[i].id,
+                        state: state_array[i]
+                    });
+
+            console.log(selected_nodes);
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            //console.log(selected_nodes_JSON);
+
+            $.ajax({
+                url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+
+        }
+
+        el.value = state;
+        return el;
+    }
+
+    nodes = [];
+    let counter = 1;
+
+    for (var i = 0; i < 10; i++)
+        for (var j = 0; j < 10; j++)
+            //width = 1.0 / 10
+            console.log("here")
+            //height = 1.0 / 10
+            //x = width * j
+            //y = height * i
+
+            nodes.push({
+                x: 10,
+                y: 10,
+                id: counter
+            })
+
+            // counter++
+
+    console.log(nodes);
+
+    var image = new Image();
+    image.src = "/static/assets/images/room_maps/Engineering Block C_170.PNG";
+    var image_width = image.width;
+    var image_height = image.height;
+
+    //var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+    //var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+
+    
+    function readTextFile(file, callback) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+                callback(rawFile.responseText);
+            }
+        }
+        rawFile.send(null);
+    }
+
+    //usage:
+    readTextFile("/static/assets/json/seat_positions/Engineering Block C_170.json", function(text){
+        positions = JSON.parse(text);
+        console.log(positions);
+        grid = grid({
+            width: image_width,
+            height: image_height,
+            numStates: 5, 
+            size: 20,
+            node_positions: positions
+
+        });
+    });
+
+
+
+</script>

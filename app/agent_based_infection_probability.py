@@ -1,4 +1,5 @@
 import math
+import json
 # import pysal as ps
 # import esda
 # from pysal.lib import weights
@@ -8,7 +9,7 @@ import math
 
 class AttackRates:
     def __init__(self, agents):
-        self.agents = agents
+        self.agents = json.loads(agents)
         self.normal_agents = [
             agent for agent in self.agents if agent['state'] == 1]
         self.infected_agents = [

@@ -5,53 +5,6 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 <style>
-/*    div#container {
-      top:50%;
-      left:50%;
-      transform: translate(-50%,-50%);
-      position:absolute;
-    }
-
-    svg {
-      cursor:pointer;
-    }
-
-    rect.checked {
-      fill:#48EA8B;
-    }
-
-    div.parent {
-        width: 100%;
-        /*height: 300px;*/
-        /*background-color: #C0C0C0;
-        position: relative;
-    }
-
-    div.panzoom {
-        width: 400px;
-        height: 300px;
-        position: relative;
-        /*display: grid;
-    }
-
-    div.grid, img {
-        width: 100%;
-        height: 100%;
-        /*grid-area: 1 / 1;
-        position: absolute;
-    }
-
-    div.grid {
-        z-index: 1;
-        top: 37.25%; 
-        left: 27.5%;
-    }
-
-    div.buttons {
-      display: flex;
-      justify-content: center;
-    }
-*/
     .wrapper {
         position: relative;
         width: 700px;
@@ -61,6 +14,34 @@
         position: absolute;
         top: 0;
         left: 0;
+    }
+    .seat_selection_container {
+        position: relative;
+        max-width: 100%;
+    }
+
+    .heatmap_container {
+        position: relative;
+        max-width: 100%;
+    }
+
+    .image_container {
+        max-width: 100%;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    svg {
+        width: 100%;
+    }
+
+    #grid {
+        position: absolute;
+        top: 0;
+        right : 0;
+        width: 100%;
     }
 
 </style>
@@ -118,27 +99,38 @@
                                 </div>
                             </div> -->
                         </div>
-                            <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG" width="700" height="550">
-                                <div class="card-body">
-                                    <div class="row justify-content-center card-option">
-                                        <button type="button" class="btn btn-icon btn-outline-primary border-0 reload-card" id='reset_button'>
-                                            <i class="feather icon-refresh-ccw"></i></a>
-                                        </button>
-                                        <button type="button" class="btn  btn-icon btn-outline-secondary border-0">
-                                            <i class="feather icon-grid"></i>
-                                        </button>
-                                        <button type="button" class="btn  btn-icon btn-outline-success border-0">
-                                            <i class="feather icon-square"></i>
-                                        </button>
-                                        <button type="button" class="btn  btn-icon btn-outline-danger border-0">
-                                            <i class="feather icon-hash"></i>
-                                        </button>
-                                        <button type="button" id="generatebutton" class="btn btn-success" onclick="getHeatMapData()" disabled="disabled">Generate</button>
+                            <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
+                            <div class="card-body">
+
+                                <!-- <div class="image_container" id="initial_background_container">
+                                    <img src="/static/assets/images/room_maps/Room_Select.png">
+                                </div> -->
+                                <div class="seat_selection_container" id="seat_selection_container">
+                                    <div class="image_container">
+                                        <img src="" id="floorplan">
                                     </div>
-                                    <br>
-                                    <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
-                                    <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
+                                    <div class="grid" id="grid"></div>
+                                    
                                 </div>
+                                <div class="row justify-content-center card-option">
+                                    <button type="button" class="btn btn-icon btn-outline-primary border-0 reload-card" id='reset_button'>
+                                        <i class="feather icon-refresh-ccw"></i></a>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-outline-secondary border-0">
+                                        <i class="feather icon-grid"></i>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-outline-success border-0">
+                                        <i class="feather icon-square"></i>
+                                    </button>
+                                    <button type="button" class="btn  btn-icon btn-outline-danger border-0">
+                                        <i class="feather icon-hash"></i>
+                                    </button>
+                                    <button type="button" id="generatebutton" class="btn btn-success" disabled="disabled">Generate</button>
+                                </div>
+                                <br>
+                                <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
+                                <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
+                            </div>
                         <!-- seat-selection end -->
                         <!-- infection-parameter start -->
                         <div class="dropdown-divider"></div>
@@ -180,7 +172,7 @@
                     <div class="card">
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
-                            <div class="parent" id="heatmap_container">
+                            <div class="heatmap_container" id="heatmap_container">
                                 <div id="probabilitiesSelect"></div>
                                 <div class="wrapper">
                                     <div><canvas id="backgroundCanvas" width="700" height="550"></canvas></div>
@@ -213,34 +205,11 @@
     <!-- Apex Chart -->
     <script src="/static/assets/js/pages/chart-apex.js"></script>
     <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
-    <!-- custom-chart js -->
-    <script src="/static/assets/js/pages/dashboard-main.js"></script>
     <script>
-        $(document).ready(function() {
-            const $valueSpan = $('.valueSpan');
-            const $value = $('#duration-slider');
-            $valueSpan.html($value.val());
-            $value.on('input change', () => {
-
-                $valueSpan.html($value.val());
-            });
-        });
-    </script>
-    <!-- seat-selection js-->
-    <script src="https://d3js.org/d3.v5.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
-    <script src="./static/assets/js/simpleheat.js"></script>
-    <script>
-
+    // Chart customization
     // Temporal Graph
     // Fake Attack Rate Data:
     var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
-
-    // Chart customization
     var options = {
           series: [{
             name: "Attack Rate",
@@ -325,13 +294,194 @@
 
     var chart = new ApexCharts(document.querySelector("#temporal1"), options);
     chart.render();
+    </script>
 
-    //Heatmap
+    <!-- infection-parameter js -->
+    <script src="/static/assets/js/pages/dashboard-main.js"></script>
+    <script>
+        $(document).ready(function() {
+            const $valueSpan = $('.valueSpan');
+            const $value = $('#duration-slider');
+            $valueSpan.html($value.val());
+            $value.on('input change', () => {
+
+                $valueSpan.html($value.val());
+            });
+        });
+    </script>
+
+    <!-- seat-selection js-->
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script src="./static/assets/js/simpleheat.js"></script>
+    <script>
+
+    
+    var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.png";
+
+
+    var ROOM_NAME = ROOM_MAP_PATH.split("/");
+    ROOM_NAME = ROOM_NAME[ROOM_NAME.length - 1];
+    ROOM_NAME = ROOM_NAME.split(".")[0].concat(".json");
+    console.log(ROOM_NAME);
+    var POSITIONS_PATH = "/static/assets/json/seat_positions/";
+
+    var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
+    console.log(SEAT_POSITIONS_PATH);
+
+    
+    // seat selection 
+    function grid (config) {
+        
+        // defaults
+        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        
+        if (colorArray === undefined)
+            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+                                                            (i === 1 ? d3.schemeSet3[0] : '#FF2323'));
+
+        // Array of values, start out all 0 if init not defined
+        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+        //const state_array = [0, 0, 0, 0, 0];
+        const state_array = new Array(node_positions.length).fill(0);
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#grid").append("svg");
+        const grid_area = d3.select("#grid");
+
+        svg
+            .attr("width", width)
+            .attr("height", height);
+            //.attr("style", 'background-color:gray');        
+
+        const el = svg.node();
+
+        const grid = svg.append("g")
+                .attr("cursor", "pointer")
+            .selectAll("rect")
+            .data(node_positions)
+            .join("circle")
+                .on("click", gridClick)
+                .on("mouseover", hoverOver)
+                .on("mouseout", hoverOff)
+                .attr("cx", d => d.x * width)
+                .attr("cy", d => d.y * height)
+                .attr("fill", "#FFF")
+                .attr("stroke", outline)
+                .attr("r", size)
+
+        function hoverOver({x, y, id}) {
+            d3.select(this).style('stroke-width', '5');
+        }
+
+        function hoverOff({x, y, id}) {
+            d3.select(this).style('stroke-width', '1');
+        }
+
+        function gridClick({x, y, id}) {
+            console.log(id);
+            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
+            this.style.fill = colorArray[state_array[id - 1]];
+            el.dispatchEvent(new CustomEvent('input'));
+            //console.log(state_array)
+            //console.log(node_positions)
+
+            selected_nodes = []
+            for (let i = 0; i < node_positions.length; i++)
+                if (state_array[i])
+                    selected_nodes.push({
+                        x: node_positions[i].x,
+                        y: node_positions[i].y,
+                        id: node_positions[i].id,
+                        state: state_array[i],
+                        attRate: 0.05,
+                    });
+
+            console.log(selected_nodes);
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            //console.log(selected_nodes_JSON);
+
+            $.ajax({
+                url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+
+            $("#generatebutton").click(function(event) {
+                heatmapWidth = 700;
+                heatmapHeight = 550;
+                $.ajax({
+                    type: "GET",
+                    url: "/get_attack_rates",
+                    data: {'seat_selections': selected_nodes_JSON},
+                    success: function(result) {
+                        resultArray = Object.values(result);
+                        finalResult = [];
+                        for(var i = 0; i < resultArray.length; i++)
+                        {
+                            finalResult = finalResult.concat(resultArray[i]);
+                        }
+                        for (var i = 0; i < finalResult.length; i++){
+                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                        }
+                        drawHeatMap(finalResult);
+                    }
+                });
+            });
+        }
+
+        el.value = state;
+        return el;
+    }
+
+    var image = new Image();
+    image.src = ROOM_MAP_PATH;
+    //var image_width = image.width;
+    //var image_height = image.height;
+    var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+    var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+    
+    function readTextFile(file, callback) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+                callback(rawFile.responseText);
+            }
+        }
+        rawFile.send(null);
+    }
+
+    readTextFile(SEAT_POSITIONS_PATH, function(text){
+        positions = JSON.parse(text);
+        console.log(positions);
+        grid = grid({
+            width: 608,
+            height: 518,
+            numStates: 3, 
+            size: 8,
+            node_positions: positions
+
+        });
+    });
+
+    </script>
+
+    <!-- heat-map js-->
+    <script>
     //Update Background Image
     function setBackground(buildingName, roomName){
         roomName = roomName;
         imageLocation = "/static/assets/images/room_maps/";
-        fileType = ".PNG";
+        fileType = ".png";
         
         //Updating background with "new" room map
         var c = document.getElementById("backgroundCanvas");
@@ -358,7 +508,7 @@
     var canvas = document.getElementById("backgroundCanvas");
     var ctx = canvas.getContext("2d");
     var background = new Image();
-    background.src = "/static/assets/images/room_maps/Room_Select.PNG";
+    background.src = "/static/assets/images/room_maps/Room_Select.png";
 
     // Make sure the image is loaded first otherwise nothing will draw.
     background.onload = function(){
@@ -368,7 +518,7 @@
     function getHeatMapData(){
         //Get request to the database
         heatmapWidth = 700;
-        heatmapHeight = 550
+        heatmapHeight = 550;
         $.ajax({
             type: "GET",
             url: '/get_attack_rates/',
@@ -395,6 +545,7 @@
         }
         draw();
     }
+    draw();
     </script>
 
 {% endblock javascripts %}

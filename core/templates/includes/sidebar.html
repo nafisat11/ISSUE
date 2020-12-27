@@ -6,6 +6,8 @@
 			var $buildingvar = $("#BuildingSelect");
 			var $floorvar = $("#FloorSelect");
 			var $roomvar = $("#RoomSelect");
+
+			$(".grid").hide();
 			
 			$buildingvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
@@ -54,6 +56,9 @@
 				room_number = optionSelected.text();
 				var floor_id = $("#FloorSelect").val()
 
+				imageLocation = "/static/assets/images/room_maps/";
+        		fileType = ".png";
+
 				data = {'room': room_number, "floor_id": floor_id};
 
 				$.ajax({
@@ -63,8 +68,12 @@
 					success: function(result) {
 						$("button").click(function(event) {
 							$(".maxOccup").text(result.max_occupancy);
-							$(".maxPanOccup").text(result.max_pandemic_occupancy);
-				
+							$(".maxPanOccup").text(result.max_pandemic_occupancy)
+							$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
+							// seat_selection_container.show();
+							// $(".grid").load(location.href + " #grid>*", "");
+							$(".grid").show();
+
 						});	
 					},					
 				});
@@ -72,6 +81,11 @@
 			});
 			
 		});
+
+		function initialBackground() {
+			
+			
+		}
 	</script>
 	<nav class="pcoded-navbar menupos-fixed menu-light ">
 		<div class="navbar-wrapper  ">
@@ -113,12 +127,13 @@
 							</li>
 							<div class="text-center" src="/layouts/index.html">
 								<button type="button" id="SubmitSelection" class="btn btn-success" onclick="setBackground(building_name, room_number)">Submit</button>
+								<!-- <button type="button" id="SubmitSelection" class="btn btn-success" onclick="grid()">Submit</button> -->
 							</div>
 							<!-- <li class="nav-item pcoded-menu-caption">
 								<label>Simulations</label>
-							</li> -->
-							<!-- <li class="nav-item {% if 'chart-D3' in segment %} active {% endif %}">
-								<a href="/D3_template.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">D3 Charts</span></a>
+							</li>
+							<li class="nav-item {% if 'chart-D3' in segment %} active {% endif %}">
+								<a href="/D3_template_3.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">D3 Charts</span></a>
 							</li>
 							<li class="nav-item {% if 'simulation-tool' in segment %} active {% endif %}">
 								<a href="/simulation_tool.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span class="pcoded-mtext">Simulation Tool</span></a>
