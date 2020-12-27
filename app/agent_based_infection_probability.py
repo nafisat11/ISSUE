@@ -25,38 +25,38 @@ class AttackRates:
 
     def find_front(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (agent['y'] ==
-                                                   (infected['y'] - 0.4))):
+            if ((agent['y'] == infected['y']) and (agent['x'] ==
+                                                   (infected['x'] - 0.4))):
                 return agent
 
     def find_behind(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (int(agent['y']) ==
-                                                   (int(infected['y'] + 0.4)))):
+            if ((agent['y'] == infected['y']) and (int(agent['x']) ==
+                                                   (int(infected['x'] + 0.4)))):
                 return agent
 
     def find_front2ndRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (agent['y'] ==
-                                                   (infected['y'] - 0.8))):
+            if ((agent['y'] == infected['y']) and (agent['x'] ==
+                                                   (infected['x'] - 0.8))):
                 return agent
 
     def find_behind2ndRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (agent['y'] ==
-                                                   (infected['y'] + 0.8))):
+            if ((agent['y'] == infected['y']) and (agent['x'] ==
+                                                   (infected['x'] + 0.8))):
                 return agent
 
     def find_front3rdRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (agent['y'] ==
-                                                   (infected['y'] - 1.2))):
+            if ((agent['y'] == infected['y']) and (agent['x'] ==
+                                                   (infected['x'] - 1.2))):
                 return agent
 
     def find_behind3rdRow(self, all_agents, infected):
         for i, agent in enumerate(all_agents):
-            if ((agent['x'] == infected['x']) and (agent['y'] ==
-                                                   (infected['y'] + 1.2))):
+            if ((agent['y'] == infected['y']) and (agent['x'] ==
+                                                   (infected['x'] + 1.2))):
                 return agent
 
     def find_infected(self, all_agents):
@@ -75,17 +75,17 @@ class AttackRates:
 
         for i, agent in enumerate(self.agents):
             # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
-            dist = math.sqrt(((seat['x'] - agent['x'])**2) +
-                             ((seat['y'] - agent['y'])**2))
+            dist = math.sqrt(((seat['y'] - agent['y'])**2) +
+                             ((seat['x'] - agent['x'])**2))
             if dist <= 2:
 
                 # attack rate for same row (same y-coordinate)
-                if (agent['y'] == seat['y']):
+                if (agent['x'] == seat['x']):
                     agent['attRate'] = (1.175*(dist**2)) - \
                         (5.0621*dist) + 5.6922
 
                 # attack rate for one row above (y-coord. - 0.4)
-                if (agent['y'] == (seat['y'] - 0.4)):
+                if (agent['x'] == (seat['x'] - 0.4)):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front):
@@ -93,14 +93,14 @@ class AttackRates:
 
                     # attack rate for seats NOT immediately above infected
                     # calculated based on ref seat
-                    if (agent['x'] != seat['x']):
-                        dist = math.sqrt(((agent['x'] - ref_front['x'])**2) +
-                                         ((agent['y'] - ref_front['y'])**2))
+                    if (agent['y'] != seat['y']):
+                        dist = math.sqrt(((agent['y'] - ref_front['y'])**2) +
+                                         ((agent['x'] - ref_front['x'])**2))
                         agent['attRate'] = (0.025*(dist**2)) - \
                             (0.1658*dist) + 0.3043
 
                 # attack rate for one row below (y-coord. + 0.4)
-                if (agent['y'] == (round(seat['y'] + 0.4, 2))):
+                if (agent['x'] == (round(seat['y'] + 0.4, 2))):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind):
@@ -108,14 +108,14 @@ class AttackRates:
 
                     # attack rate for seats NOT immediately below infected
                     # calculated based on ref seat
-                    if (agent['x'] != seat['x']):
-                        dist = math.sqrt(((agent['x'] - ref_behind['x'])**2) +
-                                         ((agent['y'] - ref_behind['y'])**2))
+                    if (agent['y'] != seat['y']):
+                        dist = math.sqrt(((agent['y'] - ref_behind['y'])**2) +
+                                         ((agent['x'] - ref_behind['x'])**2))
                         agent['attRate'] = (0.025*(dist**2)) - \
                             (0.1658*dist) + 0.3043
 
                 # attack rate for two rows above (y-coord. - 0.8)
-                if (agent['y'] == (seat['y'] - 0.8)):
+                if (agent['x'] == (seat['x'] - 0.8)):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front2):
@@ -123,14 +123,14 @@ class AttackRates:
 
                     # attack rate for seats NOT above infected
                     # calculated based on ref seat
-                    if (agent['x'] != seat['x']):
-                        dist = math.sqrt(((agent['x'] - ref_front2['x'])**2) +
-                                         ((agent['y'] - ref_front2['y'])**2))
+                    if (agent['y'] != seat['y']):
+                        dist = math.sqrt(((agent['y'] - ref_front2['y'])**2) +
+                                         ((agent['x'] - ref_front2['x'])**2))
                         agent['attRate'] = (-0.0813*(dist**2)) + \
                             (0.2083*dist) + 0.0919
 
                 # attack rate for two rows below (y-coord. + 0.8)
-                if (agent['y'] == (seat['y'] + 0.8)):
+                if (agent['x'] == (seat['x'] + 0.8)):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind2):
@@ -138,14 +138,14 @@ class AttackRates:
 
                     # attack rate for seats NOT below infected
                     # calculated based on ref seat
-                    if (agent['x'] != seat['x']):
-                        dist = math.sqrt(((agent['x'] - ref_behind2['x'])**2) +
-                                         ((agent['y'] - ref_behind2['y'])**2))
+                    if (agent['y'] != seat['y']):
+                        dist = math.sqrt(((agent['y'] - ref_behind2['y'])**2) +
+                                         ((agent['x'] - ref_behind2['x'])**2))
                         agent['attRate'] = (-0.0813*(dist**2)) + \
                             (0.2083*dist) + 0.0919
 
                 # attack rate for three rows above (y-coord. - 1.2)
-                if (agent['y'] == (seat['y'] - 1.2)):
+                if (agent['x'] == (seat['x'] - 1.2)):
 
                     # attack rate for seat in front of infected seat
                     if (agent == ref_front3):
@@ -160,7 +160,7 @@ class AttackRates:
                             (0.1678*dist) + 0.0099
 
                 # attack rate for three row below (y-coord. + 1.2)
-                if (agent['y'] == (seat['y'] + 1.2)):
+                if (agent['x'] == (seat['x'] + 1.2)):
 
                     # attack rate for seat behind infected seat
                     if (agent == ref_behind3):
@@ -168,9 +168,9 @@ class AttackRates:
 
                     # attack rate for seats NOT below infected
                     # calculated based on ref seat
-                    if (agent['x'] != seat['x']):
-                        dist = math.sqrt(((agent['x'] - ref_behind3['x'])**2) +
-                                         ((agent['y'] - ref_behind3['y'])**2))
+                    if (agent['y'] != seat['y']):
+                        dist = math.sqrt(((agent['y'] - ref_behind3['y'])**2) +
+                                         ((agent['x'] - ref_behind3['x'])**2))
                         agent['attRate'] = (-0.05*(dist**2)) + \
                             (0.1678*dist) + 0.0099
 

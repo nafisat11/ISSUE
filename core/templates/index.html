@@ -102,9 +102,9 @@
                             <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
                             <div class="card-body">
 
-                                <!-- <div class="image_container" id="initial_background_container">
+                                <div class="image_container" id="background_container">
                                     <img src="/static/assets/images/room_maps/Room_Select.png">
-                                </div> -->
+                                </div>
                                 <div class="seat_selection_container" id="seat_selection_container">
                                     <div class="image_container">
                                         <img src="" id="floorplan">
@@ -112,8 +112,9 @@
                                     <div class="grid" id="grid"></div>
                                     
                                 </div>
+                                <br>
                                 <div class="row justify-content-center card-option">
-                                    <button type="button" class="btn btn-icon btn-outline-primary border-0 reload-card" id='reset_button'>
+                                    <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
                                     </button>
                                     <button type="button" class="btn  btn-icon btn-outline-secondary border-0">
@@ -125,7 +126,7 @@
                                     <button type="button" class="btn  btn-icon btn-outline-danger border-0">
                                         <i class="feather icon-hash"></i>
                                     </button>
-                                    <button type="button" id="generatebutton" class="btn btn-success" disabled="disabled">Generate</button>
+                                    <!-- <button type="button" id="generatebutton" class="btn btn-success" disabled="disabled">Generate</button> -->
                                 </div>
                                 <br>
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -402,7 +403,6 @@
                         attRate: 0.05,
                     });
 
-            console.log(selected_nodes);
             selected_nodes_JSON = JSON.stringify(selected_nodes);
             //console.log(selected_nodes_JSON);
 
@@ -413,27 +413,25 @@
                 data : {'data': selected_nodes_JSON},
             });
 
-            $("#generatebutton").click(function(event) {
-                heatmapWidth = 700;
-                heatmapHeight = 550;
-                $.ajax({
-                    type: "GET",
-                    url: "/get_attack_rates",
-                    data: {'seat_selections': selected_nodes_JSON},
-                    success: function(result) {
-                        resultArray = Object.values(result);
-                        finalResult = [];
-                        for(var i = 0; i < resultArray.length; i++)
-                        {
-                            finalResult = finalResult.concat(resultArray[i]);
-                        }
-                        for (var i = 0; i < finalResult.length; i++){
-                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                        }
-                        drawHeatMap(finalResult);
+            heatmapWidth = 700;
+            heatmapHeight = 550;
+            $.ajax({
+                type: "GET",
+                url: "/get_attack_rates",
+                data: {'seat_selections': selected_nodes_JSON},
+                success: function(result) {
+                    resultArray = Object.values(result);
+                    finalResult = [];
+                    for(var i = 0; i < resultArray.length; i++)
+                    {
+                        finalResult = finalResult.concat(resultArray[i]);
                     }
-                });
+                    for (var i = 0; i < finalResult.length; i++){
+                        finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                        finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                    }
+                    drawHeatMap(finalResult);
+                }
             });
         }
 
@@ -515,37 +513,14 @@
         ctx.drawImage(background, 0, 0, 700, 550);
     }
 
-    function getHeatMapData(){
-        //Get request to the database
-        heatmapWidth = 700;
-        heatmapHeight = 550;
-        $.ajax({
-            type: "GET",
-            url: '/get_attack_rates/',
-            success: function(result) {
-                resultArray = Object.values(result);
-                finalResult = [];
-                for(var i = 0; i < resultArray.length; i++)
-                {
-                    finalResult = finalResult.concat(resultArray[i]);
-                }
-                for (var i = 0; i < finalResult.length; i++){
-                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                }
-                drawHeatMap(finalResult);
-            },
-        });
-    }
-
     function drawHeatMap(sampleData){
-        heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
+        var heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
+        heat.draw();
         function draw() {
             heat.draw();
         }
         draw();
     }
-    draw();
     </script>
 
 {% endblock javascripts %}
