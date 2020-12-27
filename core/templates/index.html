@@ -102,7 +102,7 @@
                                 </div> -->
                                 <div class="seat_selection_container" id="seat_selection_container">
                                     <div class="image_container">
-                                        <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+                                        <img src="/static/assets/images/room_maps/Engineering Block C_170.png">
                                     </div>
                                     <div class="grid" id="grid"></div>
                                 </div>
@@ -222,7 +222,7 @@
     <script>
 
 
-    var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.PNG";
+    var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.png";
 
 
     var ROOM_NAME = ROOM_MAP_PATH.split("/");
@@ -302,7 +302,7 @@
         
         if (colorArray === undefined)
             colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
-                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+                                                            (i === 1 ? '#FF2323' : d3.schemeSet3[(i-2) % 12]));
 
         // Array of values, start out all 0 if init not defined
         const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
