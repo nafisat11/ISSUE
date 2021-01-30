@@ -123,10 +123,30 @@
                                     <button type="button" class="btn  btn-icon btn-outline-success border-0">
                                         <i class="feather icon-square"></i>
                                     </button>
-                                    <button type="button" class="btn  btn-icon btn-outline-danger border-0">
+                                    <button type="button" class="btn btn-icon btn-outline-danger border-0" data-toggle="modal" data-target="#random_agents">
                                         <i class="feather icon-hash"></i>
                                     </button>
-                                    <!-- <button type="button" id="generatebutton" class="btn btn-success" disabled="disabled">Generate</button> -->
+                                    <div class="modal fade bd-example-modal-sm" id="random_agents" tabindex="-1" role="dialog" aria-labelledby="input_num" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="input_num">Input Number of Infected Agents</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" placeholder="Number" aria-label="Number">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-success">Ok</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <br>
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -404,7 +424,6 @@
                     });
 
             selected_nodes_JSON = JSON.stringify(selected_nodes);
-            //console.log(selected_nodes_JSON);
 
             $.ajax({
                 url: "/post_seat_selections/",
