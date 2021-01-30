@@ -10,9 +10,16 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 # from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.forms.utils import ErrorList
 from django.http import HttpResponse
-from .forms import LoginForm, SignUpForm
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail, BadHeaderError
+from .forms import LoginForm, SignUpForm, CustomPasswordResetForm
+from .models import CustomUser
 
 
 def login_view(request):
@@ -61,3 +68,34 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        form = CustomPasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            associated_users = CustomUser.objects.filter(Q(email=email))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "accounts/password_reset_email.txt"
+                    c = {
+                        "email": user.email,
+                        "domain": "127.0.0.1:8000",
+                        'site_name': "Website",
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                        'user': user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email,
+                                  "admin@example.com", [user.email])
+                    except BadHeaderError:
+                        return HttpResponse("Invalid header found")
+                    return redirect("/password_reset/done")
+    else:
+        form = CustomPasswordResetForm()
+    return render(request, "accounts/password_reset.html", {"form": form})
