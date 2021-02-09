@@ -25,6 +25,15 @@
         max-width: 100%;
     }
 
+    #legend {
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 72px 0px 0px 730px;
+    }
+
     .image_container {
         max-width: 100%;
     }
@@ -200,6 +209,9 @@
                                     <div><canvas id="heatmapCanvas" width="700" height="550" style="opacity:0.5"></canvas></div>
                                 </div>
                             </div> 
+                        </div>
+                        <div id="legend_container">
+                            <canvas id="legend" width="120" height="550"></canvas>
                         </div>
                     </div>
                 </div>
@@ -508,18 +520,28 @@
         background.onload = function(){
                   ctx.drawImage(background, 0, 0, 700, 550);
         };
+
+        // legend
+        var clegend = document.getElementById("legend");
+        var ctxlegend = clegend.getContext("2d");
+        var legend = new Image();
+        legend.src = "/static/assets/images/heatmap-legend.png";
+        legend.onload = function(){
+            ctxlegend.drawImage(legend, 0, 0, 120, 550);
+        };
+
         if (typeof heat !== 'undefined'){
             heat.clear();
             heat.draw();
         }
-        else {
-            showGenerateButton();
-        }
+        // else {
+        //     showGenerateButton();
+        // }
     }
 
-    function showGenerateButton(){
-        document.getElementById('generatebutton').removeAttribute('disabled');
-    }
+    // function showGenerateButton(){
+    //     document.getElementById('generatebutton').removeAttribute('disabled');
+    // }
 
     //Heatmap Background Image
     var canvas = document.getElementById("backgroundCanvas");
@@ -531,7 +553,6 @@
     background.onload = function(){
         ctx.drawImage(background, 0, 0, 700, 550);
     }
-
     function drawHeatMap(sampleData){
         var heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
         heat.draw();
