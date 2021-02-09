@@ -31,8 +31,7 @@ class AttackRates:
 
     def probabilities(self):
         seat = self.find_infected(self.agents)
-    
-
+               
         for i, agent in enumerate(self.agents):
             # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
             dist = math.sqrt(((seat['y'] - agent['y'])**2) +
