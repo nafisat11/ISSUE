@@ -9,6 +9,7 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
 <script type="text/javascript" src="/static/assets/json/seat_positions/Engineering Block C_170.json"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
 
 
 <!-- Style Sheet -->
@@ -53,6 +54,10 @@
       fill: #f00;
     }
 
+    #slider text{
+        font-size: 18px;
+    }
+
 </style>
 
 <!-- Create a div where the graph will take place -->
@@ -61,9 +66,11 @@
 
     <div class="container" id="seat_selection_container">
         <div class="image_container">
-            <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
+            <img src="/static/assets/images/room_maps/Earth Sciences_162.PNG">
         </div>
         <div class="grid" id="grid"></div>
+        <div class="col-sm"><div id="slider"></div></div>
+        <div class="col-sm-2"><p id="value"></p></div>
     </div>
 
 </body>
@@ -79,7 +86,7 @@
         
         if (colorArray === undefined)
             colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
-                                                            (i === 1 ? '#000' : d3.schemeSet3[(i-2) % 12]));
+                                                            (i === 1 ? d3.schemeSet3[0] : '#FF2323'));
 
         // Array of values, start out all 0 if init not defined
         const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
@@ -176,7 +183,7 @@
     console.log(nodes);
 
     var image = new Image();
-    image.src = "/static/assets/images/room_maps/Engineering Block C_170.PNG";
+    image.src = "/static/assets/images/room_maps/Earth Sciences_162.PNG";
     var image_width = image.width;
     var image_height = image.height;
 
@@ -197,19 +204,43 @@
     }
 
     //usage:
-    readTextFile("/static/assets/json/seat_positions/Engineering Block C_170.json", function(text){
+    readTextFile("/static/assets/json/seat_positions/Earth Sciences_162.json", function(text){
         positions = JSON.parse(text);
         console.log(positions);
         grid = grid({
             width: image_width,
             height: image_height,
-            numStates: 5, 
-            size: 20,
+            numStates: 3, 
+            size: 15,
             node_positions: positions
 
         });
     });
 
+    var data = [0, 0.005, 0.01, 0.015, 0.02, 0.025];
 
+    var sliderSimple = d3
+        .sliderBottom()
+        .min(d3.min(data))
+        .max(d3.max(data))
+        .width(image_width)
+        .tickFormat(d3.format('.2%'))
+        .ticks(5)
+        .default(0.015)
+        .on('onchange', val => {
+          d3.select('p#value').text(d3.format('.2%')(val));
+    });
+
+    var gSimple = d3
+        .select('div#slider')
+        .append('svg')
+        .attr('width', 1000)
+        .attr('height', 200)
+        .append('g')
+        .attr('transform', 'translate(30,30)');
+
+    gSimple.call(sliderSimple);
+
+    d3.select('p#value').text(d3.format('.2%')(sliderSimple.value()));
 
 </script>
