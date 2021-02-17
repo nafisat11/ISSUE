@@ -78,24 +78,70 @@
 
 <script>
 
+    // define index values mapping to different state colours
+    var WHITE = 0, GRAY = 1, RED = 2;
+
+    // utility function to randomize ordering of array elements
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
     function grid (config) {
         
         // defaults
-        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
-        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        config = Object.assign({size:15, num_states:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, num_states, init, x_margin, y_margin, colour_array, outline, nodes, n_default, width, height} = config;
         
-        if (colorArray === undefined)
-            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+        if (colour_array === undefined)
+            colour_array = Array.from({length:num_states}, (d,i) => i === 0 ? '#FFF' : 
                                                             (i === 1 ? d3.schemeSet3[0] : '#FF2323'));
 
+        // randomize ordering of array elements
+        nodes = shuffle(nodes);
+        var node_IDs = [];
+        var selected_nodes = [];
+
+        // create a dictionary to maintain list of nodes by ID
+        var node_map = {};
+        for (let i = 0; i < nodes.length; i++) {
+            if (i < n_default) {
+                nodes[i].state = 1;
+                nodes[i].colour = colour_array[GRAY];
+                //console.log(nodes[i]);
+            } else {
+                nodes[i].state = 0;
+                nodes[i].colour = colour_array[WHITE];
+            }
+            id = String(nodes[i].id);
+            node_map[id] = nodes[i];
+            node_IDs.push(id);
+        }
+
+        console.log(node_map);
+        console.log(node_IDs);
+
         // Array of values, start out all 0 if init not defined
-        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
-        //const state_array = [0, 0, 0, 0, 0];
-        const state_array = new Array(node_positions.length).fill(0);
+        //const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
+        //const state_array = new Array(nodes.length).fill(0);
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
-        const grid_area = d3.select("#grid");
+        //const grid_area = d3.select("#grid");
 
         svg
             .attr("width", width)
@@ -103,11 +149,10 @@
             //.attr("style", 'background-color:gray');        
 
         const el = svg.node();
-
         const grid = svg.append("g")
                 .attr("cursor", "pointer")
             .selectAll("rect")
-            .data(node_positions)
+            .data(nodes)
             .join("circle")
                 .on("click", gridClick)
                 .on("mouseover", hoverOver)
@@ -115,10 +160,117 @@
                 .attr("cx", d => d.x * width)
                 .attr("cy", d => d.y * height)
                 .attr("id", d => "node_" + d.id)
-                .attr("fill", "#FFF")
+                .attr("fill", d => d.colour)
                 .attr("stroke", outline)
                 .attr("r", size)
 
+
+        // define slider settings
+        var slider = d3
+            .sliderBottom()
+            .min(0)
+            .max(nodes.length)
+            .width(image_width - 30)
+            .ticks(nodes.length / 10)
+            .step(1)
+            .tickFormat(d3.format(""))
+            .default([0,n_default])
+            .fill('#2196f3')
+            .handle(
+              d3
+                .symbol()
+                .type(d3.symbolCircle)
+                .size(300)()
+            )
+            .on('onchange', val => {
+                var num_to_infect = val[0];
+                var num_to_select = val[1];
+                //console.log("infected = " + num_to_infect + " | total = " + num_to_select);
+                var selected = select_n_nodes(num_to_select);
+                select_n_infected(num_to_infect, selected);
+                post_node_selections();
+            });
+
+        var gSlider = d3
+            .select('div#slider')
+            .append('svg')
+            .attr('width', 1000)
+            .attr('height', 200)
+            .append('g')
+            .attr('transform', 'translate(30,30)');
+
+        gSlider.call(slider);
+
+        function post_node_selections() {
+            // loop through all list to determine which have a non-zero state
+            selected_nodes = [];
+            for (node_ID in node_map) {
+                var node = node_map[node_ID];
+                if (node.state != 0) {
+                    node.attRate = 0.05;
+                    selected_nodes.push(node);
+                }
+            }
+            // JSON-ify the selected node data
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            // POST JSON-ified node data
+            $.ajax({
+             url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+        }
+
+        function select_n_nodes(num) {
+            selected = [];
+            for (let i = 0; i < nodes.length; i++) {
+                var id = node_IDs[i];
+                // update internal node states
+                if (i < num) {
+                    if (node_map[id].state === 0) {
+                        node_map[id].state = 1;
+                        node_map[id].colour = colour_array[GRAY];
+                    }
+                    selected.push(id);
+                } else {
+                    if (node_map[id].state != 0) {
+                        node_map[id].state = 0;
+                        node_map[id].colour = colour_array[WHITE];
+                    }
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            console.log(selected);
+            return selected;
+        }
+
+        function select_n_infected(num_to_infect, selected) {
+            selected = shuffle(selected);
+            for (let i = 0; i < selected.length; i++) {
+                var id = selected[i];
+                // update internal node states
+                if (i < num_to_infect) {
+                    if (node_map[id].state === 1) {
+                        console.log("infecting " + id);
+                        node_map[id].state = 2;
+                        node_map[id].colour = colour_array[RED];
+                    }
+                } else {
+                    node_map[id].state = 1;
+                    node_map[id].colour = colour_array[GRAY];
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+        }
+
+        // define manual selection call-back functions
         function hoverOver({x, y, id}) {
             d3.select(this).style('stroke-width', '5');
         }
@@ -128,142 +280,26 @@
         }
 
         function gridClick({x, y, id}) {
-            //console.log(id);
-            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
-            this.style.fill = colorArray[state_array[id - 1]];
+            node_map[id].state = (node_map[id].state + 1) % num_states;
+            node_map[id].colour = colour_array[node_map[id].state];
+            this.style.fill = node_map[id].colour;
             el.dispatchEvent(new CustomEvent('input'));
-            console.log(this.id);
-            //console.log(state_array)
-            //console.log(node_positions)
+            post_node_selections();
 
-            selected_nodes = []
-            for (let i = 0; i < node_positions.length; i++)
-                if (state_array[i])
-                    selected_nodes.push({
-                        x: node_positions[i].x,
-                        y: node_positions[i].y,
-                        id: node_positions[i].id,
-                        state: state_array[i]
-                    });
+            //slider.max(selected_nodes.length);
+            //slider.ticks(selected_nodes.length);
+            //slider.default([num_infected, selected_nodes.length]);
 
-            //console.log(selected_nodes);
-            selected_nodes_JSON = JSON.stringify(selected_nodes);
-            //console.log(selected_nodes_JSON);
-
-            $.ajax({
-                url: "/post_seat_selections/",
-                method : "POST",
-                dataType : "json",
-                data : {'data': selected_nodes_JSON},
-            });
+            // gSlider
+            //   .transition()
+            //   .duration(100)
+            //   .call(slider);
 
         }
 
-        function shuffle(array) {
-            var currentIndex = array.length, temporaryValue, randomIndex;
+        //d3.select('p#value').text(d3.format('.2%')(sliderSimple.value()));
 
-            // While there remain elements to shuffle...
-            while (0 !== currentIndex) {
-
-                // Pick a remaining element...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-
-                // And swap it with the current element.
-                temporaryValue = array[currentIndex];
-                array[currentIndex] = array[randomIndex];
-                array[randomIndex] = temporaryValue;
-            }
-
-            return array;
-        }
-
-        var sliderSimple = d3
-            .sliderBottom()
-            .min(0)
-            .max(1)
-            .width(image_width - 30)
-            .tickFormat(d3.format('.0%'))
-            .ticks(10)
-            .default(0.00)
-            .on('onchange', val => {
-                //d3.select('p#value').text(d3.format('.2%')(val));
-                selected_nodes = []
-                for (let i = 0; i < node_positions.length; i++)
-                    if (state_array[i])
-                        selected_nodes.push({
-                            x: node_positions[i].x,
-                            y: node_positions[i].y,
-                            id: node_positions[i].id,
-                            state: state_array[i]
-                        });
-                var num_nodes_to_infect = Math.round(val * selected_nodes.length);
-                //console.log(selected_nodes.length);
-                //console.log(num_nodes_to_infect);
-                //console.log(selected_nodes);
-                infected_nodes = [];
-                normal_nodes = []
-
-                shuffle(selected_nodes);
-
-                for (let i = 0; i < selected_nodes.length; i++) {
-                    if (i < num_nodes_to_infect) {
-                        infected_nodes.push(selected_nodes[i].id);
-                    } else {
-                        normal_nodes.push(selected_nodes[i].id);
-                    }
-                }
-
-                console.log("INFECTED: " + infected_nodes);
-                console.log("  NORMAL: " + normal_nodes);
-
-                // for (let i = 0; i < num_nodes_to_infect; i++)
-                //     //console.log(nodes_to_infect[i]);
-                //     var node = "#node_" + String(nodes_to_infect[i]);
-                //     console.log(node);
-                //     svg.select(node).style('fill', "#FF2323");
-                //     //      .attr("fill", "#FF2323");
-                //     //$(node).css("fill", "#FF2323");
-                //     el.dispatchEvent(new CustomEvent('input'));
-                // console.log(selected_nodes);
-                // console.log(num_nodes_to_infect);
-
-                for (let i = 0; i < infected_nodes.length; i++)
-                    var node = "#node_" + String(infected_nodes[i]);
-                    svg.select(node).style('fill', "#FF2323");
-                    //el.dispatchEvent(new CustomEvent('input'));
-                    // } else {
-                    //     svg.select(node).style('fill', d3.schemeSet3[0]);
-                    //     el.dispatchEvent(new CustomEvent('input'));
-                    // }
-                    el.dispatchEvent(new CustomEvent('input'));
-
-                for (let j = 0; j < normal_nodes.length; j++)
-                    var node = "#node_" + String(normal_nodes[j]);
-                    svg.select(node).style('fill', d3.schemeSet3[0]);
-                
-                    el.dispatchEvent(new CustomEvent('input'));
-                    
-
-                //svg.select("#node_1").style('fill', "#FF2323");
-                //svg.select("#node_1").style('stroke-width', '5');
-                //$("#node:1").css("fill", "#FF2323");
-
-            });
-
-        var gSimple = d3
-            .select('div#slider')
-            .append('svg')
-            .attr('width', 1000)
-            .attr('height', 200)
-            .append('g')
-            .attr('transform', 'translate(30,30)');
-
-        gSimple.call(sliderSimple);
-
-        d3.select('p#value').text(d3.format('.2%')(sliderSimple.value()));
-
-        el.value = state;
+        //el.value = state_array;
         return el;
     }
 
@@ -273,7 +309,7 @@
     for (var i = 0; i < 10; i++)
         for (var j = 0; j < 10; j++)
             //width = 1.0 / 10
-            console.log("here")
+            //console.log("here")
             //height = 1.0 / 10
             //x = width * j
             //y = height * i
@@ -286,7 +322,7 @@
 
             // counter++
 
-    console.log(nodes);
+    //console.log(nodes);
 
     var image = new Image();
     image.src = "/static/assets/images/room_maps/Earth Sciences_162.PNG";
@@ -312,14 +348,14 @@
     //usage:
     readTextFile("/static/assets/json/seat_positions/Earth Sciences_162.json", function(text){
         positions = JSON.parse(text);
-        console.log(positions);
+        //console.log(positions);
         grid = grid({
             width: image_width,
             height: image_height,
-            numStates: 3, 
+            num_states: 3, 
             size: 15,
-            node_positions: positions
-
+            nodes: positions,
+            n_default : positions.length / 2
         });
     });
 

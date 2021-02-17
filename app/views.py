@@ -123,4 +123,5 @@ def selection_submitted(request):
 def post_seat_selections(request):
     if request.method == "POST" and request.is_ajax():
         seat_selections = json.loads(request.POST.get('data'))
+        #print(seat_selections)
         return redirect('/')
