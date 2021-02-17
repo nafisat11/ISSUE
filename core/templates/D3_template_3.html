@@ -135,7 +135,6 @@
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
-        //const grid_area = d3.select("#grid");
 
         svg
             .attr("width", width)
@@ -158,44 +157,10 @@
                 .attr("stroke", outline)
                 .attr("r", size)
 
+        // initialize slider to default values
+        make_slider([0, n_default]);
 
-        // define slider settings
-        var slider = d3
-            .sliderBottom()
-            .min(0)
-            .max(nodes.length)
-            .width(image_width - 30)
-            .ticks(nodes.length / 10)
-            .step(1)
-            .tickFormat(d3.format(""))
-            .default([0,n_default])
-            .fill('#2196f3')
-            .handle(
-              d3
-                .symbol()
-                .type(d3.symbolCircle)
-                .size(300)()
-            )
-            .on('onchange', val => {
-                var num_to_infect = val[0];
-                var num_to_select = val[1];
-                //console.log("infected = " + num_to_infect + " | total = " + num_to_select);
-                var selected = select_n_nodes(num_to_select);
-                select_n_infected(num_to_infect, selected);
-                var values = post_node_selections();
-            });
-
-        var gSlider = d3
-            .select('div#slider')
-            .append('svg')
-            .attr('id', 'slider_svg')
-            .attr('width', 1000)
-            .attr('height', 200)
-            .append('g')
-            .attr('transform', 'translate(30,30)');
-
-        gSlider.call(slider);
-
+        // ################## POST function for node selections ##################
         function post_node_selections() {
             // loop through all list to determine which have a non-zero state
             selected_nodes = [];
@@ -222,6 +187,45 @@
             return [count, selected_nodes.length];
         }
 
+        // ################## slider creation & utility functions ##################
+        function make_slider(default_value) {
+            // define slider settings
+            var slider = d3
+                .sliderBottom()
+                .min(0)
+                .max(nodes.length)
+                .width(image_width - 30)
+                .ticks(nodes.length / 10)
+                .step(1)
+                .tickFormat(d3.format(""))
+                .default(default_value)
+                .fill('#2196f3')
+                .handle(
+                  d3
+                    .symbol()
+                    .type(d3.symbolCircle)
+                    .size(300)()
+                )
+                .on('onchange', val => {
+                    var num_to_infect = val[0];
+                    var num_to_select = val[1];
+                    var selected = select_n_nodes(num_to_select);
+                    select_n_infected(num_to_infect, selected);
+                    var values = post_node_selections();
+                });
+
+            var gSlider = d3
+                .select('div#slider')
+                .append('svg')
+                .attr('id', 'slider_svg')
+                .attr('width', 1000)
+                .attr('height', 200)
+                .append('g')
+                .attr('transform', 'translate(30,30)');
+
+            gSlider.call(slider);
+        }
+
         function select_n_nodes(num) {
             selected = [];
             for (let i = 0; i < nodes.length; i++) {
@@ -244,7 +248,6 @@
                 svg.select(node_tag).style('fill', node_map[id].colour);
                 el.dispatchEvent(new CustomEvent('input'));
             }
-            //console.log(selected);
             return selected;
         }
 
@@ -255,7 +258,6 @@
                 // update internal node states
                 if (i < num_to_infect) {
                     if (node_map[id].state === 1) {
-                        //console.log("infecting " + id);
                         node_map[id].state = 2;
                         node_map[id].colour = colour_array[RED];
                     }
@@ -270,7 +272,7 @@
             }
         }
 
-        // define manual selection call-back functions
+        // ################## manual selection call-back functions ##################
         function hoverOver({x, y, id}) {
             d3.select(this).style('stroke-width', '5');
         }
@@ -280,88 +282,21 @@
         }
 
         function gridClick({x, y, id}) {
+            // update node state & fill colour
             node_map[id].state = (node_map[id].state + 1) % num_states;
             node_map[id].colour = colour_array[node_map[id].state];
             this.style.fill = node_map[id].colour;
             el.dispatchEvent(new CustomEvent('input'));
+            // POST node selections
             var values = post_node_selections();
-
-            //slider.max(selected_nodes.length);
-            //slider.ticks(selected_nodes.length);
-            //slider.default([num_infected, selected_nodes.length]);
-
-            // gSlider
-            //   .transition()
-            //   .duration(100)
-            //   .call(slider);
-
+            // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
-
-            var slider = d3
-                .sliderBottom()
-                .min(0)
-                .max(nodes.length)
-                .width(image_width - 30)
-                .ticks(nodes.length / 10)
-                .step(1)
-                .tickFormat(d3.format(""))
-                .default(values)
-                .fill('#2196f3')
-                .handle(
-                  d3
-                    .symbol()
-                    .type(d3.symbolCircle)
-                    .size(300)()
-                )
-                .on('onchange', val => {
-                    var num_to_infect = val[0];
-                    var num_to_select = val[1];
-                    //console.log("infected = " + num_to_infect + " | total = " + num_to_select);
-                    var selected = select_n_nodes(num_to_select);
-                    select_n_infected(num_to_infect, selected);
-                    post_node_selections();
-                    d3.select('p#value1').text("  infection " + d3.format('.1%')(num_to_infect / num_to_select));
-                    d3.select('p#value2').text("utilization " + d3.format('.1%')(num_to_select / nodes.length));
-                });
-
-            var gSlider = d3
-                .select('div#slider')
-                .append('svg')
-                .attr('id', 'slider_svg')
-                .attr('width', 1000)
-                .attr('height', 200)
-                .append('g')
-                .attr('transform', 'translate(30,30)');
-
-            gSlider.call(slider);
-
+            make_slider(values);
         }
 
-
-        //el.value = state_array;
         return el;
     }
 
-    nodes = [];
-    let counter = 1;
-
-    for (var i = 0; i < 10; i++)
-        for (var j = 0; j < 10; j++)
-            //width = 1.0 / 10
-            //console.log("here")
-            //height = 1.0 / 10
-            //x = width * j
-            //y = height * i
-
-            nodes.push({
-                x: 10,
-                y: 10,
-                id: counter
-            })
-
-            // counter++
-
-    //console.log(nodes);
 
     var image = new Image();
     image.src = "/static/assets/images/room_maps/Earth Sciences_162.PNG";

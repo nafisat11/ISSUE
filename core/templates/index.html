@@ -119,6 +119,7 @@
                                         <img src="" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
+                                    <div class="col-sm"><div id="agent_slider"></div></div>
                                     
                                 </div>
                                 <br>
@@ -367,25 +368,62 @@
     console.log(SEAT_POSITIONS_PATH);
 
     
-    // seat selection 
+        // define index values mapping to different state colours
+    var WHITE = 0, GRAY = 1, RED = 2;
+
+    // utility function to randomize ordering of array elements
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
     function grid (config) {
         
         // defaults
-        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
-        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        config = Object.assign({size:15, num_states:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, num_states, init, x_margin, y_margin, colour_array, outline, nodes, n_default, width, height} = config;
         
-        if (colorArray === undefined)
-            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+        if (colour_array === undefined)
+            colour_array = Array.from({length:num_states}, (d,i) => i === 0 ? '#FFF' : 
                                                             (i === 1 ? d3.schemeSet3[0] : '#FF2323'));
 
-        // Array of values, start out all 0 if init not defined
-        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
-        //const state_array = [0, 0, 0, 0, 0];
-        const state_array = new Array(node_positions.length).fill(0);
+        // randomize ordering of array elements
+        nodes = shuffle(nodes);
+        var node_IDs = [];
+        var selected_nodes = [];
+
+        // create a dictionary to maintain list of nodes by ID
+        var node_map = {};
+        for (let i = 0; i < nodes.length; i++) {
+            if (i < n_default) {
+                nodes[i].state = 1;
+                nodes[i].colour = colour_array[GRAY];
+                //console.log(nodes[i]);
+            } else {
+                nodes[i].state = 0;
+                nodes[i].colour = colour_array[WHITE];
+            }
+            id = String(nodes[i].id);
+            node_map[id] = nodes[i];
+            node_IDs.push(id);
+        }
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
-        const grid_area = d3.select("#grid");
 
         svg
             .attr("width", width)
@@ -393,21 +431,137 @@
             //.attr("style", 'background-color:gray');        
 
         const el = svg.node();
-
         const grid = svg.append("g")
                 .attr("cursor", "pointer")
             .selectAll("rect")
-            .data(node_positions)
+            .data(nodes)
             .join("circle")
                 .on("click", gridClick)
                 .on("mouseover", hoverOver)
                 .on("mouseout", hoverOff)
                 .attr("cx", d => d.x * width)
                 .attr("cy", d => d.y * height)
-                .attr("fill", "#FFF")
+                .attr("id", d => "node_" + d.id)
+                .attr("fill", d => d.colour)
                 .attr("stroke", outline)
                 .attr("r", size)
 
+        // initialize slider to default values
+        make_slider([0, n_default]);
+
+        // ################## POST function for node selections ##################
+        function post_node_selections() {
+            // loop through all list to determine which have a non-zero state
+            selected_nodes = [];
+            var count = 0;
+            for (node_ID in node_map) {
+                var node = node_map[node_ID];
+                if (node.state != 0) {
+                    node.attRate = 0.05;
+                    selected_nodes.push(node);
+                }
+                if (node.state === 2) {
+                    count++;
+                }
+            }
+            // JSON-ify the selected node data
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            // POST JSON-ified node data
+            $.ajax({
+             url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+            return [count, selected_nodes.length];
+        }
+
+        // ################## slider creation & utility functions ##################
+        function make_slider(default_value) {
+            // define slider settings
+            var slider = d3
+                .sliderBottom()
+                .min(0)
+                .max(nodes.length)
+                .width(image_width - 30)
+                .ticks(nodes.length / 10)
+                .step(1)
+                .tickFormat(d3.format(""))
+                .default(default_value)
+                .fill('#2196f3')
+                .handle(
+                  d3
+                    .symbol()
+                    .type(d3.symbolCircle)
+                    .size(300)()
+                )
+                .on('onchange', val => {
+                    var num_to_infect = val[0];
+                    var num_to_select = val[1];
+                    var selected = select_n_nodes(num_to_select);
+                    select_n_infected(num_to_infect, selected);
+                    var values = post_node_selections();
+                });
+
+            var gSlider = d3
+                .select('div#agent_slider')
+                .append('svg')
+                .attr('id', 'slider_svg')
+                .attr('width', 1000)
+                .attr('height', 200)
+                .append('g')
+                .attr('transform', 'translate(30,30)');
+
+            gSlider.call(slider);
+        }
+
+        function select_n_nodes(num) {
+            selected = [];
+            for (let i = 0; i < nodes.length; i++) {
+                var id = node_IDs[i];
+                // update internal node states
+                if (i < num) {
+                    if (node_map[id].state === 0) {
+                        node_map[id].state = 1;
+                        node_map[id].colour = colour_array[GRAY];
+                    }
+                    selected.push(id);
+                } else {
+                    if (node_map[id].state != 0) {
+                        node_map[id].state = 0;
+                        node_map[id].colour = colour_array[WHITE];
+                    }
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            return selected;
+        }
+
+        function select_n_infected(num_to_infect, selected) {
+            selected = shuffle(selected);
+            for (let i = 0; i < selected.length; i++) {
+                var id = selected[i];
+                // update internal node states
+                if (i < num_to_infect) {
+                    if (node_map[id].state === 1) {
+                        node_map[id].state = 2;
+                        node_map[id].colour = colour_array[RED];
+                    }
+                } else {
+                    node_map[id].state = 1;
+                    node_map[id].colour = colour_array[GRAY];
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+        }
+
+        // ################## manual selection call-back functions ##################
         function hoverOver({x, y, id}) {
             d3.select(this).style('stroke-width', '5');
         }
@@ -417,56 +571,18 @@
         }
 
         function gridClick({x, y, id}) {
-            console.log(id);
-            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
-            this.style.fill = colorArray[state_array[id - 1]];
+            // update node state & fill colour
+            node_map[id].state = (node_map[id].state + 1) % num_states;
+            node_map[id].colour = colour_array[node_map[id].state];
+            this.style.fill = node_map[id].colour;
             el.dispatchEvent(new CustomEvent('input'));
-            //console.log(state_array)
-            //console.log(node_positions)
-
-            selected_nodes = []
-            for (let i = 0; i < node_positions.length; i++)
-                if (state_array[i])
-                    selected_nodes.push({
-                        x: node_positions[i].x,
-                        y: node_positions[i].y,
-                        id: node_positions[i].id,
-                        state: state_array[i],
-                        attRate: 0.05,
-                    });
-
-            selected_nodes_JSON = JSON.stringify(selected_nodes);
-
-            $.ajax({
-                url: "/post_seat_selections/",
-                method : "POST",
-                dataType : "json",
-                data : {'data': selected_nodes_JSON},
-            });
-
-            heatmapWidth = 700;
-            heatmapHeight = 550;
-            $.ajax({
-                type: "GET",
-                url: "/get_attack_rates",
-                data: {'seat_selections': selected_nodes_JSON},
-                success: function(result) {
-                    resultArray = Object.values(result);
-                    finalResult = [];
-                    for(var i = 0; i < resultArray.length; i++)
-                    {
-                        finalResult = finalResult.concat(resultArray[i]);
-                    }
-                    for (var i = 0; i < finalResult.length; i++){
-                        finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                        finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                    }
-                    drawHeatMap(finalResult);
-                }
-            });
+            // POST node selections
+            var values = post_node_selections();
+            // delete and remake slider with updated values
+            d3.select('#slider_svg').remove();
+            make_slider(values);
         }
 
-        el.value = state;
         return el;
     }
 
@@ -491,16 +607,17 @@
 
     readTextFile(SEAT_POSITIONS_PATH, function(text){
         positions = JSON.parse(text);
-        console.log(positions);
+        //console.log(positions);
         grid = grid({
-            width: 608,
-            height: 518,
-            numStates: 3, 
-            size: 8,
-            node_positions: positions
-
+            width: image_width,
+            height: image_height,
+            num_states: 3, 
+            size: 15,
+            nodes: positions,
+            n_default : positions.length / 2
         });
     });
+
 
     </script>
 
