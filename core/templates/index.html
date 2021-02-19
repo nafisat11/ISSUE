@@ -38,6 +38,14 @@
         max-width: 100%;
     }
 
+    .v-divider {
+        margin-left:5px;
+        margin-right:5px;
+        width:1px;
+        height:100%;
+        border-left:1px solid gray;
+    }
+
     img {
         max-width: 100%;
     }
@@ -85,28 +93,7 @@
                         <div class="card-header">
                             <h5>Seat Selection</h5>
                             <div class="card-header-right">
-                                <div id='visibility_toggle_button'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.604 92.604" height="40" width="40" id='radio-btn'>
-                                        <g transform="translate(0 -204.396)">
-                                            <rect id='visibility_toggle_button_container' ry="15.875" y="234.823" x="12.662" height="31.75" width="67.28" fill="#ff4651" paint-order="markers fill stroke"/>
-                                            <ellipse id='visibility_toggle_button_disk' rx="9.028" ry="9.028" cy="250.865" cx="28.911" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" paint-order="markers fill stroke"/>
-                                        </g>
-                                    </svg>
-                                </div>
                             </div>
-                            <!-- <div class="card-header-right">
-                                <div class="btn-group card-option">
-                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="feather icon-more-horizontal"></i>
-                                    </button>
-                                    <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
-                                        <li class="dropdown-item full-card"><a href="#!"><span><i class="feather icon-maximize"></i> maximize</span><span style="display:none"><i class="feather icon-minimize"></i> Restore</span></a></li>
-                                        <li class="dropdown-item minimize-card"><a href="#!"><span><i class="feather icon-minus"></i> collapse</span><span style="display:none"><i class="feather icon-plus"></i> expand</span></a></li>
-                                        <li class="dropdown-item reload-card"><a href="#!"><i class="feather icon-refresh-cw"></i> reload</a></li>
-                                        <li class="dropdown-item close-card"><a href="#!"><i class="feather icon-trash"></i> remove</a></li>
-                                    </ul>
-                                </div>
-                            </div> -->
                         </div>
                             <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
                             <div class="card-body">
@@ -119,9 +106,15 @@
                                         <img src="" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
-                                    
+                                    <br>
+                                    <div class="row justify-content-center">
+                                        <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
+                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span>
+                                        <div id="agent_slider"></div>
+                                    </div>
+                                    <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
@@ -132,12 +125,32 @@
                                     <button type="button" class="btn  btn-icon btn-outline-success border-0">
                                         <i class="feather icon-square"></i>
                                     </button>
-                                    <button type="button" class="btn  btn-icon btn-outline-danger border-0">
+                                    <button type="button" class="btn btn-icon btn-outline-danger border-0" data-toggle="modal" data-target="#random_agents">
                                         <i class="feather icon-hash"></i>
                                     </button>
-                                    <!-- <button type="button" id="generatebutton" class="btn btn-success" disabled="disabled">Generate</button> -->
+                                    <div class="modal fade bd-example-modal-sm" id="random_agents" tabindex="-1" role="dialog" aria-labelledby="input_num" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="input_num">Input Number of Infected Agents</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="input-group mb-3">
+                                                        <input type="text" class="form-control" placeholder="Number" aria-label="Number">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-success">Ok</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
                                 <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
                             </div>
@@ -145,25 +158,33 @@
                         <!-- infection-parameter start -->
                         <div class="dropdown-divider"></div>
                         <div class="card-header">
-                            <h5>Infection Parameters</h5>      
+                            <h4>Infection Parameters</h4>      
                         </div>
                         <div class="card-body">
-                            <div class="form-group row">
-                                <div class="col-sm-5">Personal Protective Equipment</div>
-                                <div class="col-sm-7">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="gridCheck1">
-                                        <label class="form-check-label" for="gridCheck1">Mask</label>
+                            <div class="row">
+                                <div class="col">
+                                    <p><b>Personal Protective Equipment (Mask)</b></p>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="ppe" id="n95Mask" value="N95">
+                                        <label class="form-check-label" for="n95Mask">N95</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="ppe" id="surgicalMask" value="Surgical">
+                                        <label class="form-check-label" for="surgicalMask">Surgical</label>
+                                      </div>
+                                      <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="ppe" id="clothMask" value="Cloth">
+                                        <label class="form-check-label" for="clothMask">Cloth</label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">Duration (hours)</div>
-                                    
-                            </div>
-                            <div class="d-flex justify-content-left my-4">
-                                <form class="range-field w-25">
-                                    <input id="duration-slider" class="border-0" type="range" min="0" max="10" />
-                                </form>
-                                <span class="font-weight-bold indigo-text ml-6 mt-1 valueSpan"></span>
+                                <div class="col v-divider">
+                                    <p><b>Duration</b></p>
+                                    <input data-suffix="Hours" class="form-control-sm" type="number" id="duration" value="0" min="0" max="10" step="1"/>
+                                    <!-- <form class="range-field">
+                                        <input id="duration-slider" class="border-0" type="range" min="0">
+                                        <span class=valueSpan></span>
+                                    </form> -->
+                                </div>
                             </div>
                             <!-- <div class="parent" id="seat_selector_container">
                                 <div class="panzoom" id="panzoom_container">
@@ -172,6 +193,9 @@
                                 </div>
                             </div> -->
                             
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-success">Generate</button>
                         </div>
                         <!-- infection-parameter end -->
                     </div>
@@ -188,8 +212,34 @@
                                     <div><canvas id="backgroundCanvas" width="700" height="550"></canvas></div>
                                     <div><canvas id="heatmapCanvas" width="700" height="550" style="opacity:0.5"></canvas></div>
                                 </div>
-                            </div> 
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="card-body">
+                                <h4>Alberta Health Services Guidelines</h4>
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                      <a class="nav-link active" id="pills-covid-tab" data-toggle="pill" href="#pills-covid" role="tab" aria-controls="pills-covid" aria-selected="true">COVID-19</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                      <a class="nav-link" id="pills-virus2-tab" data-toggle="pill" href="#pills-virus2" role="tab" aria-controls="pills-virus2" aria-selected="false">Virus2</a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                      <a class="nav-link" id="pills-virus3-tab" data-toggle="pill" href="#pills-virus3" role="tab" aria-controls="pills-virus3" aria-selected="false">Virus3</a>
+                                    </li>
+                                  </ul>
+                                  <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-covid" role="tabpanel" aria-labelledby="pills-covid-tab">
+                                        <li>Stay 2 metres apart from others</li>
+                                        <li>Wear a mask in public spaces, indoor workplaces and places of worship</li>
+                                        <br>
+                                        <p>Referenced from AHS<a href="https://www.alberta.ca/enhanced-public-health-measures.aspx#PathForward"> website</a></p>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-virus2" role="tabpanel" aria-labelledby="pills-virus2-tab">...</div>
+                                    <div class="tab-pane fade" id="pills-virus3" role="tabpanel" aria-labelledby="pills-virus3-tab">...</div>
+                                  </div>    
+                            </div>
                         </div>
+                        
                         <div id="legend_container">
                             <canvas id="legend" width="120" height="550"></canvas>
                         </div>
@@ -319,7 +369,22 @@
     </script>
 
     <!-- infection-parameter js -->
-    <script src="/static/assets/js/pages/dashboard-main.js"></script>
+    <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
+    <script>
+        $("input[type='number']").inputSpinner()
+        // $('#duration').on("change", function (event) {
+        //     time_duration = $('#duration').val();
+        //     if (time_duration != 0) {
+        //         $.ajax({
+		// 			type: "GET",
+		// 			url: '/get_attack_rates/',
+		// 			data: {"duration": time_duration},
+		// 		});
+        //     }
+        // });
+    </script>
+
+    <!-- <script src="/static/assets/js/pages/dashboard-main.js"></script>
     <script>
         $(document).ready(function() {
             const $valueSpan = $('.valueSpan');
@@ -330,7 +395,7 @@
                 $valueSpan.html($value.val());
             });
         });
-    </script>
+    </script> -->
 
     <!-- seat-selection js-->
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -339,9 +404,11 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./static/assets/js/simpleheat.js"></script>
+    <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
     <script>
-
+    $.noConflict();
     
     var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.png";
 
@@ -353,28 +420,66 @@
     var POSITIONS_PATH = "/static/assets/json/seat_positions/";
 
     var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
-    console.log(SEAT_POSITIONS_PATH);
+    var cache_seat_locations = [];
 
+    // console.log(SEAT_POSITIONS_PATH);
     
-    // seat selection 
+        // define index values mapping to different state colours
+    var WHITE = 0, GRAY = 1, RED = 2;
+
+    // utility function to randomize ordering of array elements
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
     function grid (config) {
         
         // defaults
-        config = Object.assign({size:15, numStates:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
-        let {nx, ny, size, numStates, init, x_margin, y_margin, colorArray, outline, node_positions, width, height} = config;
+        config = Object.assign({size:15, num_states:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
+        let {nx, ny, size, num_states, init, x_margin, y_margin, colour_array, outline, nodes, n_default, width, height} = config;
         
-        if (colorArray === undefined)
-            colorArray = Array.from({length:numStates}, (d,i) => i === 0 ? '#FFF' : 
+        if (colour_array === undefined)
+            colour_array = Array.from({length:num_states}, (d,i) => i === 0 ? '#FFF' : 
                                                             (i === 1 ? d3.schemeSet3[0] : '#FF2323'));
 
-        // Array of values, start out all 0 if init not defined
-        const state = init ? init.map(d => d.slice()) : Array.from({length:ny}, d => Array(nx).fill(0));
-        //const state_array = [0, 0, 0, 0, 0];
-        const state_array = new Array(node_positions.length).fill(0);
+        // randomize ordering of array elements
+        nodes = shuffle(nodes);
+        var node_IDs = [];
+        var selected_nodes = [];
+
+        // create a dictionary to maintain list of nodes by ID
+        var node_map = {};
+        for (let i = 0; i < nodes.length; i++) {
+            if (i < n_default) {
+                nodes[i].state = 1;
+                nodes[i].colour = colour_array[GRAY];
+                //console.log(nodes[i]);
+            } else {
+                nodes[i].state = 0;
+                nodes[i].colour = colour_array[WHITE];
+            }
+            id = String(nodes[i].id);
+            node_map[id] = nodes[i];
+            node_IDs.push(id);
+        }
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
-        const grid_area = d3.select("#grid");
 
         svg
             .attr("width", width)
@@ -382,21 +487,138 @@
             //.attr("style", 'background-color:gray');        
 
         const el = svg.node();
-
         const grid = svg.append("g")
                 .attr("cursor", "pointer")
             .selectAll("rect")
-            .data(node_positions)
+            .data(nodes)
             .join("circle")
                 .on("click", gridClick)
                 .on("mouseover", hoverOver)
                 .on("mouseout", hoverOff)
                 .attr("cx", d => d.x * width)
                 .attr("cy", d => d.y * height)
-                .attr("fill", "#FFF")
+                .attr("id", d => "node_" + d.id)
+                .attr("fill", d => d.colour)
                 .attr("stroke", outline)
                 .attr("r", size)
 
+        // initialize slider to default values
+        make_slider([0, n_default]);
+
+        // ################## POST function for node selections ##################
+        function post_node_selections() {
+            // loop through all list to determine which have a non-zero state
+            selected_nodes = [];
+            var count = 0;
+            for (node_ID in node_map) {
+                var node = node_map[node_ID];
+                if (node.state != 0) {
+                    node.attRate = 0.05;
+                    selected_nodes.push(node);
+                }
+                if (node.state === 2) {
+                    count++;
+                }
+            }
+            // JSON-ify the selected node data
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            // console.log(selected_nodes_JSON)
+            // POST JSON-ified node data
+            $.ajax({
+             url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+            return [count, selected_nodes.length, selected_nodes_JSON];
+        }
+
+        // ################## slider creation & utility functions ##################
+        function make_slider(default_value) {
+            // define slider settings
+            var slider = d3
+                .sliderBottom()
+                .min(0)
+                .max(nodes.length)
+                .width(image_width - 50)
+                .ticks(nodes.length / 10)
+                .step(1)
+                .tickFormat(d3.format(""))
+                .default(default_value)
+                .fill('#2196f3')
+                .handle(
+                  d3
+                    .symbol()
+                    .type(d3.symbolCircle)
+                    .size(300)()
+                )
+                .on('onchange', val => {
+                    var num_to_infect = val[0];
+                    var num_to_select = val[1];
+                    var selected = select_n_nodes(num_to_select);
+                    select_n_infected(num_to_infect, selected);
+                    var values = post_node_selections();
+                });
+
+            var gSlider = d3
+                .select('div#agent_slider')
+                .append('svg')
+                .attr('id', 'slider_svg')
+                .attr('width', 1000)
+                .attr('height', 200)
+                .append('g')
+                .attr('transform', 'translate(30,30)');
+
+            gSlider.call(slider);
+        }
+
+        function select_n_nodes(num) {
+            selected = [];
+            for (let i = 0; i < nodes.length; i++) {
+                var id = node_IDs[i];
+                // update internal node states
+                if (i < num) {
+                    if (node_map[id].state === 0) {
+                        node_map[id].state = 1;
+                        node_map[id].colour = colour_array[GRAY];
+                    }
+                    selected.push(id);
+                } else {
+                    if (node_map[id].state != 0) {
+                        node_map[id].state = 0;
+                        node_map[id].colour = colour_array[WHITE];
+                    }
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            return selected;
+        }
+
+        function select_n_infected(num_to_infect, selected) {
+            selected = shuffle(selected);
+            for (let i = 0; i < selected.length; i++) {
+                var id = selected[i];
+                // update internal node states
+                if (i < num_to_infect) {
+                    if (node_map[id].state === 1) {
+                        node_map[id].state = 2;
+                        node_map[id].colour = colour_array[RED];
+                    }
+                } else {
+                    node_map[id].state = 1;
+                    node_map[id].colour = colour_array[GRAY];
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+        }
+
+        // ################## manual selection call-back functions ##################
         function hoverOver({x, y, id}) {
             d3.select(this).style('stroke-width', '5');
         }
@@ -406,59 +628,49 @@
         }
 
         function gridClick({x, y, id}) {
-            console.log(id);
-            state_array[id - 1] = (state_array[id - 1] + 1) % numStates;
-            this.style.fill = colorArray[state_array[id - 1]];
+            // update node state & fill colour
+            node_map[id].state = (node_map[id].state + 1) % num_states;
+            node_map[id].colour = colour_array[node_map[id].state];
+            this.style.fill = node_map[id].colour;
             el.dispatchEvent(new CustomEvent('input'));
-            //console.log(state_array)
-            //console.log(node_positions)
-
-            selected_nodes = []
-            for (let i = 0; i < node_positions.length; i++)
-                if (state_array[i])
-                    selected_nodes.push({
-                        x: node_positions[i].x,
-                        y: node_positions[i].y,
-                        id: node_positions[i].id,
-                        state: state_array[i],
-                        attRate: 0.05,
-                    });
-
-            selected_nodes_JSON = JSON.stringify(selected_nodes);
-            //console.log(selected_nodes_JSON);
-
-            $.ajax({
-                url: "/post_seat_selections/",
-                method : "POST",
-                dataType : "json",
-                data : {'data': selected_nodes_JSON},
-            });
+            // POST node selections
+            var values = post_node_selections();
+            // delete and remake slider with updated values
+            d3.select('#slider_svg').remove();
+            make_slider(values.slice(0,1));
+            agent_nodes = values[2];
 
             heatmapWidth = 700;
             heatmapHeight = 550;
-            $.ajax({
-                type: "GET",
-                url: "/get_attack_rates",
-                data: {'seat_selections': selected_nodes_JSON},
-                success: function(result) {
-                    console.log(result);
-                    resultArray = Object.values(result);
-                    finalResult = [];
-                    for(var i = 0; i < resultArray.length; i++)
-                    {
-                        finalResult = finalResult.concat(resultArray[i]);
-                    }
-                    for (var i = 0; i < finalResult.length; i++){
-                        finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                        finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                    }
-                    drawHeatMap(finalResult);
-                }
-            });
-        }
+            var duration = $("#duration").val();
+            var maskType = $("input[name='ppe']:checked").val();
 
-        el.value = state;
+            $("#GenerateHeatmap").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "GET",
+                    url: "/get_attack_rates",
+                    data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
+                    success: function(result) {
+                        resultArray = [result.attack_rates];
+                        finalResult = [];
+                        for(var i = 0; i < resultArray.length; i++)
+                        {
+                            finalResult = finalResult.concat(resultArray[i]);
+                        }
+                        for (var i = 0; i < finalResult.length; i++){
+                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                        }
+                        drawHeatMap(finalResult);
+                    }
+                });
+            })            
+        }
+        console.log(cache_seat_locations);
         return el;
+        
+
     }
 
     var image = new Image();
@@ -482,17 +694,40 @@
 
     readTextFile(SEAT_POSITIONS_PATH, function(text){
         positions = JSON.parse(text);
-        console.log(positions);
+        // console.log(positions);
         grid = grid({
             width: 608,
             height: 518,
-            numStates: 3, 
+            num_states: 3, 
             size: 8,
-            node_positions: positions
-
+            nodes: positions,
+            n_default : positions.length / 2
         });
     });
 
+    // function heatmapData(seats) {
+    //     console.log(seats.seat_selections);
+    //     heatmapWidth = 700;
+    //     heatmapHeight = 550;
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/get_attack_rates",
+    //         data: {'seat_selections': seats.seat_selections},
+    //         success: function(result) {
+    //             resultArray = Object.values(result);
+    //             finalResult = [];
+    //             for(var i = 0; i < resultArray.length; i++)
+    //             {
+    //                 finalResult = finalResult.concat(resultArray[i]);
+    //             }
+    //             for (var i = 0; i < finalResult.length; i++){
+    //                 finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+    //                 finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+    //             }
+    //             drawHeatMap(finalResult);
+    //         }
+    //     });
+    // }
     </script>
 
     <!-- heat-map js-->

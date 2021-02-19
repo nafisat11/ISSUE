@@ -17,8 +17,10 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('get_floors/', views.get_floors, name='get-floors'),
     path('get_rooms/', views.get_rooms, name='get-rooms'),
-    path('selection_submitted/', views.selection_submitted, name='selection-submitted'),
+    path('selection_submitted/', views.selection_submitted,
+         name='selection-submitted'),
     path('get_attack_rates/', views.get_attack_rates, name='get-attack-rates'),
-    path('post_seat_selections/', views.post_seat_selections, name='post-seat-selections')
+    path('post_seat_selections/', views.post_seat_selections,
+         name='post-seat-selections')
 
 ]

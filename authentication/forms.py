@@ -5,7 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth import password_validation
 from .models import CustomUser
 
 
@@ -71,3 +72,35 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ("email", "first_name", "last_name", "password1", "password2")
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                "placeholder": "Email",
+                "class": "form-control"
+            }
+        ))
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "New password",
+                "class": "form-control"
+            }
+        ),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html()
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Re-enter new password",
+                "class": "form-control"
+            }
+        ),
+        strip=False
+    )
