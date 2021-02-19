@@ -61,14 +61,14 @@ class AttackRates:
                 temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
                 agent['attRate'] *= temporal
 
-        temp_output = [[0, 1]]
+        temp_output = [[0.0, 1.000]]
         output = []
         w_list = []
         att_list = []
 
         for i in range(1, 11):
             temp_output.append(
-                [i, (0.121 + 0.022*(i**2))/100 + 1])
+                [float(i), round(((0.121 + 0.022*(i**2))/100 + 1), 3)])
 
         for i, agent in enumerate(self.agents):
             innerlist = []
