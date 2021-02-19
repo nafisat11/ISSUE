@@ -62,9 +62,14 @@ class AttackRates:
                 temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
                 agent['attRate'] *= temporal
 
+        temp_output = [{"duration": 0, "attRate_factor": 1}]
         output = []
         w_list = []
         att_list = []
+
+        for i in range(1, 11):
+            temp_output.append({"duration": i, "attRate_factor": (0.121 + 0.022*(i**2))/100 + 1})
+
         for i, agent in enumerate(self.agents):
             innerlist = []
             w_coord = []
@@ -92,4 +97,4 @@ class AttackRates:
         # print_agent_info(normal_agents)
         # print_agent_info(infected_agents)
         # print(i_vals)
-        return output
+        return [output, temp_output]
