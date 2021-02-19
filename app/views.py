@@ -98,11 +98,12 @@ def get_attack_rates(request):
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
         agents = request.GET.get("seat_selections", None)
         duration = request.GET.get("duration", None)
+        mask_type = request.GET.get("mask_type", None)
         if agents is not None:
             attack_rates = AttackRates(
-                agents, duration=duration).probabilities()
-            # print(attack_rates)
-            return HttpResponse(json.dumps({'attack_rates': attack_rates}), content_type="application/json")
+                agents, mask_type, duration).probabilities()
+            return HttpResponse(json.dumps({'attack_rates': attack_rates[0], 'temporal': attack_rates[1]}), content_type="application/json")
+            # return HttpResponse(json.dumps({'attack_rates': attack_rates}), content_type="application/json")
         else:
             return redirect('/')
 

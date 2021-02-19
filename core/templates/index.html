@@ -165,16 +165,16 @@
                                 <div class="col">
                                     <p><b>Personal Protective Equipment (Mask)</b></p>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                                        <label class="form-check-label" for="inlineRadio1">N95</label>
+                                        <input class="form-check-input" type="radio" name="ppe" id="n95Mask" value="N95">
+                                        <label class="form-check-label" for="n95Mask">N95</label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                        <label class="form-check-label" for="inlineRadio2">Surgical</label>
+                                        <input class="form-check-input" type="radio" name="ppe" id="surgicalMask" value="Surgical">
+                                        <label class="form-check-label" for="surgicalMask">Surgical</label>
                                       </div>
                                       <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                        <label class="form-check-label" for="inlineRadio3">Cloth</label>
+                                        <input class="form-check-input" type="radio" name="ppe" id="clothMask" value="Cloth">
+                                        <label class="form-check-label" for="clothMask">Cloth</label>
                                     </div>
                                 </div>
                                 <div class="col v-divider">
@@ -634,15 +634,16 @@
             heatmapWidth = 700;
             heatmapHeight = 550;
             var duration = $("#duration").val();
+            var maskType = $("input[name='ppe']:checked").val();
 
             $("#GenerateHeatmap").click(function(event) {
                 event.preventDefault();
                 $.ajax({
                     type: "GET",
                     url: "/get_attack_rates",
-                    data: {'seat_selections': agent_nodes, 'duration': duration},
+                    data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
                     success: function(result) {
-                        resultArray = Object.values(result);
+                        resultArray = [result.attack_rates];
                         finalResult = [];
                         for(var i = 0; i < resultArray.length; i++)
                         {

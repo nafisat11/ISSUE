@@ -35,8 +35,6 @@ class AttackRates:
         return
 
     def probabilities(self):
-        print(self.agents)
-        print(self.duration)
         self.find_infected(self.agents)
         # seat = self.find_infected(self.agents)
         for i, agent in enumerate(self.agents):
@@ -56,20 +54,21 @@ class AttackRates:
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
-                agent['attRate'] *= self.available_masks[self.mask_type]
+                print(self.mask_type)
+                agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is not None or self.duration != 0:
                 temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
                 agent['attRate'] *= temporal
 
-        temp_output = [{"duration": 0, "attRate_factor": 1}]
+        temp_output = [[0, 1]]
         output = []
         w_list = []
         att_list = []
 
         for i in range(1, 11):
             temp_output.append(
-                {"duration": i, "attRate_factor": (0.121 + 0.022*(i**2))/100 + 1})
+                [i, (0.121 + 0.022*(i**2))/100 + 1])
 
         for i, agent in enumerate(self.agents):
             innerlist = []
@@ -98,4 +97,4 @@ class AttackRates:
         # print_agent_info(normal_agents)
         # print_agent_info(infected_agents)
         # print(i_vals)
-        return [output, temp_output]
+        return output, temp_output
