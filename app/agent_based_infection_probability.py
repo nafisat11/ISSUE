@@ -9,8 +9,12 @@ import json
 
 
 class AttackRates:
-    def __init__(self, agents):
-        self.agents = json.loads(agents)
+    def __init__(self, agents, mask_type=None, duration=None):
+        self.infected = []
+        self.mask_type = mask_type
+        self.duration = int(duration)
+        self.available_masks = {"N95": 0.85, "Surgical": 0.33, "Cloth": 0.11}
+        self.agents = json.loads(agents)  # all selected agents seat locations
         self.normal_agents = [
             agent for agent in self.agents if agent['state'] == 1]
         self.infected_agents = [
@@ -27,22 +31,36 @@ class AttackRates:
     def find_infected(self, all_agents):
         for i, agent in enumerate(all_agents):
             if agent['state'] == 2:
-                return agent
+                self.infected.append(agent)
+        return
 
     def probabilities(self):
-        seat = self.find_infected(self.agents)
-               
+        print(self.agents)
+        print(self.duration)
+        self.find_infected(self.agents)
+        # seat = self.find_infected(self.agents)
         for i, agent in enumerate(self.agents):
-            # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
-            dist = math.sqrt(((seat['y'] - agent['y'])**2) +
-                             ((seat['x'] - agent['x'])**2))
-            if dist <= 2:
-
-                agent['attRate'] = (0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104
-
-             # attack rate for infected seat set to 1
-            if (agent == seat):
+            sum_of_attackrates = 0
+            if agent['state'] == 2:
+                # attack rate for infected seat set to 1
                 agent['attRate'] = 100
+                continue
+
+            for infected in self.infected:
+                # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
+                dist = math.sqrt(((infected['y'] - agent['y'])**2) +
+                                 ((infected['x'] - agent['x'])**2))
+                if dist <= 2:
+                    sum_of_attackrates += (0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(
+                        dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104
+
+            agent['attRate'] = sum_of_attackrates
+            if self.mask_type in self.available_masks:
+                agent['attRate'] *= self.available_masks[self.mask_type]
+
+            if self.duration is not None or self.duration != 0:
+                temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
+                agent['attRate'] *= temporal
 
         output = []
         w_list = []
@@ -55,6 +73,7 @@ class AttackRates:
             innerlist.append(agent['y'])
             w_coord.append(agent['y'])
             w_list.append(w_coord)
+            # did this cause heatmap values don't work unless you divide by 100
             innerlist.append(agent['attRate']/100)
             att_list.append(agent['attRate'])
             output.append(innerlist)
