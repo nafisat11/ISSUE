@@ -106,10 +106,15 @@
                                         <img src="" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
-                                    <div class="col-sm"><div id="agent_slider"></div></div>
-                                    
+                                    <br>
+                                    <div class="row justify-content-center">
+                                        <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
+                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span>
+                                        <div id="agent_slider"></div>
+                                    </div>
+                                    <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
@@ -145,7 +150,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
                                 <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
                             </div>
@@ -173,11 +178,12 @@
                                     </div>
                                 </div>
                                 <div class="col v-divider">
-                                    <p><b>Duration (Hours)</b></p>
-                                    <form class="range-field">
-                                        <input id="duration-slider" class="border-0" type="range" min="0" max="10">
+                                    <p><b>Duration</b></p>
+                                    <input data-suffix="Hours" class="form-control-sm" type="number" id="duration" value="0" min="0" max="10" step="1"/>
+                                    <!-- <form class="range-field">
+                                        <input id="duration-slider" class="border-0" type="range" min="0">
                                         <span class=valueSpan></span>
-                                    </form>
+                                    </form> -->
                                 </div>
                             </div>
                             <!-- <div class="parent" id="seat_selector_container">
@@ -187,6 +193,9 @@
                                 </div>
                             </div> -->
                             
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-success">Generate</button>
                         </div>
                         <!-- infection-parameter end -->
                     </div>
@@ -351,7 +360,22 @@
     </script>
 
     <!-- infection-parameter js -->
-    <script src="/static/assets/js/pages/dashboard-main.js"></script>
+    <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
+    <script>
+        $("input[type='number']").inputSpinner()
+        // $('#duration').on("change", function (event) {
+        //     time_duration = $('#duration').val();
+        //     if (time_duration != 0) {
+        //         $.ajax({
+		// 			type: "GET",
+		// 			url: '/get_attack_rates/',
+		// 			data: {"duration": time_duration},
+		// 		});
+        //     }
+        // });
+    </script>
+
+    <!-- <script src="/static/assets/js/pages/dashboard-main.js"></script>
     <script>
         $(document).ready(function() {
             const $valueSpan = $('.valueSpan');
@@ -362,15 +386,7 @@
                 $valueSpan.html($value.val());
             });
         });
-    </script>
-
-    <script>
-        $(function () { 
-            $("[data-toggle='popover']").on('click', function(e) {
-                $('#guidelines').popover('toggle');
-            }); 
-        });
-    </script>
+    </script> -->
 
     <!-- seat-selection js-->
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -379,7 +395,9 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./static/assets/js/simpleheat.js"></script>
+    <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
     <script>
     $.noConflict();
     
@@ -393,8 +411,9 @@
     var POSITIONS_PATH = "/static/assets/json/seat_positions/";
 
     var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
-    console.log(SEAT_POSITIONS_PATH);
+    var cache_seat_locations = [];
 
+    // console.log(SEAT_POSITIONS_PATH);
     
         // define index values mapping to different state colours
     var WHITE = 0, GRAY = 1, RED = 2;
@@ -494,6 +513,7 @@
             }
             // JSON-ify the selected node data
             selected_nodes_JSON = JSON.stringify(selected_nodes);
+            // console.log(selected_nodes_JSON)
             // POST JSON-ified node data
             $.ajax({
              url: "/post_seat_selections/",
@@ -501,7 +521,7 @@
                 dataType : "json",
                 data : {'data': selected_nodes_JSON},
             });
-            return [count, selected_nodes.length];
+            return [count, selected_nodes.length, selected_nodes_JSON];
         }
 
         // ################## slider creation & utility functions ##################
@@ -511,7 +531,7 @@
                 .sliderBottom()
                 .min(0)
                 .max(nodes.length)
-                .width(image_width - 30)
+                .width(image_width - 50)
                 .ticks(nodes.length / 10)
                 .step(1)
                 .tickFormat(d3.format(""))
@@ -608,10 +628,39 @@
             var values = post_node_selections();
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
-            make_slider(values);
-        }
+            make_slider(values.slice(0,1));
+            agent_nodes = values[2];
 
+            heatmapWidth = 700;
+            heatmapHeight = 550;
+            var duration = $("#duration").val();
+
+            $("#GenerateHeatmap").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "GET",
+                    url: "/get_attack_rates",
+                    data: {'seat_selections': agent_nodes, 'duration': duration},
+                    success: function(result) {
+                        resultArray = Object.values(result);
+                        finalResult = [];
+                        for(var i = 0; i < resultArray.length; i++)
+                        {
+                            finalResult = finalResult.concat(resultArray[i]);
+                        }
+                        for (var i = 0; i < finalResult.length; i++){
+                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                        }
+                        drawHeatMap(finalResult);
+                    }
+                });
+            })            
+        }
+        console.log(cache_seat_locations);
         return el;
+        
+
     }
 
     var image = new Image();
@@ -635,18 +684,40 @@
 
     readTextFile(SEAT_POSITIONS_PATH, function(text){
         positions = JSON.parse(text);
-        //console.log(positions);
+        // console.log(positions);
         grid = grid({
-            width: image_width,
-            height: image_height,
+            width: 608,
+            height: 518,
             num_states: 3, 
-            size: 15,
+            size: 8,
             nodes: positions,
             n_default : positions.length / 2
         });
     });
 
-
+    // function heatmapData(seats) {
+    //     console.log(seats.seat_selections);
+    //     heatmapWidth = 700;
+    //     heatmapHeight = 550;
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/get_attack_rates",
+    //         data: {'seat_selections': seats.seat_selections},
+    //         success: function(result) {
+    //             resultArray = Object.values(result);
+    //             finalResult = [];
+    //             for(var i = 0; i < resultArray.length; i++)
+    //             {
+    //                 finalResult = finalResult.concat(resultArray[i]);
+    //             }
+    //             for (var i = 0; i < finalResult.length; i++){
+    //                 finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+    //                 finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+    //             }
+    //             drawHeatMap(finalResult);
+    //         }
+    //     });
+    // }
     </script>
 
     <!-- heat-map js-->
