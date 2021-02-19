@@ -197,7 +197,7 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <div class="card">
-                        <div class="card-header"><h5>Temporal Graph 1</h5></div>
+                        <div class="card-header"><h5>Temporal Graph</h5></div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal1"></div>
                         </div>
@@ -222,11 +222,20 @@
     // Chart customization
     // Temporal Graph
     // Fake Attack Rate Data:
-    var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
+    var temporalData = [[0, 10], [1, 28], [2, 35], [3, 41], [4, 51], [5, 62], [6, 69], [7, 91], [8, 100]];
+    temporalXData = [];
+    temporalYData = [];
+    //console.log(temporalData.length);
+    for(var i = 0; i < temporalData.length; i++){
+        temporalXData = temporalXData.concat(temporalData[i][0]);
+        temporalYData = temporalYData.concat(temporalData[i][1]);
+    }
+    //console.log(temporalData);
+    //var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
     var options = {
           series: [{
             name: "Attack Rate",
-            data: temporalData
+            data: temporalYData
         }],
           chart: {
           height: 350,
@@ -251,7 +260,7 @@
           align: 'left'
         },
         xaxis: {
-          categories: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+          categories: temporalXData,
           title: {
               text: "Time (hrs)"
           }
@@ -432,6 +441,7 @@
                 url: "/get_attack_rates",
                 data: {'seat_selections': selected_nodes_JSON},
                 success: function(result) {
+                    console.log(result);
                     resultArray = Object.values(result);
                     finalResult = [];
                     for(var i = 0; i < resultArray.length; i++)
