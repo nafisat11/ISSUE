@@ -269,103 +269,6 @@
     <script src="/static/assets/js/pages/chart-apex.js"></script>
     <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
     <script>
-    // Chart customization
-    // Temporal Graph
-    // Fake Attack Rate Data:
-    var temporalData = [[0, 10], [1, 28], [2, 35], [3, 41], [4, 51], [5, 62], [6, 69], [7, 91], [8, 100]];
-    temporalXData = [];
-    temporalYData = [];
-    //console.log(temporalData.length);
-    for(var i = 0; i < temporalData.length; i++){
-        temporalXData = temporalXData.concat(temporalData[i][0]);
-        temporalYData = temporalYData.concat(temporalData[i][1]);
-    }
-    //console.log(temporalData);
-    //var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
-    var options = {
-          series: [{
-            name: "Attack Rate",
-            data: temporalYData
-        }],
-          chart: {
-          height: 350,
-          type: 'line',
-          zoom: {
-            type: 'x',
-            enabled: true,
-            autoScaleYaxis: true
-          },
-          toolbar: {
-            autoSelected: 'zoom'
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        title: {
-          text: 'Attack Rate as a Function of Time',
-          align: 'left'
-        },
-        xaxis: {
-          categories: temporalXData,
-          title: {
-              text: "Time (hrs)"
-          }
-        },
-        yaxis: {
-            title: {
-                text: "Attack Rate (%)"
-            }
-        },
-        tooltip: {
-            enabled: true,
-            enabledOnSeries: undefined,
-            shared: true,
-            followCursor: false,
-            intersect: false,
-            inverseOrder: false,
-            custom: undefined,
-            fillSeriesColor: false,
-            theme: false,
-            style: {
-                fontSize: '12px',
-                fontFamily: undefined
-            },
-            onDatasetHover: {
-                highlightDataSeries: false,
-            },
-            x: {
-                show: true,
-                format: 'dd MMM',
-                formatter: undefined,
-            },
-            y: {
-                formatter: undefined,
-                title: {
-                    formatter: (seriesName) => seriesName,
-                },
-            },
-            z: {
-                formatter: undefined,
-                title: 'Size: '
-            },
-            marker: {
-                show: true,
-            },
-            fixed: {
-                enabled: false,
-                position: 'topRight',
-                offsetX: 0,
-                offsetY: 0,
-            },
-        }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-    chart.render();
     </script>
 
     <!-- infection-parameter js -->
@@ -646,6 +549,7 @@
             var maskType = $("input[name='ppe']:checked").val();
 
             $("#GenerateHeatmap").click(function(event) {
+                console.log("Hello");
                 event.preventDefault();
                 $.ajax({
                     type: "GET",
@@ -653,7 +557,9 @@
                     data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
                     success: function(result) {
                         resultArray = [result.attack_rates];
+                        resultTemporal = [result.temporal];
                         finalResult = [];
+                        finalResultTemporal = [];
                         for(var i = 0; i < resultArray.length; i++)
                         {
                             finalResult = finalResult.concat(resultArray[i]);
@@ -662,7 +568,11 @@
                             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
                             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
                         }
-                        drawHeatMap(finalResult);
+                        for(var i = 0; i < resultTemporal.length; i++)
+                        {
+                            finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+                        }
+                        drawTemporal(finalResultTemporal);
                     }
                 });
             })            
@@ -786,6 +696,100 @@
             heat.draw();
         }
         draw();
+    }
+
+    function drawTemporal(temporalData){
+        // Temporal Graph
+        temporalXData = [];
+        temporalYData = [];
+        for(var i = 0; i < temporalData.length; i++){
+            temporalXData = temporalXData.concat(temporalData[i][0]);
+            temporalYData = temporalYData.concat(temporalData[i][1]);
+        }
+        // Chart customization
+        var options = {
+            series: [{
+                name: "Attack Rate",
+                data: temporalYData
+            }],
+            chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                type: 'x',
+                enabled: true,
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                autoSelected: 'zoom'
+            }
+            },
+            dataLabels: {
+            enabled: false
+            },
+            stroke: {
+            curve: 'smooth'
+            },
+            title: {
+            text: 'Attack Rate as a Function of Time',
+            align: 'left'
+            },
+            xaxis: {
+            categories: temporalXData,
+            title: {
+                text: "Time (hrs)"
+            }
+            },
+            yaxis: {
+                title: {
+                    text: "Attack Rate Increase Factor"
+                }
+            },
+            tooltip: {
+                enabled: true,
+                enabledOnSeries: undefined,
+                shared: true,
+                followCursor: false,
+                intersect: false,
+                inverseOrder: false,
+                custom: undefined,
+                fillSeriesColor: false,
+                theme: false,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: undefined
+                },
+                onDatasetHover: {
+                    highlightDataSeries: false,
+                },
+                x: {
+                    show: true,
+                    format: 'dd MMM',
+                    formatter: undefined,
+                },
+                y: {
+                    formatter: undefined,
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                },
+                z: {
+                    formatter: undefined,
+                    title: 'Size: '
+                },
+                marker: {
+                    show: true,
+                },
+                fixed: {
+                    enabled: false,
+                    position: 'topRight',
+                    offsetX: 0,
+                    offsetY: 0,
+                },
+            }
+        };
+        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+        chart.render();
     }
     </script>
 
