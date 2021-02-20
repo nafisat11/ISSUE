@@ -108,8 +108,8 @@
                                     <div class="grid" id="grid"></div>
                                     <br>
                                     <div class="row justify-content-center">
-                                        <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
-                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span>
+                                        <!-- <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
+                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span> -->
                                         <div id="agent_slider"></div>
                                     </div>
                                     <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
@@ -128,27 +128,6 @@
                                     <button type="button" class="btn btn-icon btn-outline-danger border-0" data-toggle="modal" data-target="#random_agents">
                                         <i class="feather icon-hash"></i>
                                     </button>
-                                    <div class="modal fade bd-example-modal-sm" id="random_agents" tabindex="-1" role="dialog" aria-labelledby="input_num" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="input_num">Input Number of Infected Agents</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" placeholder="Number" aria-label="Number">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                    <button type="button" class="btn btn-success">Ok</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- <br> -->
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -194,8 +173,8 @@
                             </div> -->
                             
                         </div>
-                        <div class="card-footer">
-                            <button type="button" id="GenerateHeatmap" class="btn btn-success">Generate</button>
+                        <div class="card-footer d-flex">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate</button>
                         </div>
                         <!-- infection-parameter end -->
                     </div>
@@ -247,7 +226,7 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <div class="card">
-                        <div class="card-header"><h5>Temporal Graph 1</h5></div>
+                        <div class="card-header"><h5>Temporal Graph</h5></div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal1"></div>
                         </div>
@@ -269,124 +248,13 @@
     <script src="/static/assets/js/pages/chart-apex.js"></script>
     <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
     <script>
-    // Chart customization
-    // Temporal Graph
-    // Fake Attack Rate Data:
-    var temporalData = [10, 28, 35, 41, 51, 62, 69, 91, 100];
-    var options = {
-          series: [{
-            name: "Attack Rate",
-            data: temporalData
-        }],
-          chart: {
-          height: 350,
-          type: 'line',
-          zoom: {
-            type: 'x',
-            enabled: true,
-            autoScaleYaxis: true
-          },
-          toolbar: {
-            autoSelected: 'zoom'
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        title: {
-          text: 'Attack Rate as a Function of Time',
-          align: 'left'
-        },
-        xaxis: {
-          categories: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
-          title: {
-              text: "Time (hrs)"
-          }
-        },
-        yaxis: {
-            title: {
-                text: "Attack Rate (%)"
-            }
-        },
-        tooltip: {
-            enabled: true,
-            enabledOnSeries: undefined,
-            shared: true,
-            followCursor: false,
-            intersect: false,
-            inverseOrder: false,
-            custom: undefined,
-            fillSeriesColor: false,
-            theme: false,
-            style: {
-                fontSize: '12px',
-                fontFamily: undefined
-            },
-            onDatasetHover: {
-                highlightDataSeries: false,
-            },
-            x: {
-                show: true,
-                format: 'dd MMM',
-                formatter: undefined,
-            },
-            y: {
-                formatter: undefined,
-                title: {
-                    formatter: (seriesName) => seriesName,
-                },
-            },
-            z: {
-                formatter: undefined,
-                title: 'Size: '
-            },
-            marker: {
-                show: true,
-            },
-            fixed: {
-                enabled: false,
-                position: 'topRight',
-                offsetX: 0,
-                offsetY: 0,
-            },
-        }
-    };
-
-    var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-    chart.render();
     </script>
 
     <!-- infection-parameter js -->
     <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
     <script>
-        $("input[type='number']").inputSpinner()
-        // $('#duration').on("change", function (event) {
-        //     time_duration = $('#duration').val();
-        //     if (time_duration != 0) {
-        //         $.ajax({
-		// 			type: "GET",
-		// 			url: '/get_attack_rates/',
-		// 			data: {"duration": time_duration},
-		// 		});
-        //     }
-        // });
+        $("input[type='number']").inputSpinner();
     </script>
-
-    <!-- <script src="/static/assets/js/pages/dashboard-main.js"></script>
-    <script>
-        $(document).ready(function() {
-            const $valueSpan = $('.valueSpan');
-            const $value = $('#duration-slider');
-            $valueSpan.html($value.val());
-            $value.on('input change', () => {
-
-                $valueSpan.html($value.val());
-            });
-        });
-    </script> -->
 
     <!-- seat-selection js-->
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -411,7 +279,6 @@
     var POSITIONS_PATH = "/static/assets/json/seat_positions/";
 
     var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
-    var cache_seat_locations = [];
 
     // console.log(SEAT_POSITIONS_PATH);
     
@@ -549,6 +416,7 @@
                     var selected = select_n_nodes(num_to_select);
                     select_n_infected(num_to_infect, selected);
                     var values = post_node_selections();
+                    heatmapData(values);
                 });
 
             var gSlider = d3
@@ -629,39 +497,40 @@
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
             make_slider(values.slice(0,1));
-            agent_nodes = values[2];
 
-            heatmapWidth = 700;
-            heatmapHeight = 550;
-            var duration = $("#duration").val();
-            var maskType = $("input[name='ppe']:checked").val();
+            // heatmapWidth = 700;
+            // heatmapHeight = 550;
+            // var duration = $("#duration").val();
+            // var maskType = $("input[name='ppe']:checked").val();
 
-            $("#GenerateHeatmap").click(function(event) {
-                event.preventDefault();
-                $.ajax({
-                    type: "GET",
-                    url: "/get_attack_rates",
-                    data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
-                    success: function(result) {
-                        resultArray = [result.attack_rates];
-                        finalResult = [];
-                        for(var i = 0; i < resultArray.length; i++)
-                        {
-                            finalResult = finalResult.concat(resultArray[i]);
-                        }
-                        for (var i = 0; i < finalResult.length; i++){
-                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                        }
-                        drawHeatMap(finalResult);
-                    }
-                });
-            })            
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/get_attack_rates",
+            //     data: {'seat_selections': values[2], 'mask_type': maskType, 'duration': duration},
+            //     success: function(result) {
+            //         resultArray = [result.attack_rates];
+            //         resultTemporal = [result.temporal];
+            //         finalResult = [];
+            //         finalResultTemporal = [];
+            //         for(var i = 0; i < resultArray.length; i++)
+            //         {
+            //             finalResult = finalResult.concat(resultArray[i]);
+            //         }
+            //         for (var i = 0; i < finalResult.length; i++){
+            //             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+            //             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+            //         }
+            //         for(var i = 0; i < resultTemporal.length; i++)
+            //         {
+            //             finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+            //         }
+            //         drawHeatMap(finalResult);
+            //         drawTemporal(finalResultTemporal);
+            //     }
+            // });           
+            heatmapData(values);            
         }
-        console.log(cache_seat_locations);
         return el;
-        
-
     }
 
     var image = new Image();
@@ -696,29 +565,43 @@
         });
     });
 
-    // function heatmapData(seats) {
-    //     console.log(seats.seat_selections);
-    //     heatmapWidth = 700;
-    //     heatmapHeight = 550;
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/get_attack_rates",
-    //         data: {'seat_selections': seats.seat_selections},
-    //         success: function(result) {
-    //             resultArray = Object.values(result);
-    //             finalResult = [];
-    //             for(var i = 0; i < resultArray.length; i++)
-    //             {
-    //                 finalResult = finalResult.concat(resultArray[i]);
-    //             }
-    //             for (var i = 0; i < finalResult.length; i++){
-    //                 finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-    //                 finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-    //             }
-    //             drawHeatMap(finalResult);
-    //         }
-    //     });
-    // }
+    function heatmapData(seats) {
+        heatmapWidth = 700;
+        heatmapHeight = 550;
+        var duration = $("#duration").val();
+        var maskType = $("input[name='ppe']:checked").val();
+
+        $("#GenerateHeatmap").click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: "/get_attack_rates",
+                data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
+                success: function(result) {
+                    resultArray = [result.attack_rates];
+                    resultTemporal = [result.temporal];
+                    console.log(resultTemporal);
+                    finalResult = [];
+                    finalResultTemporal = [];
+                    for(var i = 0; i < resultArray.length; i++)
+                    {
+                        finalResult = finalResult.concat(resultArray[i]);
+                    }
+
+                    for (var i = 0; i < finalResult.length; i++){
+                        finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                        finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                    }
+                    for(var i = 0; i < resultTemporal.length; i++)
+                    {
+                        finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+                    }
+                    drawHeatMap(finalResult);
+                    drawTemporal(finalResultTemporal);
+                }
+            });
+        });            
+    }
     </script>
 
     <!-- heat-map js-->
@@ -777,6 +660,100 @@
             heat.draw();
         }
         draw();
+    }
+
+    function drawTemporal(temporalData){
+        // Temporal Graph
+        temporalXData = [];
+        temporalYData = [];
+        for(var i = 0; i < temporalData.length; i++){
+            temporalXData = temporalXData.concat(temporalData[i][0]);
+            temporalYData = temporalYData.concat(temporalData[i][1]);
+        }
+        // Chart customization
+        var options = {
+            series: [{
+                name: "Attack Rate",
+                data: temporalYData
+            }],
+            chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                type: 'x',
+                enabled: true,
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                autoSelected: 'zoom'
+            }
+            },
+            dataLabels: {
+            enabled: false
+            },
+            stroke: {
+            curve: 'smooth'
+            },
+            title: {
+            text: 'Attack Rate as a Function of Time',
+            align: 'left'
+            },
+            xaxis: {
+            categories: temporalXData,
+            title: {
+                text: "Time (hrs)"
+            }
+            },
+            yaxis: {
+                title: {
+                    text: "Attack Rate Increase Factor"
+                }
+            },
+            tooltip: {
+                enabled: true,
+                enabledOnSeries: undefined,
+                shared: true,
+                followCursor: false,
+                intersect: false,
+                inverseOrder: false,
+                custom: undefined,
+                fillSeriesColor: false,
+                theme: false,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: undefined
+                },
+                onDatasetHover: {
+                    highlightDataSeries: false,
+                },
+                x: {
+                    show: true,
+                    format: 'dd MMM',
+                    formatter: undefined,
+                },
+                y: {
+                    formatter: undefined,
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                },
+                z: {
+                    formatter: undefined,
+                    title: 'Size: '
+                },
+                marker: {
+                    show: true,
+                },
+                fixed: {
+                    enabled: false,
+                    position: 'topRight',
+                    offsetX: 0,
+                    offsetY: 0,
+                },
+            }
+        };
+        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+        chart.render();
     }
     </script>
 
