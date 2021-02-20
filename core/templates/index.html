@@ -173,9 +173,9 @@
                             </div> -->
                             
                         </div>
-                        <div class="card-footer d-flex">
+                        <!-- <div class="card-footer d-flex">
                             <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate</button>
-                        </div>
+                        </div> -->
                         <!-- infection-parameter end -->
                     </div>
                 </div>
@@ -498,10 +498,10 @@
             d3.select('#slider_svg').remove();
             make_slider(values.slice(0,1));
 
-            // heatmapWidth = 700;
-            // heatmapHeight = 550;
-            // var duration = $("#duration").val();
-            // var maskType = $("input[name='ppe']:checked").val();
+            heatmapWidth = 700;
+            heatmapHeight = 550;
+            var duration = $("#duration").val();
+            var maskType = $("input[name='ppe']:checked").val();
 
             // $.ajax({
             //     type: "GET",
@@ -571,36 +571,38 @@
         var duration = $("#duration").val();
         var maskType = $("input[name='ppe']:checked").val();
 
-        $("#GenerateHeatmap").click(function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: "GET",
-                url: "/get_attack_rates",
-                data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
-                success: function(result) {
-                    resultArray = [result.attack_rates];
-                    resultTemporal = [result.temporal];
-                    console.log(resultTemporal);
-                    finalResult = [];
-                    finalResultTemporal = [];
-                    for(var i = 0; i < resultArray.length; i++)
-                    {
-                        finalResult = finalResult.concat(resultArray[i]);
-                    }
-
-                    for (var i = 0; i < finalResult.length; i++){
-                        finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                        finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                    }
-                    for(var i = 0; i < resultTemporal.length; i++)
-                    {
-                        finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-                    }
-                    drawHeatMap(finalResult);
-                    drawTemporal(finalResultTemporal);
+        $.ajax({
+            type: "GET",
+            url: "/get_attack_rates",
+            data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
+            success: function(result) {
+                resultArray = [result.attack_rates];
+                resultTemporal = [result.temporal];
+                console.log(resultTemporal);
+                finalResult = [];
+                finalResultTemporal = [];
+                for(var i = 0; i < resultArray.length; i++)
+                {
+                    finalResult = finalResult.concat(resultArray[i]);
                 }
-            });
-        });            
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                }
+                for(var i = 0; i < resultTemporal.length; i++)
+                {
+                    finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+                }
+                drawHeatMap(finalResult);
+                drawTemporal(finalResultTemporal);
+            }
+        });
+
+        // $("#GenerateHeatmap").click(function(event) {
+        //     event.preventDefault();
+            
+        // });            
     }
     </script>
 
