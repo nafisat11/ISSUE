@@ -143,6 +143,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'core/static'),
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Activate Django-Heroku.
 django_heroku.settings(locals())
 #############################################################
