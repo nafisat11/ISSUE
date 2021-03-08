@@ -58,7 +58,7 @@ class AttackRates:
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is not None or self.duration != 0:
-                temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
+                temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
                 agent['attRate'] *= temporal
 
         temp_output = [[0.0, 1.000]]
