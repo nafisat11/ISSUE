@@ -14,7 +14,7 @@ class AttackRates:
         self.mask_type = mask_type
         self.duration = int(duration)
         self.available_masks = {"N95": 0.85, "Surgical": 0.33, "Cloth": 0.11}
-        self.agents = json.loads(agents)  # all selected agents seat locations
+        self.agents = json.loads(agents)  # All the selected agents' seat locations
         self.normal_agents = [
             agent for agent in self.agents if agent['state'] == 1]
         self.infected_agents = [
@@ -45,7 +45,7 @@ class AttackRates:
                 continue
 
             for infected in self.infected:
-                # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
+                # Distance formula 
                 dist = math.sqrt(((infected['y'] - agent['y'])**2) +
                                  ((infected['x'] - agent['x'])**2))
                 if dist <= 2:
@@ -83,18 +83,4 @@ class AttackRates:
             att_list.append(agent['attRate'])
             output.append(innerlist)
 
-        # TODO: implementation to calculate weights without using pysal
-        # w = ps.lib.weights.DistanceBand.from_array(w_list, 2, binary=False)
-        # w = weights.DistanceBand.from_array(w_list, 2, binary=False)
-        # w.transformation = 'r'
-
-        # TODO: implementation to calculate moran's I without pysal
-        # lisa = esda.moran.Moran_Local(att_list, w)
-        # i_vals = lisa.Is
-        # p_vals = lisa.p_sim
-        # z_vals = lisa.z_sim
-
-        # print_agent_info(normal_agents)
-        # print_agent_info(infected_agents)
-        # print(i_vals)
         return output, temp_output
