@@ -7,7 +7,7 @@
 			var $floorvar = $("#FloorSelect");
 			var $roomvar = $("#RoomSelect");
 
-			$("#seat_selection_container").hide();
+			// $("#seat_selection_container").hide();
 			
 			$buildingvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
@@ -70,8 +70,8 @@
 							$(".maxOccup").text(result.max_occupancy);
 							$(".maxPanOccup").text(result.max_pandemic_occupancy)
 							$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
-							$("#seat_selection_container").show();
-							$("#background_container").remove();
+							// $("#seat_selection_container").show();
+							// $("#background_container").remove();
 						});	
 					},					
 				});
