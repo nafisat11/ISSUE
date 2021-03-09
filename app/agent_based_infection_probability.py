@@ -66,9 +66,9 @@ class AttackRates:
         w_list = []
         att_list = []
 
-        for i in range(1, 11):
+        for i in range(0, self.duration, 5):
             temp_output.append(
-                [float(i), round(((0.121 + 0.022*(i**2))/100 + 1), 3)])
+                [float(i), round(((0.121 + 0.022*((i/60)**2))/100 + 1), 3)])
 
         for i, agent in enumerate(self.agents):
             innerlist = []
