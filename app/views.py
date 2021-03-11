@@ -94,13 +94,14 @@ def get_rooms(request):
         return redirect('/')
 
 
+@csrf_exempt
 @gzip_page
-def get_attack_rates(request):
-    if request.method == "GET" and request.is_ajax():
+def post_attack_rates(request):
+    if request.method == "POST" and request.is_ajax():
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
-        agents = request.GET.get("seat_selections", None)
-        duration = request.GET.get("duration", None)
-        mask_type = request.GET.get("mask_type", None)
+        agents = request.POST.get("seat_selections", None)
+        duration = request.POST.get("duration", None)
+        mask_type = request.POST.get("mask_type", None)
         if agents is not None:
             attack_rates = AttackRates(
                 agents, mask_type, duration).probabilities()
