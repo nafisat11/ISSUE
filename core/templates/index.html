@@ -786,14 +786,12 @@
                 });
             });
 
-            // TODO: update heatmap
+            // TODO: update heatmap, redraw canvas
 
         }
         image.src = image_path;
-        $("#floorplan").attr("src", image_path)
-
-        // TODO: update heatmap container background
-
+        $("#floorplan").attr("src", image_path);
+        $("#heatmap_floorplan").attr("src", image_path);
     }
 
     // initialize seat selection interface
