@@ -275,8 +275,6 @@
 
     // ############################# GLOBAL PARAMETERS #############################
 
-    ///static/assets/images/room_maps/Earth Sciences_162.png
-
     // define base paths for image and JSON data
     var ROOM_MAP_ROOT = "/static/assets/images/room_maps/";
     var SEAT_POSITIONS_ROOT = "/static/assets/json/seat_positions/";
@@ -287,21 +285,6 @@
     // define default room to load on startup
     var DEFAULT_BUILDING = "Earth Sciences";
     var DEFAULT_ROOM = "162";
-    
-    // read and parse default room map path
-    //var ROOM_MAP_PATH = document.getElementById("floorplan").src;
-    //ROOM_MAP_PATH = decodeURI(ROOM_MAP_PATH);
-    //var ROOM_NAME = ROOM_MAP_PATH.split("/");
-    //ROOM_NAME = ROOM_NAME[ROOM_NAME.length - 1];
-
-    // load image data for default map
-    //var IMAGE_WIDTH = document.getElementsByClassName("image_container")[0].clientWidth;
-    //var IMAGE_HEIGHT = document.getElementsByClassName("image_container")[0].clientHeight;
-    
-    // load JSON data for default map
-    //ROOM_NAME = ROOM_NAME.split(".")[0].concat(".json");
-    //var POSITIONS_PATH = "/static/assets/json/seat_positions/";
-    //var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
     
     // define index values mapping to different state colours
     var WHITE = 0, GRAY = 1, RED = 2;
@@ -586,28 +569,6 @@
         return el;
     }
 
-    //var image = new Image();
-    //image.src = ROOM_MAP_PATH;
-    //var image_width = image.width;
-    //var image_height = image.height;
-    //var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
-    //var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
-    
-    
-
-    // readTextFile(SEAT_POSITIONS_PATH, function(text){
-    //     positions = JSON.parse(text);
-    //     // console.log(positions);
-    //     grid = grid({
-    //         width: image_width,
-    //         height: image_height,
-    //         num_states: 3, 
-    //         size: 8,
-    //         nodes: positions,
-    //         n_default : positions.length / 2
-    //     });
-    // });
-
     function heatmapData(seats) {
         heatmapWidth = 700;
         heatmapHeight = 550;
@@ -792,7 +753,7 @@
         chart.render();
     }
 
-    // ########################### PAGE INITIALIZATIONS ############################
+    // ####################### PAGE INITIALIZATION & UPDATE ########################
 
     // update room selection
     function update_room_selection(building_name, room_name){
@@ -804,21 +765,16 @@
         // update backgrounds for both seat selection interface and heatmap
         var image = new Image();
         image.onload = function() {
-            console.log("image loaded");
-            console.log(document.getElementsByClassName("image_container")[0].clientWidth);
-            console.log(document.getElementsByClassName("image_container")[0].clientHeight);
 
+            // get dimensions of newly loaded map
             var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
             var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
 
             // update (remove and re-draw) seat selection interface
             d3.select('#grid').html("");
             d3.select('#agent_slider').html("");
-            //d3.select('#grid_svg').remove();
-            //d3.select('#slider_svg').remove();
             readTextFile(seat_positions_path, function(text){
                 positions = JSON.parse(text);
-                console.log(positions);
                 grid = draw_grid({
                     width: image_width,
                     height: image_height,
@@ -829,74 +785,18 @@
                 });
             });
 
+            // TODO: update heatmap
+
         }
         image.src = image_path;
-        // background.onload = function(){
-        //     ctx.drawImage(background, 0, 0, 700, 550);
-        // }
         $("#floorplan").attr("src", image_path)
-        //var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
-        //var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
 
-        
-        
-        //roomName = roomName;
-        //imageLocation = "/static/assets/images/room_maps/";
-        //fileType = ".png";
-        
-        //Updating background with "new" room map
-        // var c = document.getElementById("backgroundCanvas");
-        // var ctx = c.getContext("2d");
-        // var background = new Image();
-        // background.src = imageLocation.concat(buildingName, "_", roomName, fileType);
-        // background.onload = function(){
-        //           ctx.drawImage(background, 0, 0, 700, 550);
-        // };
+        // TODO: update heatmap container background
 
-        // // legend
-        // var clegend = document.getElementById("legend");
-        // var ctxlegend = clegend.getContext("2d");
-        // var legend = new Image();
-        // legend.src = "/static/assets/images/heatmap-legend.png";
-        // legend.onload = function(){
-        //     ctxlegend.drawImage(legend, 0, 0, 120, 550);
-        // };
-
-        // if (typeof heat !== 'undefined'){
-        //     heat.clear();
-        //     heat.draw();
-        // }
-        // else {
-        //     showGenerateButton();
-        // }
     }
 
     // initialize seat selection interface
     update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
-
-    // readTextFile(SEAT_POSITIONS_PATH, function(text){
-    //     positions = JSON.parse(text);
-    //     grid = grid({
-    //         width: IMAGE_WIDTH,
-    //         height: IMAGE_HEIGHT,
-    //         num_states: 3, 
-    //         size: 8,
-    //         nodes: positions,
-    //         n_default : positions.length / 2
-    //     });
-    // });
-
-    // // initialize heat map
-    // //Heatmap Background Image
-    // var canvas = document.getElementById("backgroundCanvas");
-    // var ctx = canvas.getContext("2d");
-    // var background = new Image();
-    // background.src = "/static/assets/images/room_maps/Room_Select.png";
-
-    // // Make sure the image is loaded first otherwise nothing will draw.
-    // background.onload = function(){
-    //     ctx.drawImage(background, 0, 0, 700, 550);
-    // }
 
     </script>
 
