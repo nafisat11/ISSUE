@@ -14,7 +14,7 @@ class AttackRates:
         self.mask_type = mask_type
         self.duration = int(duration)
         self.available_masks = {"N95": 0.85, "Surgical": 0.33, "Cloth": 0.11}
-        self.agents = json.loads(agents)  # all selected agents seat locations
+        self.agents = json.loads(agents)  # All the selected agents' seat locations
         self.normal_agents = [
             agent for agent in self.agents if agent['state'] == 1]
         self.infected_agents = [
@@ -45,7 +45,7 @@ class AttackRates:
                 continue
 
             for infected in self.infected:
-                # distance = sqrt((x1 - x2)^2 + (y1 - y2)^2)
+                # Distance formula 
                 dist = math.sqrt(((infected['y'] - agent['y'])**2) +
                                  ((infected['x'] - agent['x'])**2))
                 if dist <= 2:
@@ -58,7 +58,7 @@ class AttackRates:
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is not None or self.duration != 0:
-                temporal = (0.121 + 0.022*(self.duration**2))/100 + 1
+                temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
                 agent['attRate'] *= temporal
 
         temp_output = [[0.0, 1.000]]
@@ -66,9 +66,9 @@ class AttackRates:
         w_list = []
         att_list = []
 
-        for i in range(1, 11):
+        for i in range(0, self.duration, 5):
             temp_output.append(
-                [float(i), round((0.121 + 0.022*(i**2))/100 + 1), 3])
+                [float(i), round(((0.121 + 0.022*((i/60)**2))/100 + 1), 3)])
 
         for i, agent in enumerate(self.agents):
             innerlist = []
@@ -83,18 +83,4 @@ class AttackRates:
             att_list.append(agent['attRate'])
             output.append(innerlist)
 
-        # TODO: implementation to calculate weights without using pysal
-        # w = ps.lib.weights.DistanceBand.from_array(w_list, 2, binary=False)
-        # w = weights.DistanceBand.from_array(w_list, 2, binary=False)
-        # w.transformation = 'r'
-
-        # TODO: implementation to calculate moran's I without pysal
-        # lisa = esda.moran.Moran_Local(att_list, w)
-        # i_vals = lisa.Is
-        # p_vals = lisa.p_sim
-        # z_vals = lisa.z_sim
-
-        # print_agent_info(normal_agents)
-        # print_agent_info(infected_agents)
-        # print(i_vals)
         return output, temp_output
