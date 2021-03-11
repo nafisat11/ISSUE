@@ -364,6 +364,7 @@
         // create a dictionary to maintain list of nodes by ID
         var node_map = {};
         for (let i = 0; i < nodes.length; i++) {
+            console.log(nodes[i]);
             if (i < n_default) {
                 nodes[i].state = 1;
                 nodes[i].colour = colour_array[GRAY];
@@ -468,6 +469,7 @@
                 .attr('id', 'slider_svg')
                 .attr('width', 0.8 * image_width)
                 .attr('height', 0.2 * image_height)
+                .attr("viewBox", `0 0 ${0.8 * image_width} ${0.2 * image_height}`)
                 .append('g')
                 .attr('transform', 'translate(10,15)');
 
@@ -809,11 +811,12 @@
             //d3.select('#slider_svg').remove();
             readTextFile(seat_positions_path, function(text){
                 positions = JSON.parse(text);
+                console.log(positions);
                 grid = draw_grid({
                     width: image_width,
                     height: image_height,
-                    num_states: 3, 
                     size: 8,
+                    num_states: 3, 
                     nodes: positions,
                     n_default : positions.length / 2
                 });
