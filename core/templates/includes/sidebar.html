@@ -70,6 +70,7 @@
 							$(".maxOccup").text(result.max_occupancy);
 							$(".maxPanOccup").text(result.max_pandemic_occupancy)
 							$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
+							$("#heatmap_floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
 							// $("#seat_selection_container").show();
 							// $("#background_container").remove();
 						});	
@@ -118,7 +119,7 @@
 								</select>
 							</li>
 							<div class="text-center" src="/layouts/index.html">
-								<button type="button" id="SubmitSelection" class="btn btn-success" onclick="setBackground(building_name, room_number)">Submit</button>
+								<button type="button" id="SubmitSelection" class="btn btn-success">Submit</button>
 							</div>
 						</form>
 					</li>
