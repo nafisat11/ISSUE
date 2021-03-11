@@ -442,7 +442,7 @@
                 .min(0)
                 .max(nodes.length)
                 .width(0.7 * image_width)
-                .ticks(nodes.length / 10)
+                .ticks(nodes.length / 20)
                 .step(1)
                 .tickFormat(d3.format(""))
                 .default(default_value)
@@ -467,7 +467,7 @@
                 .append('svg')
                 .attr('id', 'slider_svg')
                 .attr('width', 0.8 * image_width)
-                .attr('height', 75)
+                .attr('height', 0.2 * image_height)
                 .append('g')
                 .attr('transform', 'translate(10,15)');
 
@@ -793,24 +793,42 @@
         var seat_positions_path = SEAT_POSITIONS_ROOT.concat(building_name, "_", room_name, ".json")
 
         // update backgrounds for both seat selection interface and heatmap
-        $("#floorplan").attr("src", image_path)
-        var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
-        var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+        var image = new Image();
+        image.onload = function() {
+            console.log("image loaded");
+            console.log(document.getElementsByClassName("image_container")[0].clientWidth);
+            console.log(document.getElementsByClassName("image_container")[0].clientHeight);
 
-        // update (remove and re-draw) seat selection interface
-        d3.select('#grid_svg').remove();
-        d3.select('#slider_svg').remove();
-        readTextFile(seat_positions_path, function(text){
-            positions = JSON.parse(text);
-            grid = draw_grid({
-                width: image_width,
-                height: image_height,
-                num_states: 3, 
-                size: 8,
-                nodes: positions,
-                n_default : positions.length / 2
+            var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+            var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+
+            // update (remove and re-draw) seat selection interface
+            d3.select('#grid').html("");
+            d3.select('#agent_slider').html("");
+            //d3.select('#grid_svg').remove();
+            //d3.select('#slider_svg').remove();
+            readTextFile(seat_positions_path, function(text){
+                positions = JSON.parse(text);
+                grid = draw_grid({
+                    width: image_width,
+                    height: image_height,
+                    num_states: 3, 
+                    size: 8,
+                    nodes: positions,
+                    n_default : positions.length / 2
+                });
             });
-        });
+
+        }
+        image.src = image_path;
+        // background.onload = function(){
+        //     ctx.drawImage(background, 0, 0, 700, 550);
+        // }
+        $("#floorplan").attr("src", image_path)
+        //var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+        //var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+
+        
         
         //roomName = roomName;
         //imageLocation = "/static/assets/images/room_maps/";
