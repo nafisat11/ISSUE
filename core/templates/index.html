@@ -602,8 +602,8 @@
 
         console.log(document.querySelector("#heatmap_floorplan").width);
         $.ajax({
-            type: "GET",
-            url: "/get_attack_rates",
+            type: "POST",
+            url: "/post_attack_rates/",
             data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
             success: function(result) {
                 resultArray = [result.attack_rates];

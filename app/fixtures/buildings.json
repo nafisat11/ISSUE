@@ -3,13 +3,6 @@
         "model": "app.buildings",
         "pk": 1,
         "fields": {
-            "name": "Engineering Block C"
-        }
-    },
-    {
-        "model": "app.buildings",
-        "pk": 2,
-        "fields": {
             "name": "Earth Sciences"
         }
     }
