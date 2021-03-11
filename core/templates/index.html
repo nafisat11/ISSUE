@@ -407,6 +407,10 @@
         // initialize slider to default values
         make_slider([0, n_default]);
 
+        // POST initial node selections
+        var values = post_node_selections();
+        heatmapData(values);
+
         // ################## POST function for node selections ##################
         function post_node_selections() {
             // loop through all list to determine which have a non-zero state
@@ -424,7 +428,6 @@
             }
             // JSON-ify the selected node data
             selected_nodes_JSON = JSON.stringify(selected_nodes);
-            // console.log(selected_nodes_JSON)
             // POST JSON-ified node data
             $.ajax({
              url: "/post_seat_selections/",
@@ -459,6 +462,10 @@
                     var num_to_select = val[1];
                     var selected = select_n_nodes(num_to_select);
                     select_n_infected(num_to_infect, selected);
+                    //var values = post_node_selections();
+                    //heatmapData(values);
+                })
+                .on('end', val => {
                     var values = post_node_selections();
                     heatmapData(values);
                 });
