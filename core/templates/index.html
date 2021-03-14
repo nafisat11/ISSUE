@@ -413,6 +413,10 @@
         // POST initial node selections
         var values = post_node_selections();
         heatmapData(values);
+        var temporalDuration = $("#duration").val();
+        if (temporalDuration != 0){
+            drawTemporal(temporalDuration);
+        }
 
         // ################## POST function for node selections ##################
         function post_node_selections() {
@@ -602,10 +606,7 @@
             data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
             success: function(result) {
                 resultArray = [result.attack_rates];
-                resultTemporal = [result.temporal];
-                console.log(resultTemporal);
                 finalResult = [];
-                finalResultTemporal = [];
                 for(var i = 0; i < resultArray.length; i++)
                 {
                     finalResult = finalResult.concat(resultArray[i]);
@@ -615,12 +616,7 @@
                     finalResult[i][0] = finalResult[i][0]*heatmapWidth;
                     finalResult[i][1] = finalResult[i][1]*heatmapHeight;
                 }
-                for(var i = 0; i < resultTemporal.length; i++)
-                {
-                    finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-                }
                 drawHeatMap(finalResult);
-                drawTemporal(finalResultTemporal);
             }
         });
 
@@ -660,13 +656,14 @@
         draw();
     }
 
-    function drawTemporal(temporalData){
+    function drawTemporal(durationVal){
         // Temporal Graph
-        temporalXData = [];
-        temporalYData = [];
-        for(var i = 0; i < temporalData.length; i++){
-            temporalXData = temporalXData.concat(temporalData[i][0]);
-            temporalYData = temporalYData.concat(temporalData[i][1]);
+        temporalXData = [0.0];
+        temporalYData = [1.000];
+        for(var i = 5; i <= durationVal; i+=5){
+            temporalXData = temporalXData.concat(i);
+            yVal = (0.121 + (0.022 * (i/60) * (i/60)))/100 + 1;
+            temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         // Chart customization
         var options = {
