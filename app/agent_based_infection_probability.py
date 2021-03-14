@@ -1,11 +1,7 @@
 import math
 import json
-# import pysal as ps
-# import esda
-# from pysal.lib import weights
 
 # TODO: better structure for this
-# FIXME: need to switch input to all the seat locations otherwise it can't compute the ones where the selected agent is diagonal
 
 
 class AttackRates:
@@ -14,7 +10,8 @@ class AttackRates:
         self.mask_type = mask_type
         self.duration = int(duration)
         self.available_masks = {"N95": 0.85, "Surgical": 0.33, "Cloth": 0.11}
-        self.agents = json.loads(agents)  # All the selected agents' seat locations
+        # All the selected agents' seat locations
+        self.agents = json.loads(agents)
         self.normal_agents = [
             agent for agent in self.agents if agent['state'] == 1]
         self.infected_agents = [
@@ -36,7 +33,6 @@ class AttackRates:
 
     def probabilities(self):
         self.find_infected(self.agents)
-        # seat = self.find_infected(self.agents)
         for i, agent in enumerate(self.agents):
             sum_of_attackrates = 0
             if agent['state'] == 2:
@@ -45,7 +41,7 @@ class AttackRates:
                 continue
 
             for infected in self.infected:
-                # Distance formula 
+                # Distance formula
                 dist = math.sqrt(((infected['y'] - agent['y'])**2) +
                                  ((infected['x'] - agent['x'])**2))
                 if dist <= 2:
@@ -54,7 +50,6 @@ class AttackRates:
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
-                print(self.mask_type)
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is not None or self.duration != 0:

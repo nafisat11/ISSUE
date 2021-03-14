@@ -12,6 +12,7 @@ from .models import Buildings, Floors, Rooms, Heatmaps
 from .agent_based_infection_probability import AttackRates
 from .models import Buildings, Floors, Rooms
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.gzip import gzip_page
 
 import json
 
@@ -93,12 +94,14 @@ def get_rooms(request):
         return redirect('/')
 
 
-def get_attack_rates(request):
-    if request.method == "GET" and request.is_ajax():
+@csrf_exempt
+@gzip_page
+def post_attack_rates(request):
+    if request.method == "POST" and request.is_ajax():
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
-        agents = request.GET.get("seat_selections", None)
-        duration = request.GET.get("duration", None)
-        mask_type = request.GET.get("mask_type", None)
+        agents = request.POST.get("seat_selections", None)
+        duration = request.POST.get("duration", None)
+        mask_type = request.POST.get("mask_type", None)
         if agents is not None:
             attack_rates = AttackRates(
                 agents, mask_type, duration).probabilities()
@@ -123,6 +126,7 @@ def selection_submitted(request):
 
 
 @csrf_exempt
+@gzip_page
 def post_seat_selections(request):
     if request.method == "POST" and request.is_ajax():
         seat_selections = json.loads(request.POST.get('data'))

@@ -14,6 +14,8 @@
         position: absolute;
         top: 0;
         left: 0;
+        width: 100%;
+        height: 100%;
     }
     .seat_selection_container {
         position: relative;
@@ -23,6 +25,11 @@
     .heatmap_container {
         position: relative;
         max-width: 100%;
+        max-height: 100%;
+    }
+
+    #legend_container {
+        float: right;
     }
 
     #legend {
@@ -34,6 +41,13 @@
         margin: 72px 0px 0px 730px;
     }
 
+    #heatmapCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
     .image_container {
         max-width: 100%;
     }
@@ -52,6 +66,7 @@
 
     svg {
         width: 100%;
+        height: 100%;
     }
 
     #grid {
@@ -98,18 +113,19 @@
                             <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
                             <div class="card-body">
 
-                                <div class="image_container" id="background_container">
+                                <!-- <div class="image_container" id="background_container">
                                     <img src="/static/assets/images/room_maps/Room_Select.png">
-                                </div>
+                                </div> -->
                                 <div class="seat_selection_container" id="seat_selection_container">
-                                    <div class="image_container">
-                                        <img src="" id="floorplan">
+                                    <div class="image_container" id="seat_selection_floorplan">
+                                        <!-- <img src="/static/assets/images/room_maps/Engineering Block C_170.png" id="floorplan"> -->
+                                        <img src="/static/assets/images/room_maps/Earth Sciences_162.png" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
                                     <br>
                                     <div class="row justify-content-center">
-                                        <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
-                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span>
+                                        <!-- <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
+                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span> -->
                                         <div id="agent_slider"></div>
                                     </div>
                                     <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
@@ -128,27 +144,6 @@
                                     <button type="button" class="btn btn-icon btn-outline-danger border-0" data-toggle="modal" data-target="#random_agents">
                                         <i class="feather icon-hash"></i>
                                     </button>
-                                    <div class="modal fade bd-example-modal-sm" id="random_agents" tabindex="-1" role="dialog" aria-labelledby="input_num" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="input_num">Input Number of Infected Agents</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control" placeholder="Number" aria-label="Number">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                    <button type="button" class="btn btn-success">Ok</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- <br> -->
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -179,7 +174,7 @@
                                 </div>
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
-                                    <input data-suffix="Hours" class="form-control-sm" type="number" id="duration" value="0" min="0" max="10" step="1"/>
+                                    <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
                                     <!-- <form class="range-field">
                                         <input id="duration-slider" class="border-0" type="range" min="0">
                                         <span class=valueSpan></span>
@@ -194,9 +189,9 @@
                             </div> -->
                             
                         </div>
-                        <div class="card-footer">
-                            <button type="button" id="GenerateHeatmap" class="btn btn-success">Generate</button>
-                        </div>
+                        <!-- <div class="card-footer d-flex">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate</button>
+                        </div> -->
                         <!-- infection-parameter end -->
                     </div>
                 </div>
@@ -206,11 +201,20 @@
                     <div class="card">
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
-                            <div class="heatmap_container" id="heatmap_container">
-                                <div id="probabilitiesSelect"></div>
-                                <div class="wrapper">
-                                    <div><canvas id="backgroundCanvas" width="700" height="550"></canvas></div>
-                                    <div><canvas id="heatmapCanvas" width="700" height="550" style="opacity:0.5"></canvas></div>
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div class="heatmap_container" id="heatmap_container">
+                                        <div class="image_container">
+                                            <img src="/static/assets/images/room_maps/Earth Sciences_162.png" id="heatmap_floorplan">
+                                            <div><canvas id="heatmapCanvas" style="opacity:0.5"></canvas></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="legend_container">
+                                        <img src="/static/assets/images/heatmap-legend.png">
+                                        <div id="legend_container width="120"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>
@@ -218,16 +222,16 @@
                                 <h4>Alberta Health Services Guidelines</h4>
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                      <a class="nav-link active" id="pills-covid-tab" data-toggle="pill" href="#pills-covid" role="tab" aria-controls="pills-covid" aria-selected="true">COVID-19</a>
+                                        <a class="nav-link active" id="pills-covid-tab" data-toggle="pill" href="#pills-covid" role="tab" aria-controls="pills-covid" aria-selected="true">COVID-19</a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                      <a class="nav-link" id="pills-virus2-tab" data-toggle="pill" href="#pills-virus2" role="tab" aria-controls="pills-virus2" aria-selected="false">Virus2</a>
+                                        <a class="nav-link" id="pills-virus2-tab" data-toggle="pill" href="#pills-virus2" role="tab" aria-controls="pills-virus2" aria-selected="false">Virus2</a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                      <a class="nav-link" id="pills-virus3-tab" data-toggle="pill" href="#pills-virus3" role="tab" aria-controls="pills-virus3" aria-selected="false">Virus3</a>
+                                        <a class="nav-link" id="pills-virus3-tab" data-toggle="pill" href="#pills-virus3" role="tab" aria-controls="pills-virus3" aria-selected="false">Virus3</a>
                                     </li>
-                                  </ul>
-                                  <div class="tab-content" id="pills-tabContent">
+                                    </ul>
+                                    <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-covid" role="tabpanel" aria-labelledby="pills-covid-tab">
                                         <li>Stay 2 metres apart from others</li>
                                         <li>Wear a mask in public spaces, indoor workplaces and places of worship</li>
@@ -236,14 +240,11 @@
                                     </div>
                                     <div class="tab-pane fade" id="pills-virus2" role="tabpanel" aria-labelledby="pills-virus2-tab">...</div>
                                     <div class="tab-pane fade" id="pills-virus3" role="tabpanel" aria-labelledby="pills-virus3-tab">...</div>
-                                  </div>    
+                                    </div>    
                             </div>
                         </div>
-                        
-                        <div id="legend_container">
-                            <canvas id="legend" width="120" height="550"></canvas>
-                        </div>
                     </div>
+                    
                 </div>
                 <div class="card-body d-flex flex-column">
                     <div class="card">
@@ -274,31 +275,8 @@
     <!-- infection-parameter js -->
     <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
     <script>
-        $("input[type='number']").inputSpinner()
-        // $('#duration').on("change", function (event) {
-        //     time_duration = $('#duration').val();
-        //     if (time_duration != 0) {
-        //         $.ajax({
-		// 			type: "GET",
-		// 			url: '/get_attack_rates/',
-		// 			data: {"duration": time_duration},
-		// 		});
-        //     }
-        // });
+        $("input[type='number']").inputSpinner();
     </script>
-
-    <!-- <script src="/static/assets/js/pages/dashboard-main.js"></script>
-    <script>
-        $(document).ready(function() {
-            const $valueSpan = $('.valueSpan');
-            const $value = $('#duration-slider');
-            $valueSpan.html($value.val());
-            $value.on('input change', () => {
-
-                $valueSpan.html($value.val());
-            });
-        });
-    </script> -->
 
     <!-- seat-selection js-->
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -310,25 +288,28 @@
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./static/assets/js/simpleheat.js"></script>
     <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
+    
+
     <script>
     $.noConflict();
-    
-    var ROOM_MAP_PATH = "/static/assets/images/room_maps/Engineering Block C_170.png";
 
+    // ############################# GLOBAL PARAMETERS #############################
 
-    var ROOM_NAME = ROOM_MAP_PATH.split("/");
-    ROOM_NAME = ROOM_NAME[ROOM_NAME.length - 1];
-    ROOM_NAME = ROOM_NAME.split(".")[0].concat(".json");
-    console.log(ROOM_NAME);
-    var POSITIONS_PATH = "/static/assets/json/seat_positions/";
+    // define base paths for image and JSON data
+    var ROOM_MAP_ROOT = "/static/assets/images/room_maps/";
+    var SEAT_POSITIONS_ROOT = "/static/assets/json/seat_positions/";
 
-    var SEAT_POSITIONS_PATH = POSITIONS_PATH.concat(ROOM_NAME);
-    var cache_seat_locations = [];
+    // define image file type to use
+    var IMAGE_TYPE = ".png";
 
-    // console.log(SEAT_POSITIONS_PATH);
+    // define default room to load on startup
+    var DEFAULT_BUILDING = "Earth Sciences";
+    var DEFAULT_ROOM = "162";
     
     // define index values mapping to different state colours
     var WHITE = 0, GRAY = 1, RED = 2;
+
+    // ############################# UTILITY FUNCTIONS #############################
 
     // utility function to randomize ordering of array elements
     function shuffle(array) {
@@ -350,7 +331,25 @@
         return array;
     }
 
-    function grid (config) {
+    // utility function to read JSON file contents
+    function readTextFile(file, callback) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.overrideMimeType("application/json");
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function() {
+            if (rawFile.readyState === 4 && rawFile.status == "200") {
+                callback(rawFile.responseText);
+            }
+        }
+        rawFile.send(null);
+    }
+
+    // ############################# UTILITY FUNCTIONS #############################
+
+    function draw_grid (config) {
+
+        var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+        var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
         
         // defaults
         config = Object.assign({size:15, num_states:2, x_margin:2, y_margin:2, outline:'#000'}, config);  
@@ -368,6 +367,7 @@
         // create a dictionary to maintain list of nodes by ID
         var node_map = {};
         for (let i = 0; i < nodes.length; i++) {
+            console.log(nodes[i]);
             if (i < n_default) {
                 nodes[i].state = 1;
                 nodes[i].colour = colour_array[GRAY];
@@ -386,7 +386,9 @@
 
         svg
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+            .attr("id", "grid_svg")
+            .attr("viewBox", `0 0 ${image_width} ${image_height}`);
             //.attr("style", 'background-color:gray');        
 
         const el = svg.node();
@@ -408,6 +410,10 @@
         // initialize slider to default values
         make_slider([0, n_default]);
 
+        // POST initial node selections
+        var values = post_node_selections();
+        heatmapData(values);
+
         // ################## POST function for node selections ##################
         function post_node_selections() {
             // loop through all list to determine which have a non-zero state
@@ -425,7 +431,6 @@
             }
             // JSON-ify the selected node data
             selected_nodes_JSON = JSON.stringify(selected_nodes);
-            // console.log(selected_nodes_JSON)
             // POST JSON-ified node data
             $.ajax({
              url: "/post_seat_selections/",
@@ -443,8 +448,8 @@
                 .sliderBottom()
                 .min(0)
                 .max(nodes.length)
-                .width(image_width - 50)
-                .ticks(nodes.length / 10)
+                .width(0.7 * image_width)
+                .ticks(nodes.length / 20)
                 .step(1)
                 .tickFormat(d3.format(""))
                 .default(default_value)
@@ -460,17 +465,23 @@
                     var num_to_select = val[1];
                     var selected = select_n_nodes(num_to_select);
                     select_n_infected(num_to_infect, selected);
+                    //var values = post_node_selections();
+                    //heatmapData(values);
+                })
+                .on('end', val => {
                     var values = post_node_selections();
+                    heatmapData(values);
                 });
 
             var gSlider = d3
                 .select('div#agent_slider')
                 .append('svg')
                 .attr('id', 'slider_svg')
-                .attr('width', 1000)
-                .attr('height', 200)
+                .attr('width', 0.8 * image_width)
+                .attr('height', 0.2 * image_height)
+                .attr("viewBox", `0 0 ${0.8 * image_width} ${0.2 * image_height}`)
                 .append('g')
-                .attr('transform', 'translate(30,30)');
+                .attr('transform', 'translate(10,15)');
 
             gSlider.call(slider);
         }
@@ -522,6 +533,7 @@
         }
 
         // ################## manual selection call-back functions ##################
+
         function hoverOver({x, y, id}) {
             d3.select(this).style('stroke-width', '5');
         }
@@ -541,154 +553,104 @@
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
             make_slider(values.slice(0,1));
-            agent_nodes = values[2];
 
             heatmapWidth = 700;
             heatmapHeight = 550;
             var duration = $("#duration").val();
             var maskType = $("input[name='ppe']:checked").val();
 
-            $("#GenerateHeatmap").click(function(event) {
-                event.preventDefault();
-                $.ajax({
-                    type: "GET",
-                    url: "/get_attack_rates",
-                    data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
-                    success: function(result) {
-                        resultArray = [result.attack_rates];
-                        //resultTemporal = [result.temporal];
-                        finalResult = [];
-                        //finalResultTemporal = [];
-                        for(var i = 0; i < resultArray.length; i++)
-                        {
-                            finalResult = finalResult.concat(resultArray[i]);
-                        }
-                        for (var i = 0; i < finalResult.length; i++){
-                            finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                            finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                        }
-                        // for(var i = 0; i < resultTemporal.length; i++)
-                        // {
-                        //     finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-                        //     //console.log(resultTemporal[i]);
-                        // }
-                        //drawTemporal(finalResultTemporal);
-                    }
-                });
-            })            
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/get_attack_rates",
+            //     data: {'seat_selections': values[2], 'mask_type': maskType, 'duration': duration},
+            //     success: function(result) {
+            //         resultArray = [result.attack_rates];
+            //         resultTemporal = [result.temporal];
+            //         finalResult = [];
+            //         finalResultTemporal = [];
+            //         for(var i = 0; i < resultArray.length; i++)
+            //         {
+            //             finalResult = finalResult.concat(resultArray[i]);
+            //         }
+            //         for (var i = 0; i < finalResult.length; i++){
+            //             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+            //             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+            //         }
+            //         for(var i = 0; i < resultTemporal.length; i++)
+            //         {
+            //             finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+            //         }
+            //         drawHeatMap(finalResult);
+            //         drawTemporal(finalResultTemporal);
+            //     }
+            // });           
+            heatmapData(values);            
         }
-        console.log(cache_seat_locations);
         return el;
-        
-
     }
 
-    var image = new Image();
-    image.src = ROOM_MAP_PATH;
-    //var image_width = image.width;
-    //var image_height = image.height;
-    var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
-    var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
-    
-    function readTextFile(file, callback) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType("application/json");
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function() {
-            if (rawFile.readyState === 4 && rawFile.status == "200") {
-                callback(rawFile.responseText);
+    function heatmapData(seats) {
+        var heatmapWidth = document.querySelector("#heatmap_floorplan").width;
+        var heatmapHeight = document.querySelector("#heatmap_floorplan").height;
+        var duration = $("#duration").val();
+        var maskType = $("input[name='ppe']:checked").val();
+
+        console.log(document.querySelector("#heatmap_floorplan").width);
+        $.ajax({
+            type: "POST",
+            url: "/post_attack_rates/",
+            data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
+            success: function(result) {
+                resultArray = [result.attack_rates];
+                resultTemporal = [result.temporal];
+                console.log(resultTemporal);
+                finalResult = [];
+                finalResultTemporal = [];
+                for(var i = 0; i < resultArray.length; i++)
+                {
+                    finalResult = finalResult.concat(resultArray[i]);
+                }
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
+                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
+                }
+                for(var i = 0; i < resultTemporal.length; i++)
+                {
+                    finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+                }
+                drawHeatMap(finalResult);
+                drawTemporal(finalResultTemporal);
             }
-        }
-        rawFile.send(null);
-    }
-
-    readTextFile(SEAT_POSITIONS_PATH, function(text){
-        positions = JSON.parse(text);
-        // console.log(positions);
-        grid = grid({
-            width: 608,
-            height: 518,
-            num_states: 3, 
-            size: 8,
-            nodes: positions,
-            n_default : positions.length / 2
         });
-    });
 
-    // function heatmapData(seats) {
-    //     console.log(seats.seat_selections);
-    //     heatmapWidth = 700;
-    //     heatmapHeight = 550;
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/get_attack_rates",
-    //         data: {'seat_selections': seats.seat_selections},
-    //         success: function(result) {
-    //             resultArray = Object.values(result);
-    //             finalResult = [];
-    //             for(var i = 0; i < resultArray.length; i++)
-    //             {
-    //                 finalResult = finalResult.concat(resultArray[i]);
-    //             }
-    //             for (var i = 0; i < finalResult.length; i++){
-    //                 finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-    //                 finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-    //             }
-    //             drawHeatMap(finalResult);
-    //         }
-    //     });
-    // }
-    </script>
-
-    <!-- heat-map js-->
-    <script>
-    //Update Background Image
-    function setBackground(buildingName, roomName){
-        roomName = roomName;
-        imageLocation = "/static/assets/images/room_maps/";
-        fileType = ".png";
-        
-        //Updating background with "new" room map
-        var c = document.getElementById("backgroundCanvas");
-        var ctx = c.getContext("2d");
-        var background = new Image();
-        background.src = imageLocation.concat(buildingName, "_", roomName, fileType);
-        background.onload = function(){
-                  ctx.drawImage(background, 0, 0, 700, 550);
-        };
-
-        // legend
-        var clegend = document.getElementById("legend");
-        var ctxlegend = clegend.getContext("2d");
-        var legend = new Image();
-        legend.src = "/static/assets/images/heatmap-legend.png";
-        legend.onload = function(){
-            ctxlegend.drawImage(legend, 0, 0, 120, 550);
-        };
-
-        if (typeof heat !== 'undefined'){
-            heat.clear();
-            heat.draw();
-        }
-        // else {
-        //     showGenerateButton();
-        // }
+        // $("#GenerateHeatmap").click(function(event) {
+        //     event.preventDefault();
+            
+        // });            
     }
-
-    // function showGenerateButton(){
-    //     document.getElementById('generatebutton').removeAttribute('disabled');
-    // }
-
+    
     //Heatmap Background Image
-    var canvas = document.getElementById("backgroundCanvas");
-    var ctx = canvas.getContext("2d");
-    var background = new Image();
-    background.src = "/static/assets/images/room_maps/Room_Select.png";
+    var canvas = document.getElementById("heatmapCanvas");
+    canvas.width = document.getElementsByClassName("heatmap_container")[0].clientWidth;
+    canvas.height = document.getElementsByClassName("heatmap_container")[0].clientHeight;
+    // var ctx = canvas.getContext("2d");
 
-    // Make sure the image is loaded first otherwise nothing will draw.
-    background.onload = function(){
-        ctx.drawImage(background, 0, 0, 700, 550);
-    }
+    // legend needs to be implemented in d3
+    // Background canvas for quick drawing
+    var clegend = d3.select("#legend_container").append("canvas")
+        .attr("width", 138)
+        .attr("height", 550);
+    var ctxlegend = clegend.node().getContext("2d");
+
+
+    var x = d3.scaleLinear().domain([-1, 1]).range([20, 500]);
+
+    //Continuous diverging scale
+    var color_sequential = d3.scaleSequential(d3.interpolatePuOr)
+    .domain([-1, 1]);
+
+
     function drawHeatMap(sampleData){
         var heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
         heat.draw();
@@ -709,7 +671,7 @@
         // Chart customization
         var options = {
             series: [{
-                name: "Attack Rate",
+                name: "Attack Rate Multiplier",
                 data: temporalYData
             }],
             chart: {
@@ -731,7 +693,7 @@
             curve: 'smooth'
             },
             title: {
-            text: 'Attack Rate as a Function of Time',
+            text: 'Attack Rate Multiplier as a Function of Time',
             align: 'left'
             },
             xaxis: {
@@ -791,6 +753,50 @@
         var chart = new ApexCharts(document.querySelector("#temporal1"), options);
         chart.render();
     }
+
+    // ####################### PAGE INITIALIZATION & UPDATE ########################
+
+    // update room selection
+    function update_room_selection(building_name, room_name){
+
+        // target data for selected map
+        var image_path = ROOM_MAP_ROOT.concat(building_name, "_", room_name, IMAGE_TYPE)
+        var seat_positions_path = SEAT_POSITIONS_ROOT.concat(building_name, "_", room_name, ".json")
+
+        // update backgrounds for both seat selection interface and heatmap
+        var image = new Image();
+        image.onload = function() {
+
+            // get dimensions of newly loaded map
+            var image_width = document.getElementsByClassName("image_container")[0].clientWidth;
+            var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
+
+            // update (remove and re-draw) seat selection interface
+            d3.select('#grid').html("");
+            d3.select('#agent_slider').html("");
+            readTextFile(seat_positions_path, function(text){
+                positions = JSON.parse(text);
+                grid = draw_grid({
+                    width: image_width,
+                    height: image_height,
+                    size: 8,
+                    num_states: 3, 
+                    nodes: positions,
+                    n_default : positions.length / 2
+                });
+            });
+
+            // TODO: update heatmap, redraw canvas
+
+        }
+        image.src = image_path;
+        $("#floorplan").attr("src", image_path);
+        $("#heatmap_floorplan").attr("src", image_path);
+    }
+
+    // initialize seat selection interface
+    update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
+
     </script>
 
 {% endblock javascripts %}
