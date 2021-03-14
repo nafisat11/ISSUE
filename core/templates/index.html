@@ -327,7 +327,7 @@
 
     // console.log(SEAT_POSITIONS_PATH);
     
-        // define index values mapping to different state colours
+    // define index values mapping to different state colours
     var WHITE = 0, GRAY = 1, RED = 2;
 
     // utility function to randomize ordering of array elements
@@ -549,7 +549,6 @@
             var maskType = $("input[name='ppe']:checked").val();
 
             $("#GenerateHeatmap").click(function(event) {
-                console.log("Hello");
                 event.preventDefault();
                 $.ajax({
                     type: "GET",
@@ -557,9 +556,9 @@
                     data: {'seat_selections': agent_nodes, 'mask_type': maskType, 'duration': duration},
                     success: function(result) {
                         resultArray = [result.attack_rates];
-                        resultTemporal = [result.temporal];
+                        //resultTemporal = [result.temporal];
                         finalResult = [];
-                        finalResultTemporal = [];
+                        //finalResultTemporal = [];
                         for(var i = 0; i < resultArray.length; i++)
                         {
                             finalResult = finalResult.concat(resultArray[i]);
@@ -568,11 +567,12 @@
                             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
                             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
                         }
-                        for(var i = 0; i < resultTemporal.length; i++)
-                        {
-                            finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-                        }
-                        drawTemporal(finalResultTemporal);
+                        // for(var i = 0; i < resultTemporal.length; i++)
+                        // {
+                        //     finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
+                        //     //console.log(resultTemporal[i]);
+                        // }
+                        //drawTemporal(finalResultTemporal);
                     }
                 });
             })            
