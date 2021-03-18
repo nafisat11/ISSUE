@@ -31,6 +31,25 @@ class AttackRates:
                 self.infected.append(agent)
         return
 
+    def normalize(self, attack_rates):
+        a = 0  # minimum attack rate
+        b = 100  # maximum attack rate
+        min_attack_rate = min(attack_rates)
+        max_attack_rate = max(attack_rates)
+
+        output = []
+
+        for i, agent in enumerate(self.agents):
+            attRate = a + ((agent["attRate"]-min_attack_rate)
+                           * (b-a))/(max_attack_rate-min_attack_rate)
+            agent["attRate"] = attRate
+            innerlist = []
+            innerlist.append(agent['x'])
+            innerlist.append(agent['y'])
+            innerlist.append(agent['attRate']/100)
+            output.append(innerlist)
+        return output
+
     def probabilities(self):
         self.find_infected(self.agents)
         for i, agent in enumerate(self.agents):
@@ -68,7 +87,6 @@ class AttackRates:
             innerlist.append(agent['y'])
             w_coord.append(agent['y'])
             w_list.append(w_coord)
-            # did this cause heatmap values don't work unless you divide by 100
             innerlist.append(agent['attRate']/100)
             att_list.append(agent['attRate'])
             output.append(innerlist)

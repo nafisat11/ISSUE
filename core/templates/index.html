@@ -76,6 +76,36 @@
         width: 100%;
     }
 
+    #heatmapid {
+        position: relative;
+        width: 100%;
+        padding-top: 100%;
+    }
+
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+    .legend i {
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: 8px;
+    }
+
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
 </style>
 {% endblock stylesheets %}
 
@@ -83,23 +113,6 @@
     <!-- [ Main Content ] start -->
     <div class="pcoded-main-container">
         <div class="pcoded-content">
-            <!-- [ breadcrumb ] start -->
-            <!-- <div class="page-header">
-                <div class="page-block">
-                    <div class="row align-items-center">
-                        <div class="col-md-12">
-                            <div class="page-header-title">
-                                <h5 class="m-b-10">Dashboard Analytics</h5>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                <li class="breadcrumb-item"><a href="#!">Dashboard Analytics</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- [ breadcrumb ] end -->
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- seat-selection start -->
@@ -128,9 +141,9 @@
                                         <span style="display:block;float:right" id="num_normal">Agents Selected</span> -->
                                         <div id="agent_slider"></div>
                                     </div>
-                                    <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
+                                    <div class="col-sm"><div id="agent_slider"></div></div>
                                 </div>
-                                <!-- <br> -->
+                                <br>
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
@@ -145,7 +158,7 @@
                                         <i class="feather icon-hash"></i>
                                     </button>
                                 </div>
-                                <!-- <br> -->
+                                <br>
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
                                 <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
                             </div>
@@ -175,23 +188,12 @@
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
                                     <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
-                                    <!-- <form class="range-field">
-                                        <input id="duration-slider" class="border-0" type="range" min="0">
-                                        <span class=valueSpan></span>
-                                    </form> -->
                                 </div>
-                            </div>
-                            <!-- <div class="parent" id="seat_selector_container">
-                                <div class="panzoom" id="panzoom_container">
-                                    <div class="grid" id="grid"></div>
-                                    <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
-                                </div>
-                            </div> -->
-                            
+                            </div>                            
                         </div>
-                        <!-- <div class="card-footer d-flex">
-                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate</button>
-                        </div> -->
+                        <div class="card-footer d-flex">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate Heatmap</button>
+                        </div>
                         <!-- infection-parameter end -->
                     </div>
                 </div>
@@ -202,19 +204,8 @@
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-10">
-                                    <div class="heatmap_container" id="heatmap_container">
-                                        <div class="image_container">
-                                            <img src="/static/assets/images/room_maps/Earth Sciences_162.png" id="heatmap_floorplan">
-                                            <div><canvas id="heatmapCanvas" style="opacity:0.5"></canvas></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="legend_container">
-                                        <img src="/static/assets/images/heatmap-legend.png">
-                                        <div id="legend_container width="120"></div>
-                                    </div>
+                                <div class="col">
+                                    <div id="heatmapid"></div>
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>
@@ -267,10 +258,7 @@
 {% block javascripts %}
 
     <!-- Apex Chart -->
-    <script src="/static/assets/js/pages/chart-apex.js"></script>
-    <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
-    <script>
-    </script>
+    <script src="/static/assets/js/plugins/apexcharts.min.js"></script> -->
 
     <!-- infection-parameter js -->
     <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
@@ -412,260 +400,18 @@
 
         // POST initial node selections
         var values = post_node_selections();
-        heatmapData(values);
-        var temporalDuration = $("#duration").val();
-        if (temporalDuration != 0){
-            drawTemporal(temporalDuration);
-        }
+        // heatmapData(values);
 
-        // ################## POST function for node selections ##################
-        function post_node_selections() {
-            // loop through all list to determine which have a non-zero state
-            selected_nodes = [];
-            var count = 0;
-            for (node_ID in node_map) {
-                var node = node_map[node_ID];
-                if (node.state != 0) {
-                    node.attRate = 0.05;
-                    selected_nodes.push(node);
-                }
-                if (node.state === 2) {
-                    count++;
-                }
-            }
-            // JSON-ify the selected node data
-            selected_nodes_JSON = JSON.stringify(selected_nodes);
-            // POST JSON-ified node data
-            $.ajax({
-             url: "/post_seat_selections/",
-                method : "POST",
-                dataType : "json",
-                data : {'data': selected_nodes_JSON},
-            });
-            return [count, selected_nodes.length, selected_nodes_JSON];
-        }
-
-        // ################## slider creation & utility functions ##################
-        function make_slider(default_value) {
-            // define slider settings
-            var slider = d3
-                .sliderBottom()
-                .min(0)
-                .max(nodes.length)
-                .width(0.7 * image_width)
-                .ticks(nodes.length / 20)
-                .step(1)
-                .tickFormat(d3.format(""))
-                .default(default_value)
-                .fill('#2196f3')
-                .handle(
-                  d3
-                    .symbol()
-                    .type(d3.symbolCircle)
-                    .size(300)()
-                )
-                .on('onchange', val => {
-                    var num_to_infect = val[0];
-                    var num_to_select = val[1];
-                    var selected = select_n_nodes(num_to_select);
-                    select_n_infected(num_to_infect, selected);
-                    //var values = post_node_selections();
-                    //heatmapData(values);
-                })
-                .on('end', val => {
-                    var values = post_node_selections();
-                    heatmapData(values);
-                });
-
-            var gSlider = d3
-                .select('div#agent_slider')
-                .append('svg')
-                .attr('id', 'slider_svg')
-                .attr('width', 0.8 * image_width)
-                .attr('height', 0.2 * image_height)
-                .attr("viewBox", `0 0 ${0.8 * image_width} ${0.2 * image_height}`)
-                .append('g')
-                .attr('transform', 'translate(10,15)');
-
-            gSlider.call(slider);
-        }
-
-        function select_n_nodes(num) {
-            selected = [];
-            for (let i = 0; i < nodes.length; i++) {
-                var id = node_IDs[i];
-                // update internal node states
-                if (i < num) {
-                    if (node_map[id].state === 0) {
-                        node_map[id].state = 1;
-                        node_map[id].colour = colour_array[GRAY];
-                    }
-                    selected.push(id);
-                } else {
-                    if (node_map[id].state != 0) {
-                        node_map[id].state = 0;
-                        node_map[id].colour = colour_array[WHITE];
-                    }
-                }
-                // update node colours
-                var node_tag = "#node_" + String(id);
-                svg.select(node_tag).style('fill', node_map[id].colour);
-                el.dispatchEvent(new CustomEvent('input'));
-            }
-            return selected;
-        }
-
-        function select_n_infected(num_to_infect, selected) {
-            selected = shuffle(selected);
-            for (let i = 0; i < selected.length; i++) {
-                var id = selected[i];
-                // update internal node states
-                if (i < num_to_infect) {
-                    if (node_map[id].state === 1) {
-                        node_map[id].state = 2;
-                        node_map[id].colour = colour_array[RED];
-                    }
-                } else {
-                    node_map[id].state = 1;
-                    node_map[id].colour = colour_array[GRAY];
-                }
-                // update node colours
-                var node_tag = "#node_" + String(id);
-                svg.select(node_tag).style('fill', node_map[id].colour);
-                el.dispatchEvent(new CustomEvent('input'));
-            }
-        }
-
-        // ################## manual selection call-back functions ##################
-
-        function hoverOver({x, y, id}) {
-            d3.select(this).style('stroke-width', '5');
-        }
-
-        function hoverOff({x, y, id}) {
-            d3.select(this).style('stroke-width', '1');
-        }
-
-        function gridClick({x, y, id}) {
-            // update node state & fill colour
-            node_map[id].state = (node_map[id].state + 1) % num_states;
-            node_map[id].colour = colour_array[node_map[id].state];
-            this.style.fill = node_map[id].colour;
-            el.dispatchEvent(new CustomEvent('input'));
-            // POST node selections
-            var values = post_node_selections();
-            // delete and remake slider with updated values
-            d3.select('#slider_svg').remove();
-            make_slider(values.slice(0,1));
-
-            heatmapWidth = 700;
-            heatmapHeight = 550;
-            var duration = $("#duration").val();
-            var maskType = $("input[name='ppe']:checked").val();
-
-            // $.ajax({
-            //     type: "GET",
-            //     url: "/get_attack_rates",
-            //     data: {'seat_selections': values[2], 'mask_type': maskType, 'duration': duration},
-            //     success: function(result) {
-            //         resultArray = [result.attack_rates];
-            //         resultTemporal = [result.temporal];
-            //         finalResult = [];
-            //         finalResultTemporal = [];
-            //         for(var i = 0; i < resultArray.length; i++)
-            //         {
-            //             finalResult = finalResult.concat(resultArray[i]);
-            //         }
-            //         for (var i = 0; i < finalResult.length; i++){
-            //             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-            //             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-            //         }
-            //         for(var i = 0; i < resultTemporal.length; i++)
-            //         {
-            //             finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-            //         }
-            //         drawHeatMap(finalResult);
-            //         drawTemporal(finalResultTemporal);
-            //     }
-            // });           
-            heatmapData(values);            
-        }
-        return el;
-    }
-
-    function heatmapData(seats) {
-        var heatmapWidth = document.querySelector("#heatmap_floorplan").width;
-        var heatmapHeight = document.querySelector("#heatmap_floorplan").height;
-        var duration = $("#duration").val();
-        var maskType = $("input[name='ppe']:checked").val();
-
-        console.log(document.querySelector("#heatmap_floorplan").width);
-        $.ajax({
-            type: "POST",
-            url: "/post_attack_rates/",
-            data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
-            success: function(result) {
-                resultArray = [result.attack_rates];
-                finalResult = [];
-                for(var i = 0; i < resultArray.length; i++)
-                {
-                    finalResult = finalResult.concat(resultArray[i]);
-                }
-
-                for (var i = 0; i < finalResult.length; i++){
-                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                }
-                drawHeatMap(finalResult);
-            }
-        });
-
-        // $("#GenerateHeatmap").click(function(event) {
-        //     event.preventDefault();
-            
-        // });            
-    }
-    
-    //Heatmap Background Image
-    var canvas = document.getElementById("heatmapCanvas");
-    canvas.width = document.getElementsByClassName("heatmap_container")[0].clientWidth;
-    canvas.height = document.getElementsByClassName("heatmap_container")[0].clientHeight;
-    // var ctx = canvas.getContext("2d");
-
-    // legend needs to be implemented in d3
-    // Background canvas for quick drawing
-    var clegend = d3.select("#legend_container").append("canvas")
-        .attr("width", 138)
-        .attr("height", 550);
-    var ctxlegend = clegend.node().getContext("2d");
-
-
-    var x = d3.scaleLinear().domain([-1, 1]).range([20, 500]);
-
-    //Continuous diverging scale
-    var color_sequential = d3.scaleSequential(d3.interpolatePuOr)
-    .domain([-1, 1]);
-
-
-    function drawHeatMap(sampleData){
-        var heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
-        heat.draw();
-        function draw() {
-            heat.draw();
-        }
-        draw();
-    }
-
-    function drawTemporal(durationVal){
-        // Temporal Graph
+        // ################## Temporal Graph and Duration-related functions ##################
+        // Default temporal graph series and settings
+        var durationVal = $("#duration").val();
         temporalXData = [];
         temporalYData = [];
         for(var i = 0; i <= durationVal; i+=5){
             temporalXData = temporalXData.concat(i);
-            yVal = (0.0051 * (i * i));
+            yVal = ((0.0051 * (i * i))/100) + 1;
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
-        // Chart customization
         var options = {
             series: [{
                 name: "Attack Rate Increase",
@@ -761,10 +507,180 @@
         };
         var chart = new ApexCharts(document.querySelector("#temporal1"), options);
         chart.render();
+
+        function drawTemporal(durationVal, chart){
+            // Temporal Graph
+            temporalXData = [];
+            temporalYData = [];
+            for(var i = 0; i <= durationVal; i+=5){
+                temporalXData = temporalXData.concat(i);
+                yVal = ((0.0051 * (i * i))/100) + 1;
+                temporalYData = temporalYData.concat(yVal.toFixed(3));
+            }
+            // Update series
+            chart.updateOptions({
+                series: [{
+                    data: temporalYData
+                }],
+                xaxis: {
+                    categories: temporalXData
+                }
+            })
+        }
+
+        var temporalDuration;
+        $("#duration").on("change", function (event) {
+            temporalDuration = $("#duration").val();
+            if (temporalDuration != 0){
+                drawTemporal(temporalDuration, chart);
+            }
+        })
+
+        // ################## POST function for node selections ##################
+        function post_node_selections() {
+            // loop through all list to determine which have a non-zero state
+            selected_nodes = [];
+            var count = 0;
+            for (node_ID in node_map) {
+                var node = node_map[node_ID];
+                if (node.state != 0) {
+                    node.attRate = 0.05;
+                    selected_nodes.push(node);
+                }
+                if (node.state === 2) {
+                    count++;
+                }
+            }
+            // JSON-ify the selected node data
+            selected_nodes_JSON = JSON.stringify(selected_nodes);
+            // POST JSON-ified node data
+            $.ajax({
+             url: "/post_seat_selections/",
+                method : "POST",
+                dataType : "json",
+                data : {'data': selected_nodes_JSON},
+            });
+            return [count, selected_nodes.length, selected_nodes_JSON];
+        }
+
+        // ################## slider creation & utility functions ##################
+        function make_slider(default_value) {
+            // define slider settings
+            var slider = d3
+                .sliderBottom()
+                .min(0)
+                .max(nodes.length)
+                .width(0.7 * image_width)
+                .ticks(nodes.length / 20)
+                .step(1)
+                .tickFormat(d3.format(""))
+                .default(default_value)
+                .fill('#2196f3')
+                .handle(
+                  d3
+                    .symbol()
+                    .type(d3.symbolCircle)
+                    .size(300)()
+                )
+                .on('onchange', val => {
+                    var num_to_infect = val[0];
+                    var num_to_select = val[1];
+                    var selected = select_n_nodes(num_to_select);
+                    select_n_infected(num_to_infect, selected);
+                    //var values = post_node_selections();
+                    //heatmapData(values);
+                })
+                .on('end', val => {
+                    var values = post_node_selections();
+                    drawHeatMap(values);
+                });
+
+            var gSlider = d3
+                .select('div#agent_slider')
+                .append('svg')
+                .attr('id', 'slider_svg')
+                .attr('width', 0.8 * image_width)
+                .attr('height', 0.2 * image_height)
+                .attr("viewBox", `0 0 ${0.8 * image_width} ${0.2 * image_height}`)
+                .append('g')
+                .attr('transform', 'translate(10,15)');
+
+            gSlider.call(slider);
+        }
+
+        function select_n_nodes(num) {
+            selected = [];
+            for (let i = 0; i < nodes.length; i++) {
+                var id = node_IDs[i];
+                // update internal node states
+                if (i < num) {
+                    if (node_map[id].state === 0) {
+                        node_map[id].state = 1;
+                        node_map[id].colour = colour_array[GRAY];
+                    }
+                    selected.push(id);
+                } else {
+                    if (node_map[id].state != 0) {
+                        node_map[id].state = 0;
+                        node_map[id].colour = colour_array[WHITE];
+                    }
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            return selected;
+        }
+
+        function select_n_infected(num_to_infect, selected) {
+            selected = shuffle(selected);
+            for (let i = 0; i < selected.length; i++) {
+                var id = selected[i];
+                // update internal node states
+                if (i < num_to_infect) {
+                    if (node_map[id].state === 1) {
+                        node_map[id].state = 2;
+                        node_map[id].colour = colour_array[RED];
+                    }
+                } else {
+                    node_map[id].state = 1;
+                    node_map[id].colour = colour_array[GRAY];
+                }
+                // update node colours
+                var node_tag = "#node_" + String(id);
+                svg.select(node_tag).style('fill', node_map[id].colour);
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+        }
+
+        // ################## manual selection call-back functions ##################
+
+        function hoverOver({x, y, id}) {
+            d3.select(this).style('stroke-width', '5');
+        }
+
+        function hoverOff({x, y, id}) {
+            d3.select(this).style('stroke-width', '1');
+        }
+
+        function gridClick({x, y, id}) {
+            // update node state & fill colour
+            node_map[id].state = (node_map[id].state + 1) % num_states;
+            node_map[id].colour = colour_array[node_map[id].state];
+            this.style.fill = node_map[id].colour;
+            el.dispatchEvent(new CustomEvent('input'));
+            // POST node selections
+            var values = post_node_selections();
+            // delete and remake slider with updated values
+            d3.select('#slider_svg').remove();
+            make_slider(values.slice(0,1));          
+            drawHeatMap(values);            
+        }
+        return el;
     }
 
     // ####################### PAGE INITIALIZATION & UPDATE ########################
-
     // update room selection
     function update_room_selection(building_name, room_name){
 
@@ -794,7 +710,6 @@
                     n_default : positions.length / 2
                 });
             });
-
             // TODO: update heatmap, redraw canvas
 
         }
@@ -804,8 +719,96 @@
     }
 
     // initialize seat selection interface
-    update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
+    // update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
 
+    // ################## Leaflet Heatmap and Legend ##################
+    var imgURL = decodeURI(document.getElementById("floorplan").src);
+    var h = document.getElementsByClassName("image_container")[0].clientHeight;
+    var w = document.getElementsByClassName("image_container")[0].clientWidth;
+
+    // Heatmap bounding box with zoom utilities
+    const map = L.map('heatmapid', {
+        zoomSnap: 0.1,
+        minZoom: 3,
+        maxZoom: 4,
+        center: [0, 0],
+        zoom: 3,
+        crs: L.CRS.Simple
+    });
+
+    var southWest = map.unproject([0, h], map.getMaxZoom()-1);
+    var northEast = map.unproject([w, 0], map.getMaxZoom()-1);
+    var bounds = new L.LatLngBounds(southWest, northEast);
+
+    console.log(w, h);
+
+    var hmap = L.imageOverlay(imgURL, bounds).addTo(map);
+    map.setMaxBounds(bounds);
+
+    // Legend creation
+    var legend = L.control({position: 'bottomright'});
+    function getColor(d) {
+        return d > 1 ? '#FF0000' :
+            d > 0.8  ? '#FD8D3C' :
+            d > 0.6   ? '#FEB24C' :
+            d > 0.4   ? '#04FF00' :
+                        '#002AFF';
+    }
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 0.4, 0.6, 0.8, 1],
+        labels = [];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+    };
+    legend.addTo(map);
+
+    var heatLayer = L.heatLayer({radius: 20, blur: 50, minOpacity: 0.5, maxZoom: 3}).addTo(map);
+
+    // loop through outputted points and convert to lat, lng
+    function drawHeatMap(points) {
+        var duration = $("#duration").val();
+        var maskType = $("input[name='ppe']:checked").val();
+        var finalResult = [];
+        $.ajax({
+            type: "POST",
+            url: "/post_attack_rates/",
+            data: {'seat_selections': points[2], 'mask_type': maskType, 'duration': duration},
+            success: function(result) {
+                resultArray = [result.attack_rates];
+                var coords = [];
+
+                for(var i = 0; i < resultArray.length; i++)
+                {
+                    finalResult = finalResult.concat(resultArray[i]);
+                }
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = finalResult[i][0]*w;
+                    finalResult[i][1] = finalResult[i][1]*h;
+                    coords[i] = map.unproject(finalResult[i].slice(0,2));
+                }
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = coords[i].lat;
+                    finalResult[i][1] = coords[i].lng;
+                }  
+            },
+        });
+
+        $("#GenerateHeatmap").click(function(event) {
+            console.log(finalResult);
+            heatLayer.setLatLngs(finalResult);
+        });
+    }
     </script>
 
 {% endblock javascripts %}
