@@ -76,6 +76,36 @@
         width: 100%;
     }
 
+    #heatmapid {
+        position: relative;
+        width: 100%;
+        padding-top: 100%;
+    }
+
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+    .legend i {
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-right: 8px;
+    }
+
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
 </style>
 {% endblock stylesheets %}
 
@@ -83,23 +113,6 @@
     <!-- [ Main Content ] start -->
     <div class="pcoded-main-container">
         <div class="pcoded-content">
-            <!-- [ breadcrumb ] start -->
-            <!-- <div class="page-header">
-                <div class="page-block">
-                    <div class="row align-items-center">
-                        <div class="col-md-12">
-                            <div class="page-header-title">
-                                <h5 class="m-b-10">Dashboard Analytics</h5>
-                            </div>
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="feather icon-home"></i></a></li>
-                                <li class="breadcrumb-item"><a href="#!">Dashboard Analytics</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- [ breadcrumb ] end -->
             <!-- [ Main Content ] start -->
             <div class="row">
                 <!-- seat-selection start -->
@@ -128,9 +141,9 @@
                                         <span style="display:block;float:right" id="num_normal">Agents Selected</span> -->
                                         <div id="agent_slider"></div>
                                     </div>
-                                    <!-- <div class="col-sm"><div id="agent_slider"></div></div> -->
+                                    <div class="col-sm"><div id="agent_slider"></div></div>
                                 </div>
-                                <!-- <br> -->
+                                <br>
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
@@ -145,7 +158,7 @@
                                         <i class="feather icon-hash"></i>
                                     </button>
                                 </div>
-                                <!-- <br> -->
+                                <br>
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
                                 <h5 class="text-black">Max Pandemic Occupancy<span class="float-right maxPanOccup"></span>
                             </div>
@@ -175,23 +188,12 @@
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
                                     <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
-                                    <!-- <form class="range-field">
-                                        <input id="duration-slider" class="border-0" type="range" min="0">
-                                        <span class=valueSpan></span>
-                                    </form> -->
                                 </div>
-                            </div>
-                            <!-- <div class="parent" id="seat_selector_container">
-                                <div class="panzoom" id="panzoom_container">
-                                    <div class="grid" id="grid"></div>
-                                    <img src="/static/assets/images/room_maps/Engineering Block C_170.PNG">
-                                </div>
-                            </div> -->
-                            
+                            </div>                            
                         </div>
-                        <!-- <div class="card-footer d-flex">
-                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate</button>
-                        </div> -->
+                        <div class="card-footer d-flex">
+                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate Heatmap</button>
+                        </div>
                         <!-- infection-parameter end -->
                     </div>
                 </div>
@@ -202,19 +204,8 @@
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-lg-10">
-                                    <div class="heatmap_container" id="heatmap_container">
-                                        <div class="image_container">
-                                            <img src="/static/assets/images/room_maps/Earth Sciences_162.png" id="heatmap_floorplan">
-                                            <div><canvas id="heatmapCanvas" style="opacity:0.5"></canvas></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2">
-                                    <div class="legend_container">
-                                        <img src="/static/assets/images/heatmap-legend.png">
-                                        <div id="legend_container width="120"></div>
-                                    </div>
+                                <div class="col">
+                                    <div id="heatmapid"></div>
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>
@@ -267,10 +258,7 @@
 {% block javascripts %}
 
     <!-- Apex Chart -->
-    <script src="/static/assets/js/pages/chart-apex.js"></script>
-    <script src="/static/assets/js/plugins/apexcharts.min.js"></script>
-    <script>
-    </script>
+    <script src="/static/assets/js/plugins/apexcharts.min.js"></script> -->
 
     <!-- infection-parameter js -->
     <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
@@ -412,11 +400,122 @@
 
         // POST initial node selections
         var values = post_node_selections();
-        heatmapData(values);
-        var temporalDuration = $("#duration").val();
-        if (temporalDuration != 0){
-            drawTemporal(temporalDuration);
+        // heatmapData(values);
+
+        // ################## Temporal Graph and Duration-related functions ##################
+        // Default temporal graph series and settings
+        var options = {
+            series: [{
+                name: "Attack Rate Multiplier",
+                data: []
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    type: 'x',
+                    enabled: true,
+                    autoScaleYaxis: true
+                },
+                toolbar: {
+                    autoSelected: 'zoom'
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+                text: 'Attack Rate Multiplier as a Function of Time',
+                align: 'left'
+            },
+            xaxis: {
+                categories: [],
+                title: {
+                    text: "Time (mins)"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Attack Rate Increase Factor"
+                }
+            },
+            tooltip: {
+                enabled: true,
+                enabledOnSeries: undefined,
+                shared: true,
+                followCursor: false,
+                intersect: false,
+                inverseOrder: false,
+                custom: undefined,
+                fillSeriesColor: false,
+                theme: false,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: undefined
+                },
+                onDatasetHover: {
+                    highlightDataSeries: false,
+                },
+                x: {
+                    show: true,
+                    format: 'dd MMM',
+                    formatter: undefined,
+                },
+                y: {
+                    formatter: undefined,
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                },
+                z: {
+                    formatter: undefined,
+                    title: 'Size: '
+                },
+                marker: {
+                    show: true,
+                },
+                fixed: {
+                    enabled: false,
+                    position: 'topRight',
+                    offsetX: 0,
+                    offsetY: 0,
+                },
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+        chart.render();
+
+        function drawTemporal(durationVal, chart){
+            // Temporal Graph
+            temporalXData = [];
+            temporalYData = [];
+            for(var i = 0; i <= durationVal; i+=5){
+                temporalXData = temporalXData.concat(i);
+                yVal = ((0.0051 * (i * i))/100) + 1;
+                temporalYData = temporalYData.concat(yVal.toFixed(3));
+            }
+            // Update series
+            chart.updateOptions({
+                series: [{
+                    data: temporalYData
+                }],
+                xaxis: {
+                    categories: temporalXData
+                }
+            })
         }
+
+        var temporalDuration;
+        $("#duration").on("change", function (event) {
+            temporalDuration = $("#duration").val();
+            if (temporalDuration != 0){
+                drawTemporal(temporalDuration, chart);
+            }
+        })
 
         // ################## POST function for node selections ##################
         function post_node_selections() {
@@ -474,7 +573,7 @@
                 })
                 .on('end', val => {
                     var values = post_node_selections();
-                    heatmapData(values);
+                    drawHeatMap(values);
                 });
 
             var gSlider = d3
@@ -556,199 +655,10 @@
             var values = post_node_selections();
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
-            make_slider(values.slice(0,1));
-
-            heatmapWidth = 700;
-            heatmapHeight = 550;
-            var duration = $("#duration").val();
-            var maskType = $("input[name='ppe']:checked").val();
-
-            // $.ajax({
-            //     type: "GET",
-            //     url: "/get_attack_rates",
-            //     data: {'seat_selections': values[2], 'mask_type': maskType, 'duration': duration},
-            //     success: function(result) {
-            //         resultArray = [result.attack_rates];
-            //         resultTemporal = [result.temporal];
-            //         finalResult = [];
-            //         finalResultTemporal = [];
-            //         for(var i = 0; i < resultArray.length; i++)
-            //         {
-            //             finalResult = finalResult.concat(resultArray[i]);
-            //         }
-            //         for (var i = 0; i < finalResult.length; i++){
-            //             finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-            //             finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-            //         }
-            //         for(var i = 0; i < resultTemporal.length; i++)
-            //         {
-            //             finalResultTemporal = finalResultTemporal.concat(resultTemporal[i]);
-            //         }
-            //         drawHeatMap(finalResult);
-            //         drawTemporal(finalResultTemporal);
-            //     }
-            // });           
-            heatmapData(values);            
+            make_slider(values.slice(0,1));          
+            drawHeatMap(values);            
         }
         return el;
-    }
-
-    function heatmapData(seats) {
-        var heatmapWidth = document.querySelector("#heatmap_floorplan").width;
-        var heatmapHeight = document.querySelector("#heatmap_floorplan").height;
-        var duration = $("#duration").val();
-        var maskType = $("input[name='ppe']:checked").val();
-
-        console.log(document.querySelector("#heatmap_floorplan").width);
-        $.ajax({
-            type: "POST",
-            url: "/post_attack_rates/",
-            data: {'seat_selections': seats[2], 'mask_type': maskType, 'duration': duration},
-            success: function(result) {
-                resultArray = [result.attack_rates];
-                finalResult = [];
-                for(var i = 0; i < resultArray.length; i++)
-                {
-                    finalResult = finalResult.concat(resultArray[i]);
-                }
-
-                for (var i = 0; i < finalResult.length; i++){
-                    finalResult[i][0] = finalResult[i][0]*heatmapWidth;
-                    finalResult[i][1] = finalResult[i][1]*heatmapHeight;
-                }
-                drawHeatMap(finalResult);
-            }
-        });
-
-        // $("#GenerateHeatmap").click(function(event) {
-        //     event.preventDefault();
-            
-        // });            
-    }
-    
-    //Heatmap Background Image
-    var canvas = document.getElementById("heatmapCanvas");
-    canvas.width = document.getElementsByClassName("heatmap_container")[0].clientWidth;
-    canvas.height = document.getElementsByClassName("heatmap_container")[0].clientHeight;
-    // var ctx = canvas.getContext("2d");
-
-    // legend needs to be implemented in d3
-    // Background canvas for quick drawing
-    var clegend = d3.select("#legend_container").append("canvas")
-        .attr("width", 138)
-        .attr("height", 550);
-    var ctxlegend = clegend.node().getContext("2d");
-
-
-    var x = d3.scaleLinear().domain([-1, 1]).range([20, 500]);
-
-    //Continuous diverging scale
-    var color_sequential = d3.scaleSequential(d3.interpolatePuOr)
-    .domain([-1, 1]);
-
-
-    function drawHeatMap(sampleData){
-        var heat = simpleheat('heatmapCanvas').data(sampleData).max(1);
-        heat.draw();
-        function draw() {
-            heat.draw();
-        }
-        draw();
-    }
-
-    function drawTemporal(durationVal){
-        // Temporal Graph
-        temporalXData = [0.0];
-        temporalYData = [1.000];
-        for(var i = 5; i <= durationVal; i+=5){
-            temporalXData = temporalXData.concat(i);
-            yVal = (0.121 + (0.022 * (i/60) * (i/60)))/100 + 1;
-            temporalYData = temporalYData.concat(yVal.toFixed(3));
-        }
-        // Chart customization
-        var options = {
-            series: [{
-                name: "Attack Rate Multiplier",
-                data: temporalYData
-            }],
-            chart: {
-            height: 350,
-            type: 'line',
-            zoom: {
-                type: 'x',
-                enabled: true,
-                autoScaleYaxis: true
-            },
-            toolbar: {
-                autoSelected: 'zoom'
-            }
-            },
-            dataLabels: {
-            enabled: false
-            },
-            stroke: {
-            curve: 'smooth'
-            },
-            title: {
-            text: 'Attack Rate Multiplier as a Function of Time',
-            align: 'left'
-            },
-            xaxis: {
-            categories: temporalXData,
-            title: {
-                text: "Time (mins)"
-            }
-            },
-            yaxis: {
-                title: {
-                    text: "Attack Rate Increase Factor"
-                }
-            },
-            tooltip: {
-                enabled: true,
-                enabledOnSeries: undefined,
-                shared: true,
-                followCursor: false,
-                intersect: false,
-                inverseOrder: false,
-                custom: undefined,
-                fillSeriesColor: false,
-                theme: false,
-                style: {
-                    fontSize: '12px',
-                    fontFamily: undefined
-                },
-                onDatasetHover: {
-                    highlightDataSeries: false,
-                },
-                x: {
-                    show: true,
-                    format: 'dd MMM',
-                    formatter: undefined,
-                },
-                y: {
-                    formatter: undefined,
-                    title: {
-                        formatter: (seriesName) => seriesName,
-                    },
-                },
-                z: {
-                    formatter: undefined,
-                    title: 'Size: '
-                },
-                marker: {
-                    show: true,
-                },
-                fixed: {
-                    enabled: false,
-                    position: 'topRight',
-                    offsetX: 0,
-                    offsetY: 0,
-                },
-            }
-        };
-        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-        chart.render();
     }
 
     // ####################### PAGE INITIALIZATION & UPDATE ########################
@@ -782,7 +692,6 @@
                     n_default : positions.length / 2
                 });
             });
-
             // TODO: update heatmap, redraw canvas
 
         }
@@ -792,8 +701,96 @@
     }
 
     // initialize seat selection interface
-    update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
+    // update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
 
+    // ################## Leaflet Heatmap and Legend ##################
+    var imgURL = decodeURI(document.getElementById("floorplan").src);
+    var h = document.getElementsByClassName("image_container")[0].clientHeight;
+    var w = document.getElementsByClassName("image_container")[0].clientWidth;
+
+    // Heatmap bounding box with zoom utilities
+    const map = L.map('heatmapid', {
+        zoomSnap: 0.1,
+        minZoom: 3,
+        maxZoom: 4,
+        center: [0, 0],
+        zoom: 3,
+        crs: L.CRS.Simple
+    });
+
+    var southWest = map.unproject([0, h], map.getMaxZoom()-1);
+    var northEast = map.unproject([w, 0], map.getMaxZoom()-1);
+    var bounds = new L.LatLngBounds(southWest, northEast);
+
+    console.log(w, h);
+
+    var hmap = L.imageOverlay(imgURL, bounds).addTo(map);
+    map.setMaxBounds(bounds);
+
+    // Legend creation
+    var legend = L.control({position: 'bottomright'});
+    function getColor(d) {
+        return d > 1 ? '#FF0000' :
+            d > 0.8  ? '#FD8D3C' :
+            d > 0.6   ? '#FEB24C' :
+            d > 0.4   ? '#04FF00' :
+                        '#002AFF';
+    }
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 0.4, 0.6, 0.8, 1],
+        labels = [];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+    };
+    legend.addTo(map);
+
+    var heatLayer = L.heatLayer({radius: 20, blur: 50, minOpacity: 0.5, maxZoom: 3}).addTo(map);
+
+    // loop through outputted points and convert to lat, lng
+    function drawHeatMap(points) {
+        var duration = $("#duration").val();
+        var maskType = $("input[name='ppe']:checked").val();
+        var finalResult = [];
+        $.ajax({
+            type: "POST",
+            url: "/post_attack_rates/",
+            data: {'seat_selections': points[2], 'mask_type': maskType, 'duration': duration},
+            success: function(result) {
+                resultArray = [result.attack_rates];
+                var coords = [];
+
+                for(var i = 0; i < resultArray.length; i++)
+                {
+                    finalResult = finalResult.concat(resultArray[i]);
+                }
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = finalResult[i][0]*w;
+                    finalResult[i][1] = finalResult[i][1]*h;
+                    coords[i] = map.unproject(finalResult[i].slice(0,2));
+                }
+
+                for (var i = 0; i < finalResult.length; i++){
+                    finalResult[i][0] = coords[i].lat;
+                    finalResult[i][1] = coords[i].lng;
+                }  
+            },
+        });
+
+        $("#GenerateHeatmap").click(function(event) {
+            console.log(finalResult);
+            heatLayer.setLatLngs(finalResult);
+        });
+    }
     </script>
 
 {% endblock javascripts %}

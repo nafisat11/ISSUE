@@ -69,13 +69,17 @@
 					url: "/selection_submitted/",
 					data: data,
 					success: function(result) {
-						$("button").click(function(event) {
+						$("#SubmitSelection").click(function(event) {
 							$(".maxOccup").text(result.max_occupancy);
 							$(".maxPanOccup").text(result.max_pandemic_occupancy)
 							//$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
 							// $("#seat_selection_container").show();
 							// $("#background_container").remove();
+
+							// add switch between ggreyed out and active overlays
 							update_room_selection(building_name, room_number);
+							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
+							heatLayer.setLatLngs(latlngs=[]);
 						});	
 					},					
 				});
@@ -91,7 +95,7 @@
 		<div class="navbar-wrapper  ">
 			<div class="navbar-content scroll-div " >
 				<ul class="nav pcoded-inner-navbar ">
-					<li class="nav-item pcoded-menu-caption">
+					<!-- <li class="nav-item pcoded-menu-caption">
 						<label>Navigation</label>
 					</li>
 					<li class="nav-item">
@@ -99,7 +103,7 @@
                             <span class="pcoded-micon">
                                 <i class="feather icon-home"></i></span><span class="pcoded-mtext">
 									Home</span></a>
-					</li>
+					</li> -->
 					<li class="nav-item pcoded-menu-caption">
 						<label>Room Selector</label>
 					</li>
