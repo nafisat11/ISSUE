@@ -662,46 +662,58 @@
         temporalYData = [];
         for(var i = 0; i <= durationVal; i+=5){
             temporalXData = temporalXData.concat(i);
-            yVal = ((0.0051 * (i * i))/100) + 1;
+            yVal = (0.0051 * (i * i));
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         // Chart customization
         var options = {
             series: [{
-                name: "Attack Rate Multiplier",
+                name: "Attack Rate Increase",
                 data: temporalYData
             }],
             chart: {
-            height: 350,
-            type: 'line',
-            zoom: {
-                type: 'x',
-                enabled: true,
-                autoScaleYaxis: true
-            },
-            toolbar: {
-                autoSelected: 'zoom'
-            }
+                height: 350,
+                type: 'line',
+                zoom: {
+                    type: 'x',
+                    enabled: true,
+                    autoScaleYaxis: true
+                },
+                toolbar: {
+                    show: true,
+                    offsetX: 0,
+                    offsetY: 0,
+                    tools: {
+                        download: true,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        customIcons: []
+                    },
+                },
             },
             dataLabels: {
-            enabled: false
+                enabled: false
             },
             stroke: {
-            curve: 'smooth'
+                curve: 'smooth'
             },
             title: {
-            text: 'Attack Rate Multiplier as a Function of Time',
-            align: 'left'
+                text: 'Attack Rate Increase as a Function of Time',
+                align: 'left'
             },
             xaxis: {
-            categories: temporalXData,
-            title: {
-                text: "Time (mins)"
-            }
+                type: 'numeric',
+                categories: temporalXData,
+                title: {
+                    text: "Time (mins)"
+                }
             },
             yaxis: {
                 title: {
-                    text: "Attack Rate Increase Factor"
+                    text: "Attack Rate Increase (%)"
                 }
             },
             tooltip: {
