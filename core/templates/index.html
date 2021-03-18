@@ -658,11 +658,11 @@
 
     function drawTemporal(durationVal){
         // Temporal Graph
-        temporalXData = [0.0];
-        temporalYData = [1.000];
-        for(var i = 5; i <= durationVal; i+=5){
+        temporalXData = [];
+        temporalYData = [];
+        for(var i = 0; i <= durationVal; i+=5){
             temporalXData = temporalXData.concat(i);
-            yVal = (0.121 + (0.022 * (i/60) * (i/60)))/100 + 1;
+            yVal = ((0.0051 * (i * i))/100) + 1;
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         // Chart customization
