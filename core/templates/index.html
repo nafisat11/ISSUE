@@ -745,31 +745,43 @@
     var hmap = L.imageOverlay(imgURL, bounds).addTo(map);
     map.setMaxBounds(bounds);
 
-    // Legend creation
-    var legend = L.control({position: 'bottomright'});
-    function getColor(d) {
-        return d > 1 ? '#FF0000' :
-            d > 0.8  ? '#FD8D3C' :
-            d > 0.6   ? '#FEB24C' :
-            d > 0.4   ? '#04FF00' :
-                        '#002AFF';
-    }
-
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 0.4, 0.6, 0.8, 1],
-        labels = [];
-
-        // loop through our density intervals and generate a label with a colored square for each interval
-        for (var i = 0; i < grades.length; i++) {
-            div.innerHTML +=
-                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-        }
-
-        return div;
-    };
-    legend.addTo(map);
+    L.control.Legend({
+        title: " ",
+        position: "bottomright",
+        opacity: 0.75,
+        legends: [
+            {
+                label: " 0.0 - 0.4",
+                type: "circle",
+                radius: 6,
+                fillColor: "blue",
+            },
+            {
+                label: " 0.4 - 0.6",
+                type: "circle",
+                radius: 6,
+                fillColor: "cyan",
+            },
+            {
+                label: " 0.6 - 0.7",
+                type: "circle",
+                radius: 6,
+                fillColor: "lime",
+            },
+            {
+                label: " 0.7 - 0.8",
+                type: "circle",
+                radius: 6,
+                fillColor: "yellow",
+            },
+            {
+                label: " 0.8 - 1.0",
+                type: "circle",
+                radius: 6,
+                fillColor: "red",
+            }
+    ]
+    }).addTo(map);
 
     var heatLayer = L.heatLayer({radius: 20, blur: 50, minOpacity: 0.5, maxZoom: 3}).addTo(map);
 
