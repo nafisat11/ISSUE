@@ -188,6 +188,7 @@
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
                                     <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
+                                    <p id="ppm"><br>Set a duration to see it's effects.</p>
                                 </div>
                             </div>                            
                         </div>
@@ -409,7 +410,7 @@
         temporalYData = [];
         for(var i = 0; i <= durationVal; i+=5){
             temporalXData = temporalXData.concat(i);
-            yVal = ((0.0051 * (i * i))/100) + 1;
+            yVal = (0.0051 * (i * i));
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         var options = {
@@ -508,15 +509,25 @@
         var chart = new ApexCharts(document.querySelector("#temporal1"), options);
         chart.render();
 
+        // Value to be printed to front end
+        tempPpm = (0.0051 * (durationVal * durationVal));
+        ppmYValue = tempPpm.toFixed(3);
+        //console.log(ppmYValue);
+
         function drawTemporal(durationVal, chart){
             // Temporal Graph
             temporalXData = [];
             temporalYData = [];
             for(var i = 0; i <= durationVal; i+=5){
                 temporalXData = temporalXData.concat(i);
-                yVal = ((0.0051 * (i * i))/100) + 1;
+                yVal = (0.0051 * (i * i));
                 temporalYData = temporalYData.concat(yVal.toFixed(3));
             }
+            // Value to be printed to front end
+            tempPpm = (0.0051 * (durationVal * durationVal)*1000);
+            ppmYValue = tempPpm.toFixed();
+            console.log(ppmYValue);
+            document.getElementById("ppm").innerHTML = "<br>For every 100,000 individuals, after " + durationVal + " minutes, " + ppmYValue + " more individuals will be infected.";
             // Update series
             chart.updateOptions({
                 series: [{
