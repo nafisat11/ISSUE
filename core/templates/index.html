@@ -5,6 +5,13 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 <style>
+    .block_seat_selections {
+        position: relative;
+        max-width: 100%;
+        pointer-events: none;
+        
+    }
+
     .wrapper {
         position: relative;
         width: 700px;
@@ -121,6 +128,12 @@
                         <div class="card-header">
                             <h5>Seat Selection</h5>
                             <div class="card-header-right">
+                                <button type="button" class="btn btn-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                             <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
@@ -145,16 +158,16 @@
                                 </div>
                                 <br>
                                 <div class="row justify-content-center card-option">
-                                    <button type="button" class="btn btn-icon btn-outline-primary border-0" id='reset_button'>
+                                    <button type="button" class="btn btn-icon btn-outline-primary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset selections" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
                                     </button>
-                                    <button type="button" class="btn  btn-icon btn-outline-secondary border-0">
+                                    <button type="button" class="btn  btn-icon btn-outline-secondary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-grid"></i>
                                     </button>
-                                    <button type="button" class="btn  btn-icon btn-outline-success border-0">
+                                    <button type="button" class="btn  btn-icon btn-outline-success border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-square"></i>
                                     </button>
-                                    <button type="button" class="btn btn-icon btn-outline-danger border-0" data-toggle="modal" data-target="#random_agents">
+                                    <button type="button" class="btn btn-icon btn-outline-danger border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-hash"></i>
                                     </button>
                                 </div>
@@ -289,7 +302,6 @@
 
     // define image file type to use
     var IMAGE_TYPE = ".svg";
-
     // define default room to load on startup
     var DEFAULT_BUILDING = "Earth Sciences";
     var DEFAULT_ROOM = "162";
@@ -362,10 +374,14 @@
             if (i < n_default) {
                 nodes[i].state = 1;
                 nodes[i].colour = colour_array[GRAY];
+                nodes[i].x_scale = x_scale;
+                nodes[i].y_scale = y_scale;
                 //console.log(nodes[i]);
             } else {
                 nodes[i].state = 0;
                 nodes[i].colour = colour_array[WHITE];
+                nodes[i].x_scale = x_scale;
+                nodes[i].y_scale = y_scale;
             }
             id = String(nodes[i].id);
             node_map[id] = nodes[i];
@@ -409,7 +425,7 @@
         // Default temporal graph series and settings
         var options = {
             series: [{
-                name: "Attack Rate Multiplier",
+                name: "Attack Rate Increase",
                 data: []
             }],
             chart: {
@@ -421,7 +437,18 @@
                     autoScaleYaxis: true
                 },
                 toolbar: {
-                    autoSelected: 'zoom'
+                    show: true,
+                    offsetX: 0,
+                    offsetY: 0,
+                    tools: {
+                        download: true,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        customIcons: []
+                    }
                 }
             },
             dataLabels: {
@@ -431,10 +458,11 @@
                 curve: 'smooth'
             },
             title: {
-                text: 'Attack Rate Multiplier as a Function of Time',
+                text: 'Attack Rate Increase as a Function of Time',
                 align: 'left'
             },
             xaxis: {
+                type: 'numeric',
                 categories: [],
                 title: {
                     text: "Time (mins)"
@@ -442,7 +470,7 @@
             },
             yaxis: {
                 title: {
-                    text: "Attack Rate Increase Factor"
+                    text: "Attack Rate Increase (%)"
                 }
             },
             tooltip: {
@@ -498,7 +526,7 @@
             temporalYData = [];
             for(var i = 0; i <= durationVal; i+=5){
                 temporalXData = temporalXData.concat(i);
-                yVal = ((0.0051 * (i * i))/100) + 1;
+                yVal = (0.0051 * (i * i));
                 temporalYData = temporalYData.concat(yVal.toFixed(3));
             }
             // Update series
@@ -685,14 +713,18 @@
             d3.select('#grid').html("");
             d3.select('#agent_slider').html("");
             readTextFile(seat_positions_path, function(text){
-                positions = JSON.parse(text);
+                data = JSON.parse(text);
+                //console.log(data);
+                //console.log(data['SEATS']);
                 grid = draw_grid({
                     width: image_width,
                     height: image_height,
                     size: 8,
                     num_states: 3, 
-                    nodes: positions,
-                    n_default : positions.length / 2
+                    nodes: data['SEATS'],
+                    n_default : data['SEATS'].length / 2,
+                    x_scale: data['X_SCALE'],
+                    y_scale: data['Y_SCALE']
                 });
             });
             // TODO: update heatmap, redraw canvas
@@ -704,7 +736,7 @@
     }
 
     // initialize seat selection interface
-    // update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
+    update_room_selection(DEFAULT_BUILDING, DEFAULT_ROOM);
 
     // ################## Leaflet Heatmap and Legend ##################
     var imgURL = decodeURI(document.getElementById("floorplan").src);
@@ -785,7 +817,7 @@
                 for (var i = 0; i < finalResult.length; i++){
                     finalResult[i][0] = coords[i].lat;
                     finalResult[i][1] = coords[i].lng;
-                }  
+                }
             },
         });
 

@@ -31,18 +31,31 @@ class AttackRates:
                 self.infected.append(agent)
         return
 
-    def normalize(self, attack_rates):
-        a = 0  # minimum attack rate
-        b = 100  # maximum attack rate
-        min_attack_rate = min(attack_rates)
-        max_attack_rate = max(attack_rates)
+    # def normalize(self, attack_rates):
+    #     a = 0
+    #     b = 100
+    #     min_attack_rate = min(attack_rates)
+    #     max_attack_rate = max(attack_rates)
 
+    #     output = []
+
+    #     for i, agent in enumerate(self.agents):
+    #         attRate = a + ((agent["attRate"]-min_attack_rate)
+    #                        * (b-a))/(max_attack_rate-min_attack_rate)
+    #         agent["attRate"] = attRate
+    #         innerlist = []
+    #         innerlist.append(agent['x'])
+    #         innerlist.append(agent['y'])
+    #         innerlist.append(agent['attRate']/100)
+    #         output.append(innerlist)
+    #     return output
+
+    def new_normalize(self):
         output = []
-
         for i, agent in enumerate(self.agents):
-            attRate = a + ((agent["attRate"]-min_attack_rate)
-                           * (b-a))/(max_attack_rate-min_attack_rate)
-            agent["attRate"] = attRate
+            if agent["attRate"] > 100:
+                agent["attRate"] = 100
+
             innerlist = []
             innerlist.append(agent['x'])
             innerlist.append(agent['y'])
@@ -61,11 +74,16 @@ class AttackRates:
 
             for infected in self.infected:
                 # Distance formula
-                dist = math.sqrt(((infected['y'] - agent['y'])**2) +
-                                 ((infected['x'] - agent['x'])**2))
-                if dist <= 2:
+                dist = math.sqrt((((infected['y'] - agent['y'])/agent['y_scale'])**2) +
+                                 (((infected['x'] - agent['x'])/agent['x_scale'])**2))
+
+                print(dist)
+
+                if dist <= 3.3:
                     sum_of_attackrates += (0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(
                         dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104
+                else:
+                    sum_of_attackrates += 0.05
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
@@ -75,20 +93,13 @@ class AttackRates:
                 temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
                 agent['attRate'] *= temporal
 
-        output = []
-        w_list = []
-        att_list = []
+        # output = []
 
-        for i, agent in enumerate(self.agents):
-            innerlist = []
-            w_coord = []
-            innerlist.append(agent['x'])
-            w_coord.append(agent['x'])
-            innerlist.append(agent['y'])
-            w_coord.append(agent['y'])
-            w_list.append(w_coord)
-            innerlist.append(agent['attRate']/100)
-            att_list.append(agent['attRate'])
-            output.append(innerlist)
+        # for i, agent in enumerate(self.agents):
+        #     innerlist = []
+        #     innerlist.append(agent['x'])
+        #     innerlist.append(agent['y'])
+        #     innerlist.append(agent['attRate'])
+        #     output.append(innerlist)
 
-        return output
+        return self.new_normalize()

@@ -78,7 +78,7 @@
 
 							// add switch between ggreyed out and active overlays
 							update_room_selection(building_name, room_number);
-							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
+							hmap.setUrl(imageLocation.concat(building_name, "_", room_number, fileType));
 							heatLayer.setLatLngs(latlngs=[]);
 						});	
 					},					
