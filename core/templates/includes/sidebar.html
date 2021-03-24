@@ -71,7 +71,12 @@
 					success: function(result) {
 						$("#SubmitSelection").click(function(event) {
 							$(".maxOccup").text(result.max_occupancy);
-							$(".maxPanOccup").text(result.max_pandemic_occupancy)
+							if (result.max_pandemic_occupancy !== null) {
+								$(".maxPanOccup").text(result.max_pandemic_occupancy);
+							} else {
+								$(".maxPanOccup").text('N/A');
+							}
+							
 							//$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
 							// $("#seat_selection_container").show();
 							// $("#background_container").remove();

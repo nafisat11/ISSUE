@@ -3,10 +3,8 @@
         "model": "app.rooms",
         "pk": 1,
         "fields": {
-            "room_number": 104,
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "blueprint": "",
+            "room_number": "124",
+            "max_occupancy": 56,
             "floor": 1
         }
     },
@@ -14,10 +12,8 @@
         "model": "app.rooms",
         "pk": 2,
         "fields": {
-            "room_number": 170,
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "blueprint": "",
+            "room_number": "170",
+            "max_occupancy": 258,
             "floor": 1
         }
     },
@@ -25,10 +21,9 @@
         "model": "app.rooms",
         "pk": 3,
         "fields": {
-            "room_number": 214,
+            "room_number": "201",
             "max_occupancy": 100,
             "max_pandemic_occupancy": 40,
-            "blueprint": "",
             "floor": 2
         }
     },
@@ -36,10 +31,9 @@
         "model": "app.rooms",
         "pk": 4,
         "fields": {
-            "room_number": 222,
+            "room_number": "222",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 2
         }
     },
@@ -47,10 +41,9 @@
         "model": "app.rooms",
         "pk": 5,
         "fields": {
-            "room_number": 310,
+            "room_number": "310",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 3
         }
     },
@@ -58,10 +51,9 @@
         "model": "app.rooms",
         "pk": 6,
         "fields": {
-            "room_number": 312,
+            "room_number": "312",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 3
         }
     },
@@ -69,10 +61,9 @@
         "model": "app.rooms",
         "pk": 7,
         "fields": {
-            "room_number": 162,
-            "max_occupancy": 234,
-            "max_pandemic_occupancy": 60,
-            "blueprint": "",
+            "room_number": "162",
+            "max_occupancy": 167,
+            "max_pandemic_occupancy": 26,
             "floor": 4
         }
     },
@@ -80,10 +71,9 @@
         "model": "app.rooms",
         "pk": 8,
         "fields": {
-            "room_number": 104,
+            "room_number": "104",
             "max_occupancy": 150,
             "max_pandemic_occupancy": 70,
-            "blueprint": "",
             "floor": 4
         }
     },
@@ -91,10 +81,9 @@
         "model": "app.rooms",
         "pk": 9,
         "fields": {
-            "room_number": 244,
+            "room_number": "244",
             "max_occupancy": 40,
             "max_pandemic_occupancy": 25,
-            "blueprint": "",
             "floor": 5
         }
     },
@@ -102,10 +91,9 @@
         "model": "app.rooms",
         "pk": 10,
         "fields": {
-            "room_number": 245,
+            "room_number": "245",
             "max_occupancy": 40,
             "max_pandemic_occupancy": 25,
-            "blueprint": "",
             "floor": 5
         }
     },
@@ -113,10 +101,9 @@
         "model": "app.rooms",
         "pk": 11,
         "fields": {
-            "room_number": 316,
+            "room_number": "316",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 6
         }
     },
@@ -124,10 +111,9 @@
         "model": "app.rooms",
         "pk": 12,
         "fields": {
-            "room_number": 318,
+            "room_number": "318",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 6
         }
     },
@@ -135,10 +121,9 @@
         "model": "app.rooms",
         "pk": 13,
         "fields": {
-            "room_number": 422,
+            "room_number": "422",
             "max_occupancy": 60,
             "max_pandemic_occupancy": 30,
-            "blueprint": "",
             "floor": 7
         }
     },
@@ -146,10 +131,9 @@
         "model": "app.rooms",
         "pk": 14,
         "fields": {
-            "room_number": 424,
+            "room_number": "424",
             "max_occupancy": 55,
             "max_pandemic_occupancy": 20,
-            "blueprint": "",
             "floor": 7
         }
     }
