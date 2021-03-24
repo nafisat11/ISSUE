@@ -77,8 +77,6 @@ class AttackRates:
                 dist = math.sqrt((((infected['y'] - agent['y'])/agent['y_scale'])**2) +
                                  (((infected['x'] - agent['x'])/agent['x_scale'])**2))
 
-                print(dist)
-
                 if dist <= 3.3:
                     sum_of_attackrates += (0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(
                         dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104
@@ -87,10 +85,16 @@ class AttackRates:
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
+                print(self.mask_type)
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
-            if self.duration is not None or self.duration != 0:
-                temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
+            if self.duration is None or self.duration == 0:
+                agent['attRate'] *= 1
+            else:
+                # duration = int(self.duration)
+                temporal = (0.0051 * ((self.duration**2)/100)) + 1
+                # temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
+                print(temporal)
                 agent['attRate'] *= temporal
 
         # output = []

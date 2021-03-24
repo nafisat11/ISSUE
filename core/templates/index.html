@@ -5,10 +5,12 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 <style>
-    .block_seat_selections {
+    #overlay {
         position: relative;
         max-width: 100%;
         pointer-events: none;
+        background: #555 !important;
+        z-index: 10;
         
     }
 
@@ -128,8 +130,8 @@
                         <div class="card-header">
                             <h5>Seat Selection</h5>
                             <div class="card-header-right">
-                                <button type="button" class="btn btn-secondary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                <button type="button" class="btn btn-warning agents_legend" data-container="body" data-toggle="popover" data-placement="right">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-info-circle" viewBox="0 0 16 16">
                                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                                         <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                                     </svg>
@@ -142,10 +144,11 @@
                                 <!-- <div class="image_container" id="background_container">
                                     <img src="/static/assets/images/room_maps/Room_Select.png">
                                 </div> -->
+                                
                                 <div class="seat_selection_container" id="seat_selection_container">
                                     <div class="image_container" id="seat_selection_floorplan">
                                         <!-- <img src="/static/assets/images/room_maps/Engineering Block C_170.png" id="floorplan"> -->
-                                        <img src="/static/assets/images/room_maps/Earth Sciences_162.png" id="floorplan">
+                                        <img src="/static/assets/images/room_maps/Earth Sciences_162.svg" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
                                     <br>
@@ -156,12 +159,12 @@
                                     </div>
                                     <div class="col-sm"><div id="agent_slider"></div></div>
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset selections" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i></a>
                                     </button>
-                                    <button type="button" class="btn  btn-icon btn-outline-secondary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
+                                    <!-- <button type="button" class="btn  btn-icon btn-outline-secondary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-grid"></i>
                                     </button>
                                     <button type="button" class="btn  btn-icon btn-outline-success border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
@@ -169,7 +172,7 @@
                                     </button>
                                     <button type="button" class="btn btn-icon btn-outline-danger border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-hash"></i>
-                                    </button>
+                                    </button> -->
                                 </div>
                                 <br>
                                 <h5 class="text-black">Max Occupancy<span class="float-right maxOccup"></span></h5>
@@ -205,7 +208,8 @@
                             </div>                            
                         </div>
                         <div class="card-footer d-flex">
-                            <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate Heatmap</button>
+                            <button type="button" class="btn btn-success mx-auto generate" id="GenerateHeatmap">Generate Heatmap</button>
+                            <!-- <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate Heatmap</button> -->
                         </div>
                         <!-- infection-parameter end -->
                     </div>
@@ -216,7 +220,7 @@
                     <div class="card">
                         <div class="card-header"><h5>Heat Map</h5></div>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row" id="heatmap_container">
                                 <div class="col">
                                     <div id="heatmapid"></div>
                                 </div>
@@ -247,10 +251,10 @@
                                     </div>    
                             </div>
                         </div>
-                    </div>
-                    
+                    </div> 
                 </div>
-                <div class="card-body d-flex flex-column">
+                <!-- temporal graph start -->
+                <div class="col">
                     <div class="card">
                         <div class="card-header"><h5>Temporal Graph</h5></div>
                         <div class="card-body d-flex flex-column">
@@ -279,6 +283,61 @@
         $("input[type='number']").inputSpinner();
     </script>
 
+    <!-- Transitions -->
+    <script src="/static/assets/js/plugins/jquery.blockUI.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('div.seat_selection_container').block({
+                message: '<h4>Please select a room from sidebar</h4>',
+                css: {
+                    width: '80%',
+                    cursor: 'not-allowed'
+                },
+                overlayCSS: {
+                    opacity: 0.8,
+                    cursor: 'not-allowed'
+                }
+        });
+
+        $('#heatmap_container').block({
+            message: '<h3>Please select a room from sidebar</h3>',
+            css: {
+                width: '80%',
+                cursor: 'not-allowed'
+            },
+            overlayCSS: {
+                opacity: 0.8,
+                cursor: 'not-allowed'
+            }
+        });     
+    });
+    </script>
+
+    <!-- Seat selection info popover -->
+    <script>
+    $('.agents_legend').popover({
+        html: true,
+        container: 'body',
+        title: 'Agents Legend',
+        content: function() {
+            var $el = $('<div id="agents_legend_body"></div>');
+            //Create the SVG child (can be created more-dynamically).
+            $el.append('<svg xmlns="http://www.w3.org/2000/svg" width="467" height="462" viewBox="0 0 467 462" style="display: block; width: 100%; height: 100%;">' + 
+                '<circle cx="100" cy="100" r="50" stroke="black" stroke-width="3" fill="rgb(255,255,255)"></circle>' +
+                '<text text-anchor="end" x="350" y="100" font-size="xx-large">Empty seat</text>' + 
+                '<circle cx="100" cy="230" r="50" stroke="black" stroke-width="3" fill="rgb(141,211,199)"></circle>' +
+                '<text text-anchor="end" x="390" y="230" font-size="xx-large">Normal agent</text>' +
+                '<circle cx="100" cy="360" r="50" stroke="black" stroke-width="3" fill="rgb(255,35,35)"></circle>' +
+                '<text text-anchor="end" x="405" y="360" font-size="xx-large">Infected agent</text>' + 
+                '</svg>' +
+                '<p style="font-size:125%;">Clicking a seat cycles through each state starting from an empty seat, to normal agent, then finally infected agent.</p>' +
+                '<p style="font-size:125%;">For example, if a normal agent is seated, one click will transition to infected agent, two clicks will transition to empty.</p>'
+                );
+            return $el;
+        },
+    });
+    </script>
+
     <!-- seat-selection js-->
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -288,7 +347,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.panzoom/4.0.0/panzoom.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="./static/assets/js/simpleheat.js"></script>
-    <script src="./static/assets/js/bootstrap-input-spinner.js"></script>
     
 
     <script>
@@ -370,7 +428,6 @@
         // create a dictionary to maintain list of nodes by ID
         var node_map = {};
         for (let i = 0; i < nodes.length; i++) {
-            console.log(nodes[i]);
             if (i < n_default) {
                 nodes[i].state = 1;
                 nodes[i].colour = colour_array[GRAY];
@@ -420,133 +477,6 @@
         // POST initial node selections
         var values = post_node_selections();
         // heatmapData(values);
-
-        // ################## Temporal Graph and Duration-related functions ##################
-        // Default temporal graph series and settings
-        var options = {
-            series: [{
-                name: "Attack Rate Increase",
-                data: []
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
-                    type: 'x',
-                    enabled: true,
-                    autoScaleYaxis: true
-                },
-                toolbar: {
-                    show: true,
-                    offsetX: 0,
-                    offsetY: 0,
-                    tools: {
-                        download: true,
-                        selection: true,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        customIcons: []
-                    }
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: 'Attack Rate Increase as a Function of Time',
-                align: 'left'
-            },
-            xaxis: {
-                type: 'numeric',
-                categories: [],
-                title: {
-                    text: "Time (mins)"
-                }
-            },
-            yaxis: {
-                title: {
-                    text: "Attack Rate Increase (%)"
-                }
-            },
-            tooltip: {
-                enabled: true,
-                enabledOnSeries: undefined,
-                shared: true,
-                followCursor: false,
-                intersect: false,
-                inverseOrder: false,
-                custom: undefined,
-                fillSeriesColor: false,
-                theme: false,
-                style: {
-                    fontSize: '12px',
-                    fontFamily: undefined
-                },
-                onDatasetHover: {
-                    highlightDataSeries: false,
-                },
-                x: {
-                    show: true,
-                    format: 'dd MMM',
-                    formatter: undefined,
-                },
-                y: {
-                    formatter: undefined,
-                    title: {
-                        formatter: (seriesName) => seriesName,
-                    },
-                },
-                z: {
-                    formatter: undefined,
-                    title: 'Size: '
-                },
-                marker: {
-                    show: true,
-                },
-                fixed: {
-                    enabled: false,
-                    position: 'topRight',
-                    offsetX: 0,
-                    offsetY: 0,
-                },
-            }
-        };
-
-        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-        chart.render();
-
-        function drawTemporal(durationVal, chart){
-            // Temporal Graph
-            temporalXData = [];
-            temporalYData = [];
-            for(var i = 0; i <= durationVal; i+=5){
-                temporalXData = temporalXData.concat(i);
-                yVal = (0.0051 * (i * i));
-                temporalYData = temporalYData.concat(yVal.toFixed(3));
-            }
-            // Update series
-            chart.updateOptions({
-                series: [{
-                    data: temporalYData
-                }],
-                xaxis: {
-                    categories: temporalXData
-                }
-            })
-        }
-
-        var temporalDuration;
-        $("#duration").on("change", function (event) {
-            temporalDuration = $("#duration").val();
-            if (temporalDuration != 0){
-                drawTemporal(temporalDuration, chart);
-            }
-        })
 
         // ################## POST function for node selections ##################
         function post_node_selections() {
@@ -604,7 +534,16 @@
                 })
                 .on('end', val => {
                     var values = post_node_selections();
+                    globalSeatPositions = values;
                     drawHeatMap(values);
+
+                    $("#duration").on("change", function (event) {
+                        drawHeatMap(values);
+                    })
+
+                    $("input[name='ppe']").on("change", function (event) {
+                        drawHeatMap(values);
+                    })
                 });
 
             var gSlider = d3
@@ -684,16 +623,25 @@
             el.dispatchEvent(new CustomEvent('input'));
             // POST node selections
             var values = post_node_selections();
+            globalSeatPositions = values;
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
             make_slider(values.slice(0,1));          
-            drawHeatMap(values);            
+            drawHeatMap(values);
+            
+            $("#duration").on("change", function (event) {
+                drawHeatMap(values);
+            })
+
+            $("input[name='ppe']").on("change", function (event) {
+                drawHeatMap(values);
+            })
         }
+
         return el;
     }
 
     // ####################### PAGE INITIALIZATION & UPDATE ########################
-
     // update room selection
     function update_room_selection(building_name, room_name){
 
@@ -727,8 +675,6 @@
                     y_scale: data['Y_SCALE']
                 });
             });
-            // TODO: update heatmap, redraw canvas
-
         }
         image.src = image_path;
         $("#floorplan").attr("src", image_path);
@@ -762,31 +708,43 @@
     var hmap = L.imageOverlay(imgURL, bounds).addTo(map);
     map.setMaxBounds(bounds);
 
-    // Legend creation
-    var legend = L.control({position: 'bottomright'});
-    function getColor(d) {
-        return d > 1 ? '#FF0000' :
-            d > 0.8  ? '#FD8D3C' :
-            d > 0.6   ? '#FEB24C' :
-            d > 0.4   ? '#04FF00' :
-                        '#002AFF';
-    }
-
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-        grades = [0, 0.4, 0.6, 0.8, 1],
-        labels = [];
-
-        // loop through our density intervals and generate a label with a colored square for each interval
-        for (var i = 0; i < grades.length; i++) {
-            div.innerHTML +=
-                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-        }
-
-        return div;
-    };
-    legend.addTo(map);
+    L.control.Legend({
+        title: " ",
+        position: "bottomright",
+        opacity: 0.75,
+        legends: [
+            {
+                label: " 0.0 - 0.4",
+                type: "circle",
+                radius: 6,
+                fillColor: "blue",
+            },
+            {
+                label: " 0.4 - 0.6",
+                type: "circle",
+                radius: 6,
+                fillColor: "cyan",
+            },
+            {
+                label: " 0.6 - 0.7",
+                type: "circle",
+                radius: 6,
+                fillColor: "lime",
+            },
+            {
+                label: " 0.7 - 0.8",
+                type: "circle",
+                radius: 6,
+                fillColor: "yellow",
+            },
+            {
+                label: " 0.8 - 1.0",
+                type: "circle",
+                radius: 6,
+                fillColor: "red",
+            }
+    ]
+    }).addTo(map);
 
     var heatLayer = L.heatLayer({radius: 20, blur: 50, minOpacity: 0.5, maxZoom: 3}).addTo(map);
 
@@ -794,7 +752,11 @@
     function drawHeatMap(points) {
         var duration = $("#duration").val();
         var maskType = $("input[name='ppe']:checked").val();
+        console.log(maskType);
         var finalResult = [];
+
+        console.log(duration);
+
         $.ajax({
             type: "POST",
             url: "/post_attack_rates/",
@@ -821,11 +783,143 @@
             },
         });
 
-        $("#GenerateHeatmap").click(function(event) {
-            console.log(finalResult);
-            heatLayer.setLatLngs(finalResult);
+        $('.generate').click(function(event) {
+            var _this = $(this);
+            var existingHTML = _this.html();
+            $(_this).html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading..').prop('disabled', true);
+            setTimeout(function() {
+                console.log(finalResult);
+                heatLayer.setLatLngs(finalResult);
+            }, 1000)
         });
     }
+
+    // ################## Temporal Graph and Duration-related functions ##################
+    // Default temporal graph series and settings
+    var options = {
+        series: [{
+            name: "Attack Rate Increase",
+            data: []
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                type: 'x',
+                enabled: true,
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                show: true,
+                offsetX: 0,
+                offsetY: 0,
+                tools: {
+                    download: true,
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    customIcons: []
+                }
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        title: {
+            text: 'Attack Rate Increase as a Function of Time',
+            align: 'left'
+        },
+        xaxis: {
+            type: 'numeric',
+            categories: [],
+            title: {
+                text: "Time (mins)"
+            }
+        },
+        yaxis: {
+            title: {
+                text: "Attack Rate Increase (%)"
+            }
+        },
+        tooltip: {
+            enabled: true,
+            enabledOnSeries: undefined,
+            shared: true,
+            followCursor: false,
+            intersect: false,
+            inverseOrder: false,
+            custom: undefined,
+            fillSeriesColor: false,
+            theme: false,
+            style: {
+                fontSize: '12px',
+                fontFamily: undefined
+            },
+            onDatasetHover: {
+                highlightDataSeries: false,
+            },
+            x: {
+                show: true,
+                format: 'dd MMM',
+                formatter: undefined,
+            },
+            y: {
+                formatter: undefined,
+                title: {
+                    formatter: (seriesName) => seriesName,
+                },
+            },
+            z: {
+                formatter: undefined,
+                title: 'Size: '
+            },
+            marker: {
+                show: true,
+            },
+            fixed: {
+                enabled: false,
+                position: 'topRight',
+                offsetX: 0,
+                offsetY: 0,
+            },
+        }
+    };
+    var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+    chart.render();
+
+    function drawTemporal(durationVal, chart){
+        // Temporal Graph
+        temporalXData = [];
+        temporalYData = [];
+        for(var i = 0; i <= durationVal; i+=5){
+            temporalXData = temporalXData.concat(i);
+            yVal = (0.0051 * (i * i));
+            temporalYData = temporalYData.concat(yVal.toFixed(3));
+        }
+        // Update series
+        chart.updateOptions({
+            series: [{
+                data: temporalYData
+            }],
+            xaxis: {
+                categories: temporalXData
+            }
+        })
+    }
+
+    var temporalDuration;
+    $("#duration").on("change", function (event) {
+        temporalDuration = $("#duration").val();
+        if (temporalDuration != 0){
+            drawTemporal(temporalDuration, chart);
+        }
+    })
+
     </script>
 
 {% endblock javascripts %}
