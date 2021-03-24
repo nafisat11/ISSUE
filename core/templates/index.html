@@ -675,7 +675,15 @@
                     y_scale: data['Y_SCALE']
                 });
             });
-        }
+        };
+        image.onerror = function() {
+            d3.select('#grid').html("");
+            d3.select('#agent_slider').html("");
+            var pageURL = $(location).attr("href");
+            window.location.replace(pageURL + 'page-404.html');
+            // alert('error loading');
+        };
+        
         image.src = image_path;
         $("#floorplan").attr("src", image_path);
         $("#heatmap_floorplan").attr("src", image_path);
