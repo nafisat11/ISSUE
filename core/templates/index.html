@@ -680,7 +680,7 @@
             d3.select('#grid').html("");
             d3.select('#agent_slider').html("");
             var pageURL = $(location).attr("href");
-            window.location.href = pageURL + 'page-404.html';
+            window.location.href = pageURL.split('/')[0] + 'page-404.html';
             // alert('error loading');
         };
 
@@ -791,14 +791,15 @@
             },
         });
 
-        $('.generate').click(function(event) {
+        $('.generate').click(function() {
             var _this = $(this);
             var existingHTML = _this.html();
-            $(_this).html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading..').prop('disabled', true);
+            $(_this).html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Generating...').prop('disabled', true);
             setTimeout(function() {
                 console.log(finalResult);
+                $(_this).html('Generate Heatmap').prop('disabled', false);
                 heatLayer.setLatLngs(finalResult);
-            }, 1000)
+            }, 500)
         });
     }
 
