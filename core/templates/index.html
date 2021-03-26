@@ -238,11 +238,20 @@
                     </div>
                     
                 </div>
-                <div class="card-body d-flex flex-column">
+                <!-- temporal graph start -->
+                <div class="col">
                     <div class="card">
-                        <div class="card-header"><h5>Temporal Graph</h5></div>
+                        <div class="card-header"><h5>Temporal Graph 1</h5></div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><h5>Temporal Graph 2</h5></div>
+                        <div class="card-body d-flex flex-column">
+                            <div id="temporal2"></div>
                         </div>
                     </div>
                 </div>
@@ -506,15 +515,120 @@
                 },
             }
         };
-        var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-        chart.render();
+        var chart1 = new ApexCharts(document.querySelector("#temporal1"), options);
+        chart1.render();
+
+
+        temporalXData = [];
+        temporalYData = [];
+        for(var i = 0; i <= durationVal; i+=5){
+            temporalXData = temporalXData.concat(i);
+            yVal = (0.121 + 0.022 * ((i * i)/3600));
+            temporalYData = temporalYData.concat(yVal.toFixed(3));
+        }
+        var options = {
+            series: [{
+                name: "Attack Rate (%)",
+                data: temporalYData
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    type: 'x',
+                    enabled: true,
+                    autoScaleYaxis: true
+                },
+                toolbar: {
+                    show: true,
+                    offsetX: 0,
+                    offsetY: 0,
+                    tools: {
+                        download: true,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        customIcons: []
+                    },
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            title: {
+                text: 'Attack Rate as a Function of Time',
+                align: 'left'
+            },
+            xaxis: {
+                type: 'numeric',
+                categories: temporalXData,
+                title: {
+                    text: "Time (mins)"
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Attack Rate (%)"
+                }
+            },
+            tooltip: {
+                enabled: true,
+                enabledOnSeries: undefined,
+                shared: true,
+                followCursor: false,
+                intersect: false,
+                inverseOrder: false,
+                custom: undefined,
+                fillSeriesColor: false,
+                theme: false,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: undefined
+                },
+                onDatasetHover: {
+                    highlightDataSeries: false,
+                },
+                x: {
+                    show: true,
+                    format: 'dd MMM',
+                    formatter: undefined,
+                },
+                y: {
+                    formatter: undefined,
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                },
+                z: {
+                    formatter: undefined,
+                    title: 'Size: '
+                },
+                marker: {
+                    show: true,
+                },
+                fixed: {
+                    enabled: false,
+                    position: 'topRight',
+                    offsetX: 0,
+                    offsetY: 0,
+                },
+            }
+        };
+        var chart2 = new ApexCharts(document.querySelector("#temporal2"), options);
+        chart2.render();        
+
 
         // Value to be printed to front end
-        tempPpm = (0.0051 * (durationVal * durationVal));
+        tempPpm = (0.022 * ((durationVal * durationVal)/3600) * 100000);
         ppmYValue = tempPpm.toFixed(3);
         //console.log(ppmYValue);
 
-        function drawTemporal(durationVal, chart){
+        function drawTemporal1(durationVal, chart){
             // Temporal Graph
             temporalXData = [];
             temporalYData = [];
@@ -524,7 +638,32 @@
                 temporalYData = temporalYData.concat(yVal.toFixed(3));
             }
             // Value to be printed to front end
-            tempPpm = (0.0051 * (durationVal * durationVal)*1000);
+            tempPpm = (0.022 * ((durationVal * durationVal)/3600) * 100000);
+            ppmYValue = tempPpm.toFixed();
+            console.log(ppmYValue);
+            document.getElementById("ppm").innerHTML = "<br>For every 100,000 individuals, after " + durationVal + " minutes, " + ppmYValue + " more individuals will be infected.";
+            // Update series
+            chart.updateOptions({
+                series: [{
+                    data: temporalYData
+                }],
+                xaxis: {
+                    categories: temporalXData
+                }
+            })
+        }
+
+        function drawTemporal2(durationVal, chart){
+            // Temporal Graph
+            temporalXData = [];
+            temporalYData = [];
+            for(var i = 0; i <= durationVal; i+=5){
+                temporalXData = temporalXData.concat(i);
+                yVal = (0.121 + 0.022 * ((i * i)/3600));
+                temporalYData = temporalYData.concat(yVal.toFixed(3));
+            }
+            // Value to be printed to front end
+            tempPpm = (0.022 * ((durationVal * durationVal)/3600) * 100000);
             ppmYValue = tempPpm.toFixed();
             console.log(ppmYValue);
             document.getElementById("ppm").innerHTML = "<br>For every 100,000 individuals, after " + durationVal + " minutes, " + ppmYValue + " more individuals will be infected.";
@@ -543,7 +682,8 @@
         $("#duration").on("change", function (event) {
             temporalDuration = $("#duration").val();
             if (temporalDuration != 0){
-                drawTemporal(temporalDuration, chart);
+                drawTemporal1(temporalDuration, chart1);
+                drawTemporal2(temporalDuration, chart2);
             }
         })
 
