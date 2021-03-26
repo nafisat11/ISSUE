@@ -162,7 +162,7 @@
                                 <!-- <br> -->
                                 <div class="row justify-content-center card-option">
                                     <button type="button" class="btn btn-icon btn-outline-primary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset selections" id='reset_button'>
-                                        <i class="feather icon-refresh-ccw"></i></a>
+                                        <i class="feather icon-refresh-ccw"></i>
                                     </button>
                                     <!-- <button type="button" class="btn  btn-icon btn-outline-secondary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
                                         <i class="feather icon-grid"></i>
@@ -204,7 +204,7 @@
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
                                     <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
-                                    <p id="ppm"><br>Set a duration to see it's effects.</p>
+                                    <p id="ppm"><br>Set a duration to see its effects.</p>
                                 </div>
                             </div>                            
                         </div>
@@ -260,6 +260,14 @@
                         <div class="card-header"><h5>Temporal Graph</h5></div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header"><h5>Temporal Graph 2</h5></div>
+                        <div class="card-body d-flex flex-column">
+                            <div id="temporal2"></div>
                         </div>
                     </div>
                 </div>
@@ -824,12 +832,12 @@
                 offsetX: 0,
                 offsetY: 0,
                 tools: {
-                    download: true,
+                    download: '<span aria-hidden="true" class="fa fa-download"></span>',
                     selection: true,
                     zoom: true,
                     zoomin: true,
                     zoomout: true,
-                    pan: true,
+                    pan: false,
                     customIcons: []
                 }
             }
@@ -853,7 +861,10 @@
         },
         yaxis: {
             title: {
-                text: "Attack Rate Increase (%)"
+                text: "Attack Rate Increase (%)",
+                style: {
+                    fontSize: '14px'
+                }
             }
         },
         tooltip: {
@@ -900,7 +911,9 @@
         }
     };
     var chart = new ApexCharts(document.querySelector("#temporal1"), options);
+    var attack_rate_chart = new ApexCharts(document.querySelector("#temporal2"), options);
     chart.render();
+    attack_rate_chart.render();
 
     function drawTemporal(durationVal, chart){
         // Temporal Graph
