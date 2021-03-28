@@ -3,7 +3,7 @@
         "model": "app.floors",
         "pk": 1,
         "fields": {
-            "number": 1,
+            "number": "1",
             "building": 1
         }
     },
@@ -11,7 +11,7 @@
         "model": "app.floors",
         "pk": 2,
         "fields": {
-            "number": 2,
+            "number": "2",
             "building": 1
         }
     },
@@ -19,7 +19,7 @@
         "model": "app.floors",
         "pk": 3,
         "fields": {
-            "number": 3,
+            "number": "3",
             "building": 1
         }
     },
@@ -27,32 +27,216 @@
         "model": "app.floors",
         "pk": 4,
         "fields": {
-            "number": 1,
-            "building": 2
+            "number": "4",
+            "building": 1
         }
     },
     {
         "model": "app.floors",
         "pk": 5,
         "fields": {
-            "number": 2,
-            "building": 2
+            "number": "B1",
+            "building": 1
         }
     },
     {
         "model": "app.floors",
         "pk": 6,
         "fields": {
-            "number": 3,
-            "building": 2
+            "number": "B2",
+            "building": 1
         }
     },
     {
         "model": "app.floors",
         "pk": 7,
         "fields": {
-            "number": 4,
+            "number": "1",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 8,
+        "fields": {
+            "number": "2",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 9,
+        "fields": {
+            "number": "3",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 10,
+        "fields": {
+            "number": "4",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 11,
+        "fields": {
+            "number": "B1",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 12,
+        "fields": {
+            "number": "P1",
+            "building": 3
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 13,
+        "fields": {
+            "number": "1",
             "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 14,
+        "fields": {
+            "number": "2",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 15,
+        "fields": {
+            "number": "3",
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 16,
+        "fields": {
+            "number": "4",
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 17,
+        "fields": {
+            "number": "5",
+            "building": 1
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 18,
+        "fields": {
+            "number": "6",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 19,
+        "fields": {
+            "number": "7",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 20,
+        "fields": {
+            "number": "8",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 21,
+        "fields": {
+            "number": "9",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 22,
+        "fields": {
+            "number": "10",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 23,
+        "fields": {
+            "number": "B1",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 24,
+        "fields": {
+            "number": "P1",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 25,
+        "fields": {
+            "number": "P2",
+            "building": 2
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 26,
+        "fields": {
+            "number": "1",
+            "building": 4
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 27,
+        "fields": {
+            "number": "2",
+            "building": 4
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 28,
+        "fields": {
+            "number": "3",
+            "building": 4
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 29,
+        "fields": {
+            "number": "4",
+            "building": 4
+        }
+    },
+    {
+        "model": "app.floors",
+        "pk": 30,
+        "fields": {
+            "number": "B1",
+            "building": 4
         }
     }
 ]
