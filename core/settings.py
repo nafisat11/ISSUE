@@ -24,9 +24,14 @@ DEBUG = config('DEBUG', default=False)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'issue-tool.herokuapp.com',
                  config('SERVER', default='127.0.0.1')]
 
-if DEBUG:
-    # During development only
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'btlab.uofc@gmail.com'
+EMAIL_HOST_PASSWORD = 'fkkuwkuhfntsthpv'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'BTLab Team <noreply@btlabuofc.com>'
 
 # Application definition
 
@@ -146,6 +151,6 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Activate Django-Heroku.
-#django_heroku.settings(locals())
+# django_heroku.settings(locals())
 #############################################################
 #############################################################

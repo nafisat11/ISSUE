@@ -9,6 +9,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.core.mail import send_mail
+from django.conf import settings
 # from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.forms.utils import ErrorList
@@ -82,17 +84,16 @@ def password_reset_request(request):
                     email_template_name = "accounts/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        "domain": "127.0.0.1:8000",
-                        'site_name': "Website",
-                        'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                        'domain': 'issue-tool.herokuapp.com',
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                         'user': user,
                         'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
+                        'protocol': 'https'
                     }
                     email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email,
-                                  "admin@example.com", [user.email])
+                        send_mail(
+                            subject, message=email, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email], fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse("Invalid header found")
                     return redirect("/password_reset/done")

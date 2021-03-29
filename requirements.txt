@@ -12,3 +12,8 @@ python-decouple
 psycopg2
 gunicorn
 whitenoise
+numpy
+opencv-python 
+matplotlib 
+pillow 
+imutils

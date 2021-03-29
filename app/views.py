@@ -8,11 +8,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django import template
-from .models import Buildings, Floors, Rooms, Heatmaps
-from .agent_based_infection_probability import AttackRates
 from .models import Buildings, Floors, Rooms
+from .agent_based_infection_probability import AttackRates
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.views.decorators.gzip import gzip_page
 
 import json
 
@@ -86,7 +84,8 @@ def get_rooms(request):
         selected_floor = Rooms.objects.filter(floor_id=floor_id)
 
         for rooms in selected_floor:
-            result_set.append({'room_number': rooms.room_number})
+            result_set.append(
+                {'room_number': rooms.room_number, 'blueprint': rooms.blueprint})
 
         return HttpResponse(json.dumps(result_set), content_type="application/json")
 
@@ -95,7 +94,6 @@ def get_rooms(request):
 
 
 @csrf_exempt
-@gzip_page
 def post_attack_rates(request):
     if request.method == "POST" and request.is_ajax():
         # TODO: retrieve the seat selections from the ajax request, hardcoded for now
@@ -126,11 +124,7 @@ def selection_submitted(request):
 
 
 @csrf_exempt
-@gzip_page
 def post_seat_selections(request):
     if request.method == "POST" and request.is_ajax():
         seat_selections = json.loads(request.POST.get('data'))
-        # return HttpResponse(json.dumps({'seat_selections': seat_selections}), content_type="application/json")
-        # print(seat_selections)
-    # else:
         return redirect('/')

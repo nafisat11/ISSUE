@@ -3,8 +3,9 @@
         "model": "app.rooms",
         "pk": 1,
         "fields": {
-            "room_number": "124",
-            "max_occupancy": 56,
+            "room_number": "170",
+            "max_occupancy": 262,
+            "blueprint": "static/assets/images/room_maps/Engineering Block C_170.svg",
             "floor": 1
         }
     },
@@ -12,49 +13,49 @@
         "model": "app.rooms",
         "pk": 2,
         "fields": {
-            "room_number": "170",
-            "max_occupancy": 258,
-            "floor": 1
+            "room_number": "203",
+            "max_occupancy": 88,
+            "max_pandemic_occupancy": 23,
+            "floor": 8
         }
     },
     {
         "model": "app.rooms",
         "pk": 3,
         "fields": {
-            "room_number": "201",
-            "max_occupancy": 100,
-            "max_pandemic_occupancy": 40,
-            "floor": 2
+            "room_number": "207",
+            "max_occupancy": 76,
+            "floor": 8
         }
     },
     {
         "model": "app.rooms",
         "pk": 4,
         "fields": {
-            "room_number": "222",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 2
+            "room_number": "224",
+            "max_occupancy": 99,
+            "max_pandemic_occupancy": 24,
+            "floor": 8
         }
     },
     {
         "model": "app.rooms",
         "pk": 5,
         "fields": {
-            "room_number": "310",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 3
+            "room_number": "230",
+            "max_occupancy": 78,
+            "max_pandemic_occupancy": 17,
+            "floor": 8
         }
     },
     {
         "model": "app.rooms",
         "pk": 6,
         "fields": {
-            "room_number": "312",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 3
+            "room_number": "60",
+            "max_occupancy": 234,
+            "max_pandemic_occupancy": 46,
+            "floor": 11
         }
     },
     {
@@ -64,77 +65,18 @@
             "room_number": "162",
             "max_occupancy": 167,
             "max_pandemic_occupancy": 26,
-            "floor": 4
+            "blueprint": "static/assets/images/room_maps/Engineering Block C_170.svg",
+            "floor": 14
         }
     },
     {
         "model": "app.rooms",
         "pk": 8,
         "fields": {
-            "room_number": "104",
-            "max_occupancy": 150,
-            "max_pandemic_occupancy": 70,
-            "floor": 4
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 9,
-        "fields": {
-            "room_number": "244",
-            "max_occupancy": 40,
-            "max_pandemic_occupancy": 25,
-            "floor": 5
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 10,
-        "fields": {
-            "room_number": "245",
-            "max_occupancy": 40,
-            "max_pandemic_occupancy": 25,
-            "floor": 5
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 11,
-        "fields": {
-            "room_number": "316",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 6
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 12,
-        "fields": {
-            "room_number": "318",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 6
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 13,
-        "fields": {
-            "room_number": "422",
-            "max_occupancy": 60,
-            "max_pandemic_occupancy": 30,
-            "floor": 7
-        }
-    },
-    {
-        "model": "app.rooms",
-        "pk": 14,
-        "fields": {
-            "room_number": "424",
-            "max_occupancy": 55,
-            "max_pandemic_occupancy": 20,
-            "floor": 7
+            "room_number": "132",
+            "max_occupancy": 247,
+            "max_pandemic_occupancy": 32,
+            "floor": 27
         }
     }
 ]

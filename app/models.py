@@ -46,7 +46,7 @@ class Floors(models.Model):
 class Rooms(models.Model):
     floor = models.ForeignKey(Floors, on_delete=models.PROTECT)
     room_number = models.CharField(max_length=4)
-    max_occupancy = models.IntegerField()
+    max_occupancy = models.IntegerField(null=True)
     max_pandemic_occupancy = models.IntegerField(null=True)
     blueprint = models.URLField(null=True)
 

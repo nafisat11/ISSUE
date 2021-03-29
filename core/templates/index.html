@@ -5,27 +5,6 @@
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
 <style>
-    #overlay {
-        position: relative;
-        max-width: 100%;
-        pointer-events: none;
-        background: #555 !important;
-        z-index: 10;
-        
-    }
-
-    .wrapper {
-        position: relative;
-        width: 700px;
-        height: 550px;
-    }
-    .wrapper canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
     .seat_selection_container {
         position: relative;
         max-width: 100%;
@@ -138,30 +117,19 @@
                                 </button>
                             </div>
                         </div>
-                            <!-- <img class="card-img-top" src="/static/assets/images/room_maps/Engineering Block C_170.PNG"> -->
                             <div class="card-body">
-
-                                <!-- <div class="image_container" id="background_container">
-                                    <img src="/static/assets/images/room_maps/Room_Select.png">
-                                </div> -->
-                                
                                 <div class="seat_selection_container" id="seat_selection_container">
                                     <div class="image_container" id="seat_selection_floorplan">
-                                        <!-- <img src="/static/assets/images/room_maps/Engineering Block C_170.png" id="floorplan"> -->
                                         <img src="/static/assets/images/room_maps/Earth Sciences_162.svg" id="floorplan">
                                     </div>
                                     <div class="grid" id="grid"></div>
                                     <br>
                                     <div class="row justify-content-center">
-                                        <!-- <span style="display:block;float:left;width:400x;" id="num_infected">Agents Infected</span>
-                                        <span style="display:block;float:right" id="num_normal">Agents Selected</span> -->
                                         <div id="agent_slider"></div>
                                     </div>
-                                    <div class="col-sm"><div id="agent_slider"></div></div>
                                 </div>
-                                <!-- <br> -->
                                 <div class="row justify-content-center card-option">
-                                    <button type="button" class="btn btn-icon btn-outline-primary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset selections" id='reset_button'>
+                                    <button type="button" class="btn btn-icon btn-outline-primary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset Selections" id='reset_button'>
                                         <i class="feather icon-refresh-ccw"></i>
                                     </button>
                                     <!-- <button type="button" class="btn  btn-icon btn-outline-secondary border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Disabled button">
@@ -204,13 +172,12 @@
                                 <div class="col v-divider">
                                     <p><b>Duration</b></p>
                                     <input data-suffix="Minutes" class="form-control-sm" type="number" id="duration" value="0" min="0" max="180" step="5"/>
-                                    <p id="ppm"><br>Set a duration to see its effects.</p>
+                                    <p id="ppm"><br>Set a duration to see its effects</p>
                                 </div>
                             </div>                            
                         </div>
                         <div class="card-footer d-flex">
                             <button type="button" class="btn btn-success mx-auto generate" id="GenerateHeatmap">Generate Heatmap</button>
-                            <!-- <button type="button" id="GenerateHeatmap" class="btn btn-primary mx-auto">Generate Heatmap</button> -->
                         </div>
                         <!-- infection-parameter end -->
                     </div>
@@ -239,17 +206,18 @@
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link" id="pills-virus3-tab" data-toggle="pill" href="#pills-virus3" role="tab" aria-controls="pills-virus3" aria-selected="false">Virus3</a>
                                     </li>
-                                    </ul>
-                                    <div class="tab-content" id="pills-tabContent">
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-covid" role="tabpanel" aria-labelledby="pills-covid-tab">
                                         <li>Stay 2 metres apart from others</li>
                                         <li>Wear a mask in public spaces, indoor workplaces and places of worship</li>
-                                        <br>
-                                        <p>Referenced from AHS<a href="https://www.alberta.ca/enhanced-public-health-measures.aspx#PathForward"> website</a></p>
+                                        <footer>
+                                        <p>Referenced from AHS<a href="https://www.alberta.ca/enhanced-public-health-measures.aspx#PathForward" target="_blank"> website</a></p>
+                                        </footer>
                                     </div>
-                                    <div class="tab-pane fade" id="pills-virus2" role="tabpanel" aria-labelledby="pills-virus2-tab">...</div>
-                                    <div class="tab-pane fade" id="pills-virus3" role="tabpanel" aria-labelledby="pills-virus3-tab">...</div>
-                                    </div>    
+                                    <div class="tab-pane fade" id="pills-virus2" role="tabpanel" aria-labelledby="pills-virus2-tab">Example text</div>
+                                    <div class="tab-pane fade" id="pills-virus3" role="tabpanel" aria-labelledby="pills-virus3-tab">Example text</div>
+                                </div> 
                             </div>
                         </div>
                     </div> 
@@ -257,7 +225,16 @@
                 <!-- temporal graph start -->
                 <div class="col">
                     <div class="card">
-                        <div class="card-header"><h5>Temporal Graph</h5></div>
+                        <div class="card-header"><h5>Temporal Graph 1</h5>
+                            <div class="card-header-right">
+                                <button type="button" class="btn btn-warning temporal1" data-container="body" data-toggle="popover" data-placement="top">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal1"></div>
                         </div>
@@ -265,15 +242,22 @@
                 </div>
                 <div class="col">
                     <div class="card">
-                        <div class="card-header"><h5>Temporal Graph 2</h5></div>
+                        <div class="card-header"><h5>Temporal Graph 2</h5>
+                            <div class="card-header-right">
+                                <button type="button" class="btn btn-warning temporal2" data-container="body" data-toggle="popover" data-placement="top">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body d-flex flex-column">
                             <div id="temporal2"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- [ Main Content ] end -->
         </div>
     </div>
     <!-- [ Main Content ] end -->
@@ -342,6 +326,33 @@
                 '<p style="font-size:125%;">Clicking a seat cycles through each state starting from an empty seat, to normal agent, then finally infected agent.</p>' +
                 '<p style="font-size:125%;">For example, if a normal agent is seated, one click will transition to infected agent, two clicks will transition to empty.</p>'
                 );
+            return $el;
+        },
+    });
+
+    $('.temporal1').popover({
+        html: true,
+        container: 'body',
+        title: 'Attack Rate Increase',
+        content: function() {
+            var $el = $('<div id="temporal1_body"></div>');
+            //Create the SVG child (can be created more-dynamically).
+            $el.append('<p style="font-size:125%;">This line chart shows how the attack rate <b>increases</b> as a function of time.</p>' +
+                '<p style="font-size:125%;">For example, at ~140 minutes, the attack rate <b>increase</b> is ~100%, this means the original attack rate would have doubled from what it was at Time = 0 mins.</p>' +
+                '<p style="font-size:125%;">The attack rate at Time = 0 is dynamically determined using the seat selection interface and displayed on the heatmap.</p>'
+                );
+            return $el;
+        },
+    });
+
+    $('.temporal2').popover({
+        html: true,
+        container: 'body',
+        title: 'Attack Rate',
+        content: function() {
+            var $el = $('<div id="temporal1_body"></div>');
+            //Create the SVG child (can be created more-dynamically).
+            $el.append('<p style="font-size:125%;">This line chart shows the <b>attack rate</b> as a function of time. The attack rates and the equation used are derived from the following <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7454391/pdf/ciaa1057.pdf" target="_blank">paper</a>.</p>');
             return $el;
         },
     });
@@ -688,9 +699,6 @@
         image.onerror = function() {
             d3.select('#grid').html("");
             d3.select('#agent_slider').html("");
-            var pageURL = $(location).attr("href");
-            window.location.href = pageURL.split('/')[0] + 'page-404.html';
-            // alert('error loading');
         };
 
         image.src = image_path;
@@ -709,21 +717,23 @@
     // Heatmap bounding box with zoom utilities
     const map = L.map('heatmapid', {
         zoomSnap: 0.1,
-        minZoom: 3,
-        maxZoom: 4,
+        minZoom: 1,
+        maxZoom: 3,
         center: [0, 0],
-        zoom: 3,
+        zoom: 1.5,
         crs: L.CRS.Simple
     });
 
-    var southWest = map.unproject([0, h], map.getMaxZoom()-1);
-    var northEast = map.unproject([w, 0], map.getMaxZoom()-1);
+    var southWest = map.unproject([0, h*2], map.getMaxZoom()-1);
+    var northEast = map.unproject([w*2, 0], map.getMaxZoom()-1);
     var bounds = new L.LatLngBounds(southWest, northEast);
 
     console.log(w, h);
 
     var hmap = L.imageOverlay(imgURL, bounds).addTo(map);
     map.setMaxBounds(bounds);
+
+    var overlayImage = hmap._image;
 
     L.control.Legend({
         title: "Attack Rates",
@@ -763,7 +773,7 @@
     ]
     }).addTo(map);
 
-    var heatLayer = L.heatLayer({radius: 20, blur: 50, minOpacity: 0.5, maxZoom: 3}).addTo(map);
+    var heatLayer = L.heatLayer({radius: 15, blur: 50, minOpacity: 0.3, maxZoom: 1}).addTo(map);
 
     // loop through outputted points and convert to lat, lng
     function drawHeatMap(points) {
@@ -788,8 +798,9 @@
                 }
 
                 for (var i = 0; i < finalResult.length; i++){
-                    finalResult[i][0] = finalResult[i][0]*w;
-                    finalResult[i][1] = finalResult[i][1]*h;
+                    finalResult[i][0] = finalResult[i][0]*overlayImage.clientWidth;
+                    finalResult[i][1] = finalResult[i][1]*overlayImage.clientHeight;
+                    finalResult[i][2] = finalResult[i][2]*100;
                     coords[i] = map.unproject(finalResult[i].slice(0,2));
                 }
 
@@ -814,7 +825,7 @@
 
     // ################## Temporal Graph and Duration-related functions ##################
     // Default temporal graph series and settings
-    var options = {
+    var increase_options = {
         series: [{
             name: "Attack Rate Increase",
             data: []
@@ -910,22 +921,126 @@
             },
         }
     };
-    var chart = new ApexCharts(document.querySelector("#temporal1"), options);
-    var attack_rate_chart = new ApexCharts(document.querySelector("#temporal2"), options);
-    chart.render();
-    attack_rate_chart.render();
 
-    function drawTemporal(durationVal, chart){
+    var raw_options = {
+        series: [{
+            name: "Attack Rate (%)",
+            data: []
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                type: 'x',
+                enabled: true,
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                show: true,
+                offsetX: 0,
+                offsetY: 0,
+                tools: {
+                    download: '<span aria-hidden="true" class="fa fa-download"></span>',
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: false,
+                    customIcons: []
+                }
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        colors: ["#D6001C"],
+        stroke: {
+            curve: 'smooth'
+        },
+        title: {
+            text: 'Attack Rate as a Function of Time',
+            align: 'left'
+        },
+        xaxis: {
+            type: 'numeric',
+            categories: [],
+            title: {
+                text: "Time (mins)"
+            }
+        },
+        yaxis: {
+            title: {
+                text: "Attack Rate (%)",
+                style: {
+                    fontSize: '14px'
+                }
+            }
+        },
+        tooltip: {
+            enabled: true,
+            enabledOnSeries: undefined,
+            shared: true,
+            followCursor: false,
+            intersect: false,
+            inverseOrder: false,
+            custom: undefined,
+            fillSeriesColor: false,
+            theme: false,
+            style: {
+                fontSize: '12px',
+                fontFamily: undefined
+            },
+            onDatasetHover: {
+                highlightDataSeries: false,
+            },
+            x: {
+                show: true,
+                format: 'dd MMM',
+                formatter: undefined,
+            },
+            y: {
+                formatter: undefined,
+                title: {
+                    formatter: (seriesName) => seriesName,
+                },
+            },
+            z: {
+                formatter: undefined,
+                title: 'Size: '
+            },
+            marker: {
+                show: true,
+            },
+            fixed: {
+                enabled: false,
+                position: 'topRight',
+                offsetX: 0,
+                offsetY: 0,
+            },
+        }
+    };
+
+    var attack_rate_increase = new ApexCharts(document.querySelector("#temporal1"), increase_options);
+    var raw_attack_rates = new ApexCharts(document.querySelector("#temporal2"), raw_options);
+    attack_rate_increase.render();
+    raw_attack_rates.render();
+
+    function drawTemporal(durationVal, chart, type){
         // Temporal Graph
         temporalXData = [];
         temporalYData = [];
         for(var i = 0; i <= durationVal; i+=5){
             temporalXData = temporalXData.concat(i);
-            yVal = (0.0051 * (i * i));
+            if (type === "increase") {
+                yVal = (0.0051 * (i * i));
+            } else if (type === "raw") {
+                yVal = (0.121 + 0.022 * ((i * i)/3600));
+            }
+            
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         // Value to be printed to front end
-        tempPpm = (0.0051 * (durationVal * durationVal)*1000);
+        tempPpm = (0.022 * ((durationVal * durationVal)/3600) * 100000);
         ppmYValue = tempPpm.toFixed();
         document.getElementById("ppm").innerHTML = "<br>For every 100,000 individuals, after " + durationVal + " minutes, " + ppmYValue + " more individuals will be infected.";
         // Update series
@@ -942,8 +1057,9 @@
     var temporalDuration;
     $("#duration").on("change", function (event) {
         temporalDuration = $("#duration").val();
-        if (temporalDuration != 0){
-            drawTemporal(temporalDuration, chart);
+        if (temporalDuration != 0) {
+            drawTemporal(temporalDuration, attack_rate_increase, "increase");
+            drawTemporal(temporalDuration, raw_attack_rates, "raw");
         }
     })
 

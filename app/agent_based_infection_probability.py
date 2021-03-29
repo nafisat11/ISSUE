@@ -9,7 +9,8 @@ class AttackRates:
         self.infected = []
         self.mask_type = mask_type
         self.duration = int(duration)
-        self.available_masks = {"N95": 0.85, "Surgical": 0.33, "Cloth": 0.11}
+        self.available_masks = {"N95": 0.896,
+                                "Surgical": 0.333, "Cloth": 0.113}
         # All the selected agents' seat locations
         self.agents = json.loads(agents)
         self.normal_agents = [
@@ -50,26 +51,27 @@ class AttackRates:
     #         output.append(innerlist)
     #     return output
 
-    def new_normalize(self):
-        output = []
-        for i, agent in enumerate(self.agents):
-            if agent["attRate"] > 100:
-                agent["attRate"] = 100
+    # def new_normalize(self):
+    #     output = []
+    #     for i, agent in enumerate(self.agents):
+    #         if agent["attRate"] > 100:
+    #             agent["attRate"] = 100
 
-            innerlist = []
-            innerlist.append(agent['x'])
-            innerlist.append(agent['y'])
-            innerlist.append(agent['attRate']/100)
-            output.append(innerlist)
-        return output
+    #         innerlist = []
+    #         innerlist.append(agent['x'])
+    #         innerlist.append(agent['y'])
+    #         innerlist.append(agent['attRate']/100)
+    #         output.append(innerlist)
+    #     return output
 
     def probabilities(self):
         self.find_infected(self.agents)
         for i, agent in enumerate(self.agents):
             sum_of_attackrates = 0
+            new_attackrates = 0
             if agent['state'] == 2:
                 # attack rate for infected seat set to 1
-                agent['attRate'] = 100
+                agent['attRate'] = 1
                 continue
 
             for infected in self.infected:
@@ -78,10 +80,16 @@ class AttackRates:
                                  (((infected['x'] - agent['x'])/agent['x_scale'])**2))
 
                 if dist <= 3.3:
-                    sum_of_attackrates += (0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(
-                        dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104
+                    new_attackrates = ((0.1335*(dist**6)) - (1.9309*(dist**5)) + (11.291*(
+                        dist**4)) - (34.12*(dist**3)) + (56.193*(dist**2)) - (48.069*dist) + 17.104)/100
+
+                    sum_of_attackrates = sum_of_attackrates + \
+                        new_attackrates - (sum_of_attackrates*new_attackrates)
+
+                elif dist > 3.3 and dist <= 6:
+                    sum_of_attackrates += 0.0005
                 else:
-                    sum_of_attackrates += 0.05
+                    sum_of_attackrates += 0
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
@@ -92,18 +100,18 @@ class AttackRates:
                 agent['attRate'] *= 1
             else:
                 # duration = int(self.duration)
-                temporal = (0.0051 * ((self.duration**2)/100)) + 1
-                # temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
+                # temporal = (0.0051 * ((self.duration**2)/100)) + 1
+                temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
                 print(temporal)
                 agent['attRate'] *= temporal
 
-        # output = []
+        output = []
 
-        # for i, agent in enumerate(self.agents):
-        #     innerlist = []
-        #     innerlist.append(agent['x'])
-        #     innerlist.append(agent['y'])
-        #     innerlist.append(agent['attRate'])
-        #     output.append(innerlist)
+        for i, agent in enumerate(self.agents):
+            innerlist = []
+            innerlist.append(agent['x'])
+            innerlist.append(agent['y'])
+            innerlist.append(agent['attRate'])
+            output.append(innerlist)
 
-        return self.new_normalize()
+        return output

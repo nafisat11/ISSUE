@@ -36,7 +36,7 @@
 			$floorvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
 				var valueSelected = optionSelected.val();
-				var floor_number = optionSelected.text(); // don't really need this
+				var floor_number = optionSelected.text();
 
 				data = {'floor_id': valueSelected, 'floor': floor_number};
 
@@ -48,7 +48,11 @@
 						$("#RoomSelect option").remove();
 						$roomvar.append('<option disabled selected="true">Room Number</option>');
 						for (var i = result.length - 1; i >= 0; i--) {
-							$roomvar.append('<option>' + result[i].room_number + '</option>');
+							if (result[i].blueprint !== null) {
+								$roomvar.append('<option>' + result[i].room_number + '</option>');
+							} else {
+								$roomvar.append('<option disabled>' + result[i].room_number + ' - unavailable' + '</option>');
+							}
 						};
 					},
 				});
@@ -58,9 +62,6 @@
 				var optionSelected = $(this).find("option:selected");
 				room_number = optionSelected.text();
 				var floor_id = $("#FloorSelect").val()
-
-				imageLocation = "/static/assets/images/room_maps/";
-        		fileType = ".png";
 
 				data = {'room': room_number, "floor_id": floor_id};
 
@@ -76,12 +77,7 @@
 							} else {
 								$(".maxPanOccup").text('N/A');
 							}
-							
-							//$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
-							// $("#seat_selection_container").show();
-							// $("#background_container").remove();
 
-							// add switch between ggreyed out and active overlays
 							update_room_selection(building_name, room_number);
 							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
 							heatLayer.setLatLngs(latlngs=[]);
@@ -91,10 +87,6 @@
 					},					
 				});
 			});
-
-			// add event listener to SUBMIT button
-			// $("#SubmitSelection").addEventListener("click", update_room_selection(building_name, room_number), false);
-
 		});
 
 	</script>
@@ -102,15 +94,6 @@
 		<div class="navbar-wrapper  ">
 			<div class="navbar-content scroll-div " >
 				<ul class="nav pcoded-inner-navbar ">
-					<!-- <li class="nav-item pcoded-menu-caption">
-						<label>Navigation</label>
-					</li>
-					<li class="nav-item">
-					    <a href="/" class="nav-link {% if 'index' in segment %} active {% endif %}">
-                            <span class="pcoded-micon">
-                                <i class="feather icon-home"></i></span><span class="pcoded-mtext">
-									Home</span></a>
-					</li> -->
 					<li class="nav-item pcoded-menu-caption">
 						<label>Room Selector</label>
 					</li>
@@ -137,7 +120,6 @@
 								</select>
 							</li>
 							<div class="text-center" src="/layouts/index.html">
-								<!-- <button type="button" id="SubmitSelection" class="btn btn-success" onclick="update_room_selection(building_name, room_number)">Submit</button> -->
 								<button type="button" id="SubmitSelection" class="btn btn-success">Submit</button>
 							</div>
 						</form>
