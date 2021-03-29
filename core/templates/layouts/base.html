@@ -43,9 +43,10 @@
 		</div> -->
 	</div>
     <!-- [ Pre-loader ] End -->
-    
+    {% block sidebar %}
     {% include 'includes/sidebar.html' %}
-    
+    {% endblock %}
+
     {% include 'includes/navigation.html' %}
 
     {% block content %}{% endblock content %}
