@@ -78,7 +78,7 @@
 								$(".maxPanOccup").text('N/A');
 							}
 
-							update_room_selection(building_name, room_number);
+							update_room_selection(building_name, room_number, result.max_pandemic_occupancy);
 							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
 							heatLayer.setLatLngs(latlngs=[]);
 							$('div.seat_selection_container').unblock();
