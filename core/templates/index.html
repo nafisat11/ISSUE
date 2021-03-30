@@ -466,6 +466,13 @@
         const size_sum = node_sizes.reduce((a, b) => a + b, 0);
         const average_size = (size_sum / node_sizes.length) || 0;
 
+        // check if svg object already exists --> remove if this is the case
+        const svg_check = d3.select("svg");
+
+        if (svg_check.size() != 0) {
+            svg_check.remove();
+        }
+
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
 
@@ -491,6 +498,13 @@
                 .attr("fill", d => d.colour)
                 .attr("stroke", outline)
                 .attr("r", d => Math.floor(average_size * width * 1.2))
+
+        // check if slider already exists --> remove if this is the case
+        const slider_check = d3.select("#slider_svg");
+        if (slider_check.size() != 0) {
+            console.log("removing slider");
+            slider_check.remove();
+        }
 
         // initialize slider to default values
         make_slider([0, n_default]);
@@ -680,8 +694,8 @@
             var image_height = document.getElementsByClassName("image_container")[0].clientHeight;
 
             // update (remove and re-draw) seat selection interface
-            d3.select('#grid').html("");
-            d3.select('#agent_slider').html("");
+            //d3.select('#grid').html("");
+            //d3.select('#agent_slider').html("");
             readTextFile(seat_positions_path, function(text){
                 data = JSON.parse(text);
                 //console.log(data);
