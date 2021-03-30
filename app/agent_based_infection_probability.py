@@ -93,7 +93,7 @@ class AttackRates:
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
-                print(self.mask_type)
+                #print(self.mask_type)
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is None or self.duration == 0:
@@ -102,7 +102,7 @@ class AttackRates:
                 # duration = int(self.duration)
                 # temporal = (0.0051 * ((self.duration**2)/100)) + 1
                 temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
-                print(temporal)
+                #print(temporal)
                 agent['attRate'] *= temporal
 
         output = []
