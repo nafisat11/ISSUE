@@ -3,11 +3,83 @@
         "model": "app.rooms",
         "pk": 1,
         "fields": {
-            "room_number": 162,
-            "max_occupancy": 234,
-            "max_pandemic_occupancy": 60,
-            "blueprint": "",
+            "room_number": "170",
+            "max_occupancy": 262,
+            "blueprint": "static/assets/images/room_maps/Engineering Block C_170.svg",
             "floor": 1
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 2,
+        "fields": {
+            "room_number": "203",
+            "max_occupancy": 88,
+            "max_pandemic_occupancy": 23,
+            "floor": 8
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 3,
+        "fields": {
+            "room_number": "207",
+            "max_occupancy": 76,
+            "floor": 8
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 4,
+        "fields": {
+            "room_number": "224",
+            "max_occupancy": 99,
+            "max_pandemic_occupancy": 24,
+            "blueprint": "static/assets/images/room_maps/Engineering Block G_224.svg",
+            "floor": 8
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 5,
+        "fields": {
+            "room_number": "230",
+            "max_occupancy": 78,
+            "max_pandemic_occupancy": 17,
+            "floor": 8
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 6,
+        "fields": {
+            "room_number": "60",
+            "max_occupancy": 234,
+            "max_pandemic_occupancy": 46,
+            "blueprint": "static/assets/images/room_maps/Engineering Block G_60.svg",
+            "floor": 11
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 7,
+        "fields": {
+            "room_number": "162",
+            "max_occupancy": 167,
+            "max_pandemic_occupancy": 26,
+            "blueprint": "static/assets/images/room_maps/Engineering Block C_170.svg",
+            "floor": 14
+        }
+    },
+    {
+        "model": "app.rooms",
+        "pk": 8,
+        "fields": {
+            "room_number": "132",
+            "max_occupancy": 247,
+            "max_pandemic_occupancy": 32,
+            "blueprint": "static/assets/images/room_maps/Kinesiology Block B_132.svg",
+            "floor": 27
         }
     }
 ]

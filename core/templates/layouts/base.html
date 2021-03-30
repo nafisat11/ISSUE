@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        Infection Spread Simulation in University Environment
+        Infectious Spread Simulation in University Environment
     </title> 
     <!-- HTML5 Shim and Respond.js IE11 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -23,7 +23,13 @@
 
     <!-- vendor css -->
     <link rel="stylesheet" href="/static/assets/css/style.css">
-    
+
+    <!-- leaflet-->
+    <link rel="stylesheet" href="/static/assets/dist/leaflet.css" />
+    <script src="/static/assets/dist/leaflet.js"></script>
+    <script src="/static/assets/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="/static/assets/dist/leaflet.legend.css" />
+    <script src="/static/assets/dist/leaflet.legend.js"></script>        
     <!-- Specific CSS goes HERE -->
     {% block stylesheets %}{% endblock stylesheets %}    
 
@@ -37,9 +43,10 @@
 		</div> -->
 	</div>
     <!-- [ Pre-loader ] End -->
-    
+    {% block sidebar %}
     {% include 'includes/sidebar.html' %}
-    
+    {% endblock %}
+
     {% include 'includes/navigation.html' %}
 
     {% block content %}{% endblock content %}

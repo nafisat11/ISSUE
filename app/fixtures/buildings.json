@@ -3,7 +3,28 @@
         "model": "app.buildings",
         "pk": 1,
         "fields": {
+            "name": "Engineering Block C"
+        }
+    },
+    {
+        "model": "app.buildings",
+        "pk": 2,
+        "fields": {
+            "name": "Engineering Block G"
+        }
+    },
+    {
+        "model": "app.buildings",
+        "pk": 3,
+        "fields": {
             "name": "Earth Sciences"
+        }
+    },
+    {
+        "model": "app.buildings",
+        "pk": 4,
+        "fields": {
+            "name": "Kinesiology Block B"
         }
     }
 ]

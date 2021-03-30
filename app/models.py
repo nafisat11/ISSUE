@@ -9,9 +9,12 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
+
+
 class Users(models.Model):
-    
+
     pass
+
 
 class Buildings(models.Model):
     name = models.CharField(max_length=200)
@@ -28,8 +31,7 @@ class Buildings(models.Model):
 
 class Floors(models.Model):
     building = models.ForeignKey(Buildings, on_delete=models.PROTECT)
-    # might have to change this to char if we want to include B1, B2 basement floors
-    number = models.IntegerField()
+    number = models.CharField(max_length=2)
 
     def get_building_id(self):
         return self.building
@@ -43,10 +45,10 @@ class Floors(models.Model):
 
 class Rooms(models.Model):
     floor = models.ForeignKey(Floors, on_delete=models.PROTECT)
-    room_number = models.IntegerField()
-    max_occupancy = models.IntegerField()
-    max_pandemic_occupancy = models.IntegerField()
-    blueprint = models.URLField()
+    room_number = models.CharField(max_length=4)
+    max_occupancy = models.IntegerField(null=True)
+    max_pandemic_occupancy = models.IntegerField(null=True)
+    blueprint = models.URLField(null=True)
 
     def get_floor_id(self):
         return self.floor

@@ -7,6 +7,9 @@
 			var $floorvar = $("#FloorSelect");
 			var $roomvar = $("#RoomSelect");
 
+			var building_name;
+			var room_number;
+
 			// $("#seat_selection_container").hide();
 			
 			$buildingvar.change(function() {
@@ -33,7 +36,7 @@
 			$floorvar.change(function() {
 				var optionSelected = $(this).find("option:selected");
 				var valueSelected = optionSelected.val();
-				var floor_number = optionSelected.text(); // don't really need this
+				var floor_number = optionSelected.text();
 
 				data = {'floor_id': valueSelected, 'floor': floor_number};
 
@@ -45,7 +48,11 @@
 						$("#RoomSelect option").remove();
 						$roomvar.append('<option disabled selected="true">Room Number</option>');
 						for (var i = result.length - 1; i >= 0; i--) {
-							$roomvar.append('<option>' + result[i].room_number + '</option>');
+							if (result[i].blueprint !== null) {
+								$roomvar.append('<option>' + result[i].room_number + '</option>');
+							} else {
+								$roomvar.append('<option disabled>' + result[i].room_number + ' - unavailable' + '</option>');
+							}
 						};
 					},
 				});
@@ -56,9 +63,6 @@
 				room_number = optionSelected.text();
 				var floor_id = $("#FloorSelect").val()
 
-				imageLocation = "/static/assets/images/room_maps/";
-        		fileType = ".png";
-
 				data = {'room': room_number, "floor_id": floor_id};
 
 				$.ajax({
@@ -66,13 +70,19 @@
 					url: "/selection_submitted/",
 					data: data,
 					success: function(result) {
-						$("button").click(function(event) {
+						$("#SubmitSelection").click(function(event) {
 							$(".maxOccup").text(result.max_occupancy);
-							$(".maxPanOccup").text(result.max_pandemic_occupancy)
-							$("#floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
-							$("#heatmap_floorplan").attr("src", imageLocation.concat(building_name, "_", room_number, fileType))
-							// $("#seat_selection_container").show();
-							// $("#background_container").remove();
+							if (result.max_pandemic_occupancy !== null) {
+								$(".maxPanOccup").text(result.max_pandemic_occupancy);
+							} else {
+								$(".maxPanOccup").text('N/A');
+							}
+
+							update_room_selection(building_name, room_number);
+							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
+							heatLayer.setLatLngs(latlngs=[]);
+							$('div.seat_selection_container').unblock();
+							$('#heatmap_container').unblock();
 						});	
 					},					
 				});
@@ -84,15 +94,6 @@
 		<div class="navbar-wrapper  ">
 			<div class="navbar-content scroll-div " >
 				<ul class="nav pcoded-inner-navbar ">
-					<li class="nav-item pcoded-menu-caption">
-						<label>Navigation</label>
-					</li>
-					<li class="nav-item">
-					    <a href="/" class="nav-link {% if 'index' in segment %} active {% endif %}">
-                            <span class="pcoded-micon">
-                                <i class="feather icon-home"></i></span><span class="pcoded-mtext">
-									Home</span></a>
-					</li>
 					<li class="nav-item pcoded-menu-caption">
 						<label>Room Selector</label>
 					</li>

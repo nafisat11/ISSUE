@@ -1,0 +1,123 @@
+{% extends "layouts/base.html" %}
+{% block title %} Help Page {% endblock %}
+
+{% block sidebar %}
+{% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}	
+
+	<!-- [ Main Content ] start -->
+    <div class="pcoded-main-container" style="margin-left: 0px;">
+        <div class="pcoded-content">
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5>
+                                    Help & Support 
+                                    <a href="https://ucalgary.ca/labs/biometric-technologies/contacts">
+                                        <button type="button" class="btn btn-info mx-4">Contact</button>
+                                    </a>
+                                </h5>
+                            </div>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i> Return to Main Page</a></li>
+                                <li class="breadcrumb-item"><a href="#!">Help & Support</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-deck">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">How do I use the room selector?</h5>
+                    <p class="card-text">The collapsible sidebar to the left of the main simulation page contains the room selection interface as shown below</p>
+                    <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/room_select.png"></p>
+                    <p class="card-text">The interface is used to select a room on campus. There are 3 dropdown menus you should select from,
+                        in order of <b>building</b>, <b>floor</b>, then <b>room</b>. The options will not be visible unless chosen in that specific order and will be hidden.
+                    </p>
+                    <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/hidden.png"><img src="/static/assets/images/user_manual/hidden2.png"></p>
+                    <p class="card-text"><b>Steps</b>
+                        <ol>
+                            <li>
+                                Building
+                                <br>
+                                <p class="card-text">This dropdown menu lets you select a building on campus e.g. Engineering, Earth Sciences, Science Theatres, and so on.</p>
+                                <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/building.png"></p>
+                            </li>
+                            <br>
+                            <li>
+                                Floor
+                                <br>
+                                <p class="card-text">This dropdown menu lets you select a floor for the particular building that was previously chosen.</p>
+                                <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/floor.png"></p>
+                            </li>
+                            <br>
+                            <li>
+                                Room
+                                <br>
+                                <p class="card-text">This dropdown menu lets you select a room that is available on the selected floor of the chosen building.</p>
+                                <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/room.png"></p>
+                            </li>
+                        </ol>
+                        Once the selections are made you must click the submit button to load the seat selection interface.
+                    </p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">How do I use the seat selector?</h5>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">How do I set infection parameters?</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. 
+                        This card has even longer content than the first to show that equal height action.</p>
+                  </div>
+                </div>
+            </div>
+            <div class="card-deck my-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">What does the heatmap tell me?</h5>
+                    <p class="card-text">Provides a high-level view of the infection rates across the room. 
+                        This feature updates in real time as the seat selection interface has students, and infected students placed within the room. 
+                        Follows the typical heat map format of using a red shade to indicate the highest probability of infection. 
+                    </p>
+                    <p class="card-text">
+                        The rate decreases as an individual is further away from that “hot” zone. 
+                        Which is indicated by changing colors to eventually where the seats have no shading on them. A sample heat map can be seen below.
+                    </p>
+                    <p class="card-text" style="text-align: center;"><img src="/static/assets/images/user_manual/heatmap.png"></p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">How are attack rates computed?</h5>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">What do the temporal graphs tell me?</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
