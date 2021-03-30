@@ -579,7 +579,7 @@
                     $("input[name='ppe']").on("change", function (event) {
                         drawHeatMap(values);
                     })
-                });
+                });            
 
             var gSlider = d3
                 .select('div#agent_slider')
@@ -589,7 +589,20 @@
                 .attr('height', 0.2 * image_height)
                 .attr("viewBox", `0 0 ${0.8 * image_width} ${0.2 * image_height}`)
                 .append('g')
+                .attr('id', 'g_slider')
                 .attr('transform', 'translate(10,15)');
+
+            $( document ).ready(function() {
+                var slider_handle = d3
+                    .select("g.slider")
+                    .insert("line", () => document.getElementsByClassName("track-overlay")[0])
+                    .attr('id', 'red_zone')
+                    .attr('x1', '-8')
+                    .attr('x2', '150')
+                    .attr('stroke', '#FF3232')
+                    .attr('stroke-width', '4')
+                    .attr('stroke-linecap', 'round');
+            });
 
             gSlider.call(slider);
         }
