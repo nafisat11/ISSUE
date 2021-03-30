@@ -441,9 +441,6 @@
         var selected_nodes = [];
         var node_sizes = [];
 
-        //console.log(x_scale);
-        //console.log(y_scale);
-
         // create a dictionary to maintain list of nodes by ID
         var node_map = {};
         for (let i = 0; i < nodes.length; i++) {
@@ -464,13 +461,10 @@
             node_IDs.push(id);
             node_sizes.push(nodes[i].r);
         }
-
-        //console.log(nodes);
         
         // compute average node size
         const size_sum = node_sizes.reduce((a, b) => a + b, 0);
         const average_size = (size_sum / node_sizes.length) || 0;
-        console.log(average_size);
 
         // append the svg object to the body of the page
         const svg = d3.select("#grid").append("svg");
@@ -549,7 +543,7 @@
                   d3
                     .symbol()
                     .type(d3.symbolCircle)
-                    .size(300)()
+                    .size(0.3 * image_width)()
                 )
                 .on('onchange', val => {
                     var num_to_infect = val[0];
@@ -653,7 +647,7 @@
             globalSeatPositions = values;
             // delete and remake slider with updated values
             d3.select('#slider_svg').remove();
-            make_slider(values.slice(0,1));          
+            make_slider(values.slice(0,2));          
             drawHeatMap(values);
             
             $("#duration").on("change", function (event) {
@@ -669,6 +663,7 @@
     }
 
     // ####################### PAGE INITIALIZATION & UPDATE ########################
+
     // update room selection
     function update_room_selection(building_name, room_name){
 
@@ -697,7 +692,7 @@
                     size: 8,
                     num_states: 3, 
                     nodes: data['SEATS'],
-                    n_default : data['SEATS'].length / 2,
+                    n_default : Math.floor(data['SEATS'].length / 2),
                     x_scale: data['X_SCALE'],
                     y_scale: data['Y_SCALE']
                 });
