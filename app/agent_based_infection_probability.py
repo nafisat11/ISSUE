@@ -1,8 +1,6 @@
 import math
 import json
 
-# TODO: better structure for this
-
 
 class AttackRates:
     def __init__(self, agents, mask_type=None, duration=None):
@@ -31,38 +29,6 @@ class AttackRates:
             if agent['state'] == 2:
                 self.infected.append(agent)
         return
-
-    # def normalize(self, attack_rates):
-    #     a = 0
-    #     b = 100
-    #     min_attack_rate = min(attack_rates)
-    #     max_attack_rate = max(attack_rates)
-
-    #     output = []
-
-    #     for i, agent in enumerate(self.agents):
-    #         attRate = a + ((agent["attRate"]-min_attack_rate)
-    #                        * (b-a))/(max_attack_rate-min_attack_rate)
-    #         agent["attRate"] = attRate
-    #         innerlist = []
-    #         innerlist.append(agent['x'])
-    #         innerlist.append(agent['y'])
-    #         innerlist.append(agent['attRate']/100)
-    #         output.append(innerlist)
-    #     return output
-
-    # def new_normalize(self):
-    #     output = []
-    #     for i, agent in enumerate(self.agents):
-    #         if agent["attRate"] > 100:
-    #             agent["attRate"] = 100
-
-    #         innerlist = []
-    #         innerlist.append(agent['x'])
-    #         innerlist.append(agent['y'])
-    #         innerlist.append(agent['attRate']/100)
-    #         output.append(innerlist)
-    #     return output
 
     def probabilities(self):
         self.find_infected(self.agents)
@@ -93,16 +59,12 @@ class AttackRates:
 
             agent['attRate'] = sum_of_attackrates
             if self.mask_type in self.available_masks:
-                print(self.mask_type)
                 agent['attRate'] *= (1-self.available_masks[self.mask_type])
 
             if self.duration is None or self.duration == 0:
                 agent['attRate'] *= 1
             else:
-                # duration = int(self.duration)
-                # temporal = (0.0051 * ((self.duration**2)/100)) + 1
                 temporal = (0.121 + 0.022*((self.duration/60)**2))/100 + 1
-                print(temporal)
                 agent['attRate'] *= temporal
 
         output = []

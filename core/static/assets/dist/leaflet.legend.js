@@ -228,7 +228,7 @@
             this._link.title = "Legend";
             this._link.href = "#";
 
-            var title = L.DomUtil.create("h3", "leaflet-legend-title", this._contents);
+            var title = L.DomUtil.create("h6", "leaflet-legend-title", this._contents);
             title.innerText = this.options.title || "Legend";
 
             var len = this.options.legends.length;
