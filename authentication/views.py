@@ -85,7 +85,7 @@ def password_reset_request(request):
                     c = {
                         "email": user.email,
                         'domain': 'issue-tool.herokuapp.com',
-                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
                         'user': user,
                         'token': default_token_generator.make_token(user),
                         'protocol': 'https'
