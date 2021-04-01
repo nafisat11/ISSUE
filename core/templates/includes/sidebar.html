@@ -63,6 +63,9 @@
 				room_number = optionSelected.text();
 				var floor_id = $("#FloorSelect").val()
 
+				var ROOM_MAP_ROOT = "/static/assets/images/room_maps/";
+				var IMAGE_TYPE = ".svg";
+
 				data = {'room': room_number, "floor_id": floor_id};
 
 				$.ajax({
@@ -78,8 +81,8 @@
 								$(".maxPanOccup").text('N/A');
 							}
 
-							update_room_selection(building_name, room_number);
-							hmap.setUrl(decodeURI(document.getElementById("floorplan").src));
+							update_room_selection(building_name, room_number, result.max_pandemic_occupancy);
+							hmap.setUrl(ROOM_MAP_ROOT.concat(building_name, "_", room_number, IMAGE_TYPE));
 							heatLayer.setLatLngs(latlngs=[]);
 							$('div.seat_selection_container').unblock();
 							$('#heatmap_container').unblock();
