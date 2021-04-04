@@ -84,12 +84,34 @@
 							update_room_selection(building_name, room_number, result.max_pandemic_occupancy);
 							hmap.setUrl(ROOM_MAP_ROOT.concat(building_name, "_", room_number, IMAGE_TYPE));
 							heatLayer.setLatLngs(latlngs=[]);
+							resetTemporalSettings();
 							$('div.seat_selection_container').unblock();
 							$('#heatmap_container').unblock();
 						});	
 					},					
 				});
 			});
+			function resetTemporalSettings() {
+				$('input[type="radio"]').prop('checked', false);
+				$('#duration').val(0);
+				attack_rate_increase.updateOptions({
+					series: [{
+						data: []
+					}],
+					xaxis: {
+						categories: []
+					}
+				});
+				raw_attack_rates.updateOptions({
+					series: [{
+						data: []
+					}],
+					xaxis: {
+						categories: []
+					}
+				});
+				document.getElementById("ppm").innerHTML = "<br>Set a duration to see its effects"
+			}
 		});
 
 	</script>
