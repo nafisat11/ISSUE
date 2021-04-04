@@ -46,31 +46,35 @@ $ # Access the web app in browser: http://127.0.0.1:8000/
 The project is coded using a simple and intuitive structure presented bellow:
 
 ```bash
-< PROJECT ROOT >
+< Infectious_Spread_Simulation_Tool >
    |
-   |-- core/                               # Implements app logic and serve the static assets
-   |    |-- settings.py                    # Django app bootstrapper
-   |    |-- wsgi.py                        # Start the app in production
-   |    |-- urls.py                        # Define URLs served by all apps/nodes
+   |-- core/                                 # Implements app logic and serve the static assets
+   |    |-- settings.py                      # Django app bootstrapper
+   |    |-- wsgi.py                          # Start the app in production
+   |    |-- urls.py                          # Define URLs served by all apps/nodes
    |    |
    |    |-- static/
-   |    |    |-- <css, JS, images>         # CSS files, Javascripts files
+   |    |    |-- <css, JS, images>           # CSS files, Javascripts files
    |    |
-   |    |-- templates/                     # Templates used to render pages
+   |    |-- templates/                       # Templates used to render pages
    |         |
-   |         |-- includes/                 # HTML chunks and components
-   |         |    |-- navigation.html      # Top menu component
-   |         |    |-- sidebar.html         # Sidebar component
-   |         |    |-- footer.html          # App Footer
-   |         |    |-- scripts.html         # Scripts common to all pages
+   |         |-- includes/                   # HTML chunks and components
+   |         |    |-- navigation.html        # Top menu component
+   |         |    |-- sidebar.html           # Sidebar component
+   |         |    |-- scripts.html           # Scripts common to all pages
    |         |
-   |         |-- layouts/                  # Master pages
-   |         |    |-- base-fullscreen.html # Used by Authentication pages
-   |         |    |-- base.html            # Used by common pages
+   |         |-- layouts/                    # Master pages
+   |         |    |-- base-fullscreen.html   # Used by Authentication pages
+   |         |    |-- base.html              # Used by common pages
    |         |
-   |         |-- accounts/                 # Authentication pages
-   |         |    |-- login.html           # Login page
-   |         |    |-- register.html        # Register page
+   |         |-- accounts/                            # Authentication pages
+   |         |    |-- login.html                      # Login page
+   |         |    |-- password_reset_complete.html    # Password reset request complete page
+   |         |    |-- password_reset_confirm.html     # Enter new passwords page
+   |         |    |-- password_reset_done.html        # Password reset request accepted page
+   |         |    |-- password_reset_email.txt        # Password reset email template
+   |         |    |-- password_reset.html             # Password reset page
+   |         |    |-- register.html                   # Register page
    |         |
    |      index.html                       # The default page
    |     page-404.html                     # Error 404 page
@@ -111,70 +115,6 @@ The project is coded using a simple and intuitive structure presented bellow:
 
 The app is provided with a basic configuration to be executed in [Docker](https://www.docker.com/), [Gunicorn](https://gunicorn.org/), and [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/).
 
-### [Docker](https://www.docker.com/) execution
----
-
-The application can be easily executed in a docker container. The steps:
-
-> Get the code
-
-```bash
-$ git clone https://github.com/app-generator/django-dashboard-gradientable.git
-$ cd django-dashboard-gradientable
-```
-
-> Start the app in Docker
-
-```bash
-$ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose up -d
-```
-
-Visit `http://localhost:5005` in your browser. The app should be up & running.
-
-<br />
-
-### [Gunicorn](https://gunicorn.org/)
----
-
-Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.
-
-> Install using pip
-
-```bash
-$ pip install gunicorn
-```
-> Start the app using gunicorn binary
-
-```bash
-$ gunicorn --bind=0.0.0.0:8001 core.wsgi:application
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
-
-
-<br />
-
-### [Waitress](https://docs.pylonsproject.org/projects/waitress/en/stable/)
----
-
-Waitress (Gunicorn equivalent for Windows) is meant to be a production-quality pure-Python WSGI server with very acceptable performance. It has no dependencies except ones that live in the Python standard library.
-
-> Install using pip
-
-```bash
-$ pip install waitress
-```
-> Start the app using [waitress-serve](https://docs.pylonsproject.org/projects/waitress/en/stable/runner.html)
-
-```bash
-$ waitress-serve --port=8001 core.wsgi:application
-Serving on http://localhost:8001
-```
-
-Visit `http://localhost:8001` in your browser. The app should be up & running.
-
-<br />
 
 ## Credits & Links
 
