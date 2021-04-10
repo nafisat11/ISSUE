@@ -1096,7 +1096,7 @@
             temporalYData = temporalYData.concat(yVal.toFixed(3));
         }
         // Value to be printed to front end
-        tempPpm = (0.022 * ((durationVal * durationVal)/3600) * 100000);
+        tempPpm = (((0.022 * ((durationVal * durationVal)/3600))/100) * 100000);
         ppmYValue = tempPpm.toFixed();
         document.getElementById("ppm").innerHTML = "<br>For every 100,000 individuals, after " + durationVal + " minutes, " + ppmYValue + " more individuals will be infected.";
         // Update series
